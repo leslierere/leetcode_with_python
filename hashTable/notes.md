@@ -174,6 +174,21 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
 
 * Solution2-hashtable，存在删除，不存在加入
 
+  ```python
+  class Solution(object):
+      def singleNumber(self, nums):
+          """
+          :type nums: List[int]
+          :rtype: int
+          """
+          a = 0
+          for i in nums:
+              a ^= i
+          return a
+  ```
+
+  
+
 
 
 #### 266. Palindrome Permutation
@@ -194,7 +209,7 @@ https://leetcode.com/problems/palindrome-permutation/solution/
 
   
 
-### 575. Distribute Candies
+#### 575. Distribute Candies
 
 https://leetcode.com/problems/distribute-candies/
 
@@ -214,7 +229,11 @@ class Solution:
 
 
 
-### 706. Design HashMap
+
+
+
+
+#### 706. Design HashMap
 
 https://leetcode.com/problems/design-hashmap/
 
@@ -304,7 +323,104 @@ https://leetcode.com/problems/design-hashmap/
 
   
 
-  
+### 7.17
+
+#### 690. Employee Importance
+
+https://leetcode.com/problems/employee-importance/
+
+* solution
+
+  有点像tree的结构，还可以用queue的方法来做，还没做
+
+
+
+### 7.18
+
+#### 705. Design HashSet
+
+https://leetcode.com/problems/design-hashset/
+
+
+
+#### 409. Longest Palindrome
+
+https://leetcode.com/problems/longest-palindrome/
+
+* solution
+
+  ```python
+  def longestPalindrome(self, s):
+      odds = sum(v & 1 for v in collections.Counter(s).values())
+      # v&1如果某个字母的个数为单数，即v为单数时，列表中相应元素为1，否则为0
+      return len(s) - odds + bool(odds)
+  ```
+
+
+
+#### 447. Number of Boomerangs
+
+https://leetcode.com/problems/number-of-boomerangs/
+
+
+
+#### 387. First Unique Character in a String
+
+https://leetcode.com/problems/first-unique-character-in-a-string/
+
+
+
+#### 217. Contains Duplicate
+
+https://leetcode.com/problems/contains-duplicate/
+
+
+
+#### 242. Valid Anagram
+
+https://leetcode.com/problems/valid-anagram/
+
+找所含元素相同的方法，加减很常用
+
+
+
+#### 389. Find the Difference
+
+https://leetcode.com/problems/find-the-difference/
+
+* solution
+
+  找出一个不同的字母，而其他都为双数，可以考虑bit operation
+
+
+
+#### 690. Employee Importance
+
+https://leetcode.com/problems/employee-importance/
+
+* solution
+
+  意识到数据结构为tree的可以用BFS（queue）或者DFS来做
+
+  还没做，ref：https://leetcode.com/problems/employee-importance/discuss/112611/3-liner-Python-Solution-(beats-99)
+
+  ```python
+  class Solution(object):
+      def getImportance(self, employees, id):
+          """
+          :type employees: Employee
+          :type id: int
+          :rtype: int
+          """
+          # Time: O(n)
+          # Space: O(n)
+          emps = {employee.id: employee for employee in employees}
+          def dfs(id):
+              subordinates_importance = sum([dfs(sub_id) for sub_id in emps[id].subordinates])
+              return subordinates_importance + emps[id].importance
+          return dfs(id)
+        
+  ```
 
   
 
@@ -334,7 +450,19 @@ print(s1)
 
 * collections.Counter()
 
-  &=也可以用在Counter对象上，获得交集（相当于分别变成list再取包含重复数的交集https://leetcode.com/problems/find-common-characters/discuss/247560/Python-1-Line
+  ```python
+  class Solution:
+      def firstUniqChar(self, s: str) -> int:
+          count = collections.Counter(s)
+          l = count.values()#返回每个值个数的一个list
+          
+          for k, v in enumerate(s):
+              if count[v]==1:
+                  return k
+          return -1
+  ```
+
+  * &=也可以用在Counter对象上，获得交集（相当于分别变成list再取包含重复数的交集https://leetcode.com/problems/find-common-characters/discuss/247560/Python-1-Line
 
 * join的用法：join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
 
@@ -371,3 +499,52 @@ print(s1)
   函数执行完毕也没有`return`语句时，自动`return None`。
 
   函数可以同时返回多个值，但其实就是一个tuple。
+  
+* isAlpha()
+
+  检测字符串是否只由字母组成
+
+  `str.isalpha()`
+
+* count()
+
+  ```python
+  list.count(obj)
+  str.count(sub, start= 0,end=len(string))
+  #sub -- 搜索的子字符串
+  #start -- 字符串开始搜索的位置。默认为第一个字符,第一个字符索引值为0。
+  #end -- 字符串中结束搜索的位置。字符中第一个字符的索引为 0。默认为字符串的最后一个位置。
+  ```
+
+* enumerate()
+
+  用于将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。
+
+  `enumerate(sequence, [start=0])`
+
+* Bit Operation
+
+  * ~ 
+
+    flips all the bits
+
+  * &
+
+    bits are turned on only if both original bits are turned on
+
+    > Used with 1, it basically masks the value to extract the lowest bit, or in other words will tell you if the value is even or odd.
+
+  * ^
+
+    XOR(excluesive or), turned on only if exaclty one of the original bits are turned on
+
+* bool()
+
+  The following values are considered false in Python:
+
+  - `None`
+  - `False`
+  - Zero of any numeric type. For example, `0`, `0.0`, `0j`
+  - Empty sequence. For example, `()`, `[]`, `''`.
+  - Empty mapping. For example, `{}`
+  - objects of Classes which has `__bool__()` or `__len()__` method which returns `0` or `False`
