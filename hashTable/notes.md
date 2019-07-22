@@ -422,33 +422,304 @@ https://leetcode.com/problems/employee-importance/
         
   ```
 
+
+
+### 7.19
+
+#### 599. Minimum Index Sum of Two Lists
+
+https://leetcode.com/problems/minimum-index-sum-of-two-lists/
+
+* solution
+
+  有时候并不需要对两个list都做hash处理
+
+* solution
+
+  求相同值可以用交集来做
+
+#### 202. Happy Number
+
+https://leetcode.com/problems/happy-number/
+
+* 别老想着用recursion来做，循环就够了
+
+#### 720. Longest Word in Dictionary
+
+https://leetcode.com/problems/longest-word-in-dictionary/
+
+
+
+#### 1. Two Sum
+
+https://leetcode.com/problems/two-sum/
+
+* solution
+
+  ```python
+  class Solution(object):
+      def twoSum(self, nums, target):
+          if len(nums) <= 1:
+              return False
+          buff_dict = {}
+          for i in range(len(nums)):
+              if nums[i] in buff_dict:
+                  return [buff_dict[nums[i]], i]
+              else:
+                  buff_dict[target - nums[i]] = i
+  ```
+
+
+
+#### 594. Longest Harmonious Subsequence
+
+https://leetcode.com/problems/longest-harmonious-subsequence/
+
+* solution
+
+  > 我们其实也可以在一个 for 循环中搞定，遍历每个数字时，先累加其映射值，然后查找该数字加1是否存在，存在的话用 m[num] 和 m[num+1] 的和来更新结果 res，同时，还要查找该数字减1是否存在，存在的话用 m[num] 和 m[num-1] 的和来更新结果 res，这样也是可以的
+  >
+  > Ref: https://www.cnblogs.com/grandyang/p/6896799.html
+
+* solution
+
+  > 下面方法不用任何 map，但是需要对数组进行排序，当数组有序了之后，我们就可以一次遍历搞定了。这实际上用到了滑动窗口 Sliding Window 的思想，用变量 start 记录当前窗口的左边界，初始化为0。用 new_start 指向下一个潜在窗口的左边界，初始化为0。i为当前窗口的右边界，从1开始遍历，首先验证当前窗口的差值是否小于1，用 nums[i] 减去  nums[start]，若不满足，则将 start 赋值为 new_start，即移动到下一个窗口。然后看当前数字跟之前一个数字是否相等，若不相等，说明当前数字可能是下一个潜在窗口的左边界，将 new_start 赋值为i。然后再看窗口的左右边界值是否刚好为1，因为题目中说了差值必须正好为1，由于我们对数组排序了，所以只要左右边界差值正好为1，那么这个窗口包含的数字就可以组成满足题意的子序列，用其长度来更新结果 res 即可
+  >
+  > Ref: https://www.cnblogs.com/grandyang/p/6896799.html
+
+### 7.20
+
+#### 645. Set Mismatch
+
+https://leetcode.com/problems/set-mismatch/
+
+
+
+#### 246. Strobogrammatic Number
+
+https://leetcode.com/problems/strobogrammatic-number/
+
+
+
+#### 734. Sentence Similarity
+
+https://leetcode.com/problems/sentence-similarity/
+
+
+
+#### 970. Powerful Integers
+
+https://leetcode.com/problems/powerful-integers/
+
+* solution-***DFS, 也就是用stack来实现***
+
+  ```python
+  class Solution(object):
+      def powerfulIntegers(self, x, y, bound):
+          """
+          :type x: int
+          :type y: int
+          :type bound: int
+          :rtype: List[int]
+          """
+          s = set()
+          stack = [(0, 0)]
+          while stack:
+              i, j = stack.pop()
+              t = x ** i + y ** j
+              if t <= bound:
+                  s.add(t)
+                  if x > 1:
+                      stack.append((i+1, j))
+                  if y > 1:
+                      stack.append((i, j+1))
+          
+          return list(s)
+  ```
+
   
+
+
+
+#### 205. Isomorphic Strings
+
+https://leetcode.com/problems/isomorphic-strings/
+
+* solution
+
+  Hashtable记录上一次出现该字母的位置https://www.cnblogs.com/grandyang/p/4465779.html
+
+
+
+### 7.21
+
+#### 624. Maximum Distance in Arrays
+
+https://leetcode.com/problems/maximum-distance-in-arrays/
+
+* Solution-避免两个list从同一个array取出
+
+  ```python
+  class Solution:
+      def maxDistance(self, arrays):
+          res, curMin, curMax = 0, 10000, -10000
+          for a in arrays :
+              res = max(res, max(a[-1]-curMin, curMax-a[0]))
+              curMin, curMax = min(curMin, a[0]), max(curMax, a[-1])
+          return res
+  ```
+
+  
+
+#### 219. Contains Duplicate II
+
+https://leetcode.com/problems/contains-duplicate-ii/
+
+* solution
+
+  Ref: [https://leetcode.com/problems/contains-duplicate-ii/discuss/61375/Python-concise-solution-with-dictionary.](https://leetcode.com/problems/contains-duplicate-ii/discuss/61375/Python-concise-solution-with-dictionary.)
+
+  ```python
+  def containsNearbyDuplicate(self, nums, k):
+      dic = {}
+      for i, v in enumerate(nums):
+          if v in dic and i - dic[v] <= k:
+              return True
+          dic[v] = i
+      return False
+  ```
+
+
+
+#### 290. Word Pattern
+
+https://leetcode.com/problems/word-pattern/
+
+
+
+#### 170. Two Sum III - Data structure design
+
+https://leetcode.com/problems/two-sum-iii-data-structure-design/
+
+
+
+#### 438. Find All Anagrams in a String
+
+https://leetcode.com/problems/find-all-anagrams-in-a-string/
+
+
+
+### 7.22
+
+#### 204. Count Primes
+
+https://leetcode.com/problems/count-primes/
+
+实现同样的功能，for循环比while快
+
+
+
+
+
+
 
 ##语法
 
-* set()将一个字符串变为单个字母的set
+* list
 
-```python
-s1 = set("QWERTYUIOPqwertyuiop")
+  - 以list作为参数的
 
-print(s1)
-#{'T', 'e', 't', 'P', 'O', 'r', 'u', 'Y', 'I', 'Q', 'q', 'y', 'p', 'W', 'R', 'w', 'i', 'E', 'o', 'U'}
-```
+    sorted(l [,reverse = True])
 
-* set可以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作：
+    min(l), max(l), sum(l)
 
-```python
->>> s1 = set([1, 2, 3])
->>> s2 = set([2, 3, 4])
->>> s1 & s2
-{2, 3}
->>> s1 | s2
-{1, 2, 3, 4}
-```
+  - `numbers = list(range(1, 6, 2)) #[1, 3, 5]`
 
- 
+  - 复制列表
+
+    `list2 = list1[:]`
+
+* tuple
+
+  * 如果要定义一个空的tuple，可以写成`()`
+
+    ```pytho
+    >>> t = ()
+    >>> t
+    ()
+    ```
+
+  * 只有1个元素的tuple定义时必须加一个逗号`,`，来消除歧义：
+
+    ```python
+    >>> t = (1,)
+    >>> t
+    (1,)
+    ```
+
+* dict
+
+  - dict的get()
+
+    如果key不存在，可以返回`None`，或者自己指定的value
+
+    ```python
+    >>> d.get('Thomas')
+    >>> d.get('Thomas', -1)
+    -1
+    ```
+
+* set
+
+  set和dict类似，也是一组key的集合，但不存储value。由于key不能重复，所以，在set中，没有重复的key。要创建一个set，需要提供一个list作为输入集合.
+
+  * 将一个字符串变为单个字母的set
+
+  ```python
+  s1 = set("QWERTYUIOPqwertyuiop")
+  
+  print(s1)
+  #{'T', 'e', 't', 'P', 'O', 'r', 'u', 'Y', 'I', 'Q', 'q', 'y', 'p', 'W', 'R', 'w', 'i', 'E', 'o', 'U'}
+  ```
+
+  * set可以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作：
+
+  ```python
+  >>> s1 = set([1, 2, 3])
+  >>> s2 = set([2, 3, 4])
+  >>> s1 & s2
+  {2, 3}
+  >>> s1 | s2
+  {1, 2, 3, 4}
+  ```
+
+   
 
 * collections.Counter()
+
+  一个 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 是一个 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 的子类，用于计数可哈希对象。它是一个集合，元素像字典键(key)一样存储，它们的计数存储为值。计数可以是任何整数值，包括0和负数。
+
+  * Counter对象有一个字典接口，如果引用的键没有任何记录，就返回一个0，而不是弹出一个 [`KeyError`](https://docs.python.org/zh-cn/3/library/exceptions.html#KeyError)
+
+    ```python
+    c = Counter(['eggs', 'ham'])
+    c['bacon'] # count of a missing element is zero
+    0
+    ```
+
+  * 使用 `del` 来删除key
+
+  * elements()
+
+    返回一个迭代器，每个元素重复计数的个数。元素顺序是任意的。如果一个元素的计数小于1， [`elements()`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter.elements) 就会忽略它。
+
+    ```python
+    >>> c = Counter(a=4, b=2, c=0, d=-2)
+    >>> sorted(c.elements())
+    ['a', 'a', 'a', 'a', 'b', 'b']
+    ```
+
+  * 通常字典方法都可用于 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 对象
 
   ```python
   class Solution:
@@ -464,6 +735,10 @@ print(s1)
 
   * &=也可以用在Counter对象上，获得交集（相当于分别变成list再取包含重复数的交集https://leetcode.com/problems/find-common-characters/discuss/247560/Python-1-Line
 
+* collections.defaultdict()
+
+  
+
 * join的用法：join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
 
   The string whose method is called is inserted in between each given string.
@@ -471,16 +746,6 @@ print(s1)
   The result is returned as a new string.
 
   ​    Example: '.'.join(['ab', 'pq', 'rs']) -> 'ab.pq.rs'
-
-* dict的get()
-
-  如果key不存在，可以返回`None`，或者自己指定的value
-
-  ```python
-  >>> d.get('Thomas')
-  >>> d.get('Thomas', -1)
-  -1
-  ```
 
 * Ascii码和character的转换
 
@@ -499,7 +764,7 @@ print(s1)
   函数执行完毕也没有`return`语句时，自动`return None`。
 
   函数可以同时返回多个值，但其实就是一个tuple。
-  
+
 * isAlpha()
 
   检测字符串是否只由字母组成
@@ -548,3 +813,21 @@ print(s1)
   - Empty sequence. For example, `()`, `[]`, `''`.
   - Empty mapping. For example, `{}`
   - objects of Classes which has `__bool__()` or `__len()__` method which returns `0` or `False`
+
+* all()
+
+  https://leetcode.com/problems/sentence-similarity/discuss/109621/Trivial-Python-solution-using-set-comprehension
+
+* max()
+
+  https://leetcode.com/problems/longest-word-in-dictionary/discuss/186128/O(1)-Space!-NlogN-Solution!-PythonC%2B%2B
+
+* zip()
+
+  [https://leetcode.com/problems/sentence-similarity/discuss/109624/Simple-Python-Solution-32ms!](https://leetcode.com/problems/sentence-similarity/discuss/109624/Simple-Python-Solution-32ms!)
+
+  
+
+* Python可以直接比较object吗？
+
+  Counter 对不存在的直接加？
