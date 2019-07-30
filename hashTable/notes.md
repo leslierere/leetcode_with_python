@@ -803,6 +803,10 @@ https://leetcode.com/problems/count-primes/
 
     XOR(excluesive or), turned on only if exaclty one of the original bits are turned on
 
+  * \>\>
+
+    Bitwise right shift, it shifts the bits to the right by the specified number of places.
+
 * bool()
 
   The following values are considered false in Python:
