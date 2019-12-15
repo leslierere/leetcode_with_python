@@ -1,6 +1,6 @@
-### 8.5
+##basics
 
-
+#### 8.5
 
 #### 28. Implement strStr()
 
@@ -24,7 +24,7 @@ https://leetcode.com/problems/length-of-last-word/
 
 
 
-### 8.8
+#### 8.8
 
 #### 383. Ransom Note
 
@@ -70,7 +70,7 @@ https://leetcode.com/problems/flip-game/
 
 
 
-### 8.13
+#### 8.13
 
 ####  294. Flip Game II
 
@@ -82,23 +82,23 @@ https://leetcode.com/problems/flip-game-ii/
 
 
 
-### 8.21
+8.21
 
-#### 49. Group Anagrams
+### 49. Group Anagrams
 
 https://leetcode.com/problems/group-anagrams/
 
 
 
-#### 249. Group Shifted Strings
+### 249. Group Shifted Strings
 
 https://leetcode.com/problems/group-shifted-strings/
 
 
 
-### 8.22
+8.22
 
-#### 87. Scramble String
+### 87. Scramble String
 
 https://leetcode.com/problems/scramble-string/
 
@@ -110,8 +110,7 @@ https://leetcode.com/problems/scramble-string/
 
 
 
-
-### 8.26
+8.26
 
 #### 161. One Edit Distance
 
@@ -125,7 +124,7 @@ https://leetcode.com/problems/count-and-say/
 
 
 
-### 8.29
+8.29
 
 #### 358. Rearrange String k Distance Apart
 
@@ -151,7 +150,7 @@ https://leetcode.com/problems/encode-and-decode-strings/
 
 
 
-### 8.30
+8.30
 
 #### 168. Excel Sheet Column Title
 
@@ -177,7 +176,7 @@ https://leetcode.com/problems/roman-to-integer/
 
 
 
-### 9.14
+9.14
 
 #### 12. Integer to Roman
 
@@ -211,11 +210,7 @@ https://leetcode.com/problems/integer-to-english-words/
 
 
 
-
-
-
-
-### 9.21
+9.21
 
 #### 247. Strobogrammatic Number II
 
@@ -264,7 +259,7 @@ https://leetcode.com/problems/read-n-characters-given-read4/
 
 
 
-### 9.28
+9.28
 
 #### 158. Read N Characters Given Read4 II - Call multiple times
 
@@ -288,13 +283,13 @@ https://leetcode.com/problems/text-justification/
 
 
 
-### 12.13
+12.13
 
 #### 65. Valid Number
 
 https://leetcode.com/problems/valid-number/
 
-#### DFA(Deterministic Finite Automaton)
+#### DFA(Deterministic Finite Automaton)-worth doing and thinking
 
 Link: https://leetcode.com/problems/valid-number/discuss/23728/A-simple-solution-in-Python-based-on-DFA
 
@@ -330,307 +325,140 @@ class Solution(object):
       if currentState not in [3,5,8,9]:
           return False
       return True
+    
+# with comments
+class Solution(object):
+    def isNumber(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        #define DFA state transition tables
+        states = [{},
+                 # State (1) - initial state (scan ahead thru blanks)
+                 {'blank': 1, 'sign': 2, 'digit':3, '.':4},
+                 # State (2) - found sign (expect digit/dot)
+                 {'digit':3, '.':4},
+                 # State (3) - digit consumer (loop until non-digit)
+                 {'digit':3, '.':5, 'e':6, 'blank':9},
+                 # State (4) - found dot (only a digit is valid)
+                 {'digit':5},
+                 # State (5) - after dot (expect digits, e, or end of valid input)
+                 {'digit':5, 'e':6, 'blank':9},
+                 # State (6) - found 'e' (only a sign or digit valid)
+                 {'sign':7, 'digit':8},
+                 # State (7) - sign after 'e' (only digit)
+                 {'digit':8},
+                 # State (8) - digit after 'e' (expect digits or end of valid input) 
+                 {'digit':8, 'blank':9},
+                 # State (9) - Terminal state (fail if non-blank found)
+                 {'blank':9}]
+        currentState = 1
+        for c in s:
+            # If char c is of a known class set it to the class name
+            if c in '0123456789':
+                c = 'digit'
+            elif c in ' \t\n':
+                c = 'blank'
+            elif c in '+-':
+                c = 'sign'
+            # If char/class is not in our state transition table it is invalid input
+            if c not in states[currentState]:
+                return False
+            # State transition
+            currentState = states[currentState][c]
+        # The only valid terminal states are end on digit, after dot, digit after e, or white space after valid input    
+        if currentState not in [3,5,8,9]:
+            return False
+        return True
 ```
 
 
 
-```java
-interface NumberValidate {
+### Substring
 
-	boolean validate(String s);
-}
+#### 76. Minimum Window Substring
 
-abstract class  NumberValidateTemplate implements NumberValidate{
+https://leetcode.com/problems/minimum-window-substring/
 
-public boolean validate(String s)
-	{
-		if (checkStringEmpty(s))
-		{
-			return false;
-		}
-		
-		s = checkAndProcessHeader(s);
-		
-		if (s.length() == 0)
-		{
-			return false;
-		}
-		
-		return doValidate(s);
-	}
-	
-	private boolean checkStringEmpty(String s)
-	{
-		if (s.equals(""))
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	private String checkAndProcessHeader(String value)
-	{
-	    value = value.trim();
-	    
-		if (value.startsWith("+") || value.startsWith("-"))
-		{
-			value = value.substring(1);
-		}
-	
-	
-		return value;
-	}
-	
-	
-	
-	protected abstract boolean doValidate(String s);
-}
+* Solution- sliding window
 
-class NumberValidator implements NumberValidate {
-	
-	private ArrayList<NumberValidate> validators = new ArrayList<NumberValidate>();
-	
-	public NumberValidator()
-	{
-		addValidators();
-	}
 
-	private  void addValidators()
-	{
-		NumberValidate nv = new IntegerValidate();
-		validators.add(nv);
-		
-		nv = new FloatValidate();
-		validators.add(nv);
-		
-		nv = new HexValidate();
-		validators.add(nv);
-		
-		nv = new SienceFormatValidate();
-		validators.add(nv);
-	}
-	
-	@Override
-	public boolean validate(String s)
-	{
-		for (NumberValidate nv : validators)
-		{
-			if (nv.validate(s) == true)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
 
-	
-}
+#### 30. Substring with Concatenation of All Words
 
-class IntegerValidate extends NumberValidateTemplate{
-	
-	protected boolean doValidate(String integer)
-	{
-		for (int i = 0; i < integer.length(); i++)
-		{
-			if(Character.isDigit(integer.charAt(i)) == false)
-			{
-				return false;
-			}
-		}
-		
-		return true;
-	}
-}
+https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
-class HexValidate extends NumberValidateTemplate{
+* Solution-sliding window, two pointer
 
-	private char[] valids = new char[] {'a', 'b', 'c', 'd', 'e', 'f'};
-	protected boolean doValidate(String hex)
-	{
-		hex = hex.toLowerCase();
-		if (hex.startsWith("0x"))
-		{
-			hex = hex.substring(2);
-		}
-		else
-		{
-		    return false;
-		}
-		
-		for (int i = 0; i < hex.length(); i++)
-		{
-			if (Character.isDigit(hex.charAt(i)) != true && isValidChar(hex.charAt(i)) != true)
-			{
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	private boolean isValidChar(char c)
-	{
-		for (int i = 0; i < valids.length; i++)
-		{
-			if (c == valids[i])
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-}
 
-class SienceFormatValidate extends NumberValidateTemplate{
 
-protected boolean doValidate(String s)
-	{
-		s = s.toLowerCase();
-		int pos = s.indexOf("e");
-		if (pos == -1)
-		{
-			return false;
-		}
-		
-		if (s.length() == 1)
-		{
-			return false;
-		}
-		
-		String first = s.substring(0, pos);
-		String second = s.substring(pos+1, s.length());
-		
-		if (validatePartBeforeE(first) == false || validatePartAfterE(second) == false)
-		{
-			return false;
-		}
-		
-		
-		return true;
-	}
-	
-	private boolean validatePartBeforeE(String first)
-	{
-		if (first.equals("") == true)
-		{
-			return false;
-		}
-		
-		if (checkHeadAndEndForSpace(first) == false)
-		{
-			return false;
-		}
-		
-		NumberValidate integerValidate = new IntegerValidate();
-		NumberValidate floatValidate = new FloatValidate();
-		if (integerValidate.validate(first) == false && floatValidate.validate(first) == false)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-private boolean checkHeadAndEndForSpace(String part)
-	{
-		
-		if (part.startsWith(" ") ||
-				part.endsWith(" "))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean validatePartAfterE(String second)
-	{
-		if (second.equals("") == true)
-		{
-			return false;
-		}
-		
-		if (checkHeadAndEndForSpace(second) == false)
-		{
-			return false;
-		}
-		
-		NumberValidate integerValidate = new IntegerValidate();
-		if (integerValidate.validate(second) == false)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-}
+#### 3. Longest Substring Without Repeating Characters
 
-class FloatValidate extends NumberValidateTemplate{
-	
-   protected boolean doValidate(String floatVal)
-	{
-		int pos = floatVal.indexOf(".");
-		if (pos == -1)
-		{
-			return false;
-		}
-		
-		if (floatVal.length() == 1)
-		{
-			return false;
-		}
-		
-		NumberValidate nv = new IntegerValidate();
-		String first = floatVal.substring(0, pos);
-		String second = floatVal.substring(pos + 1, floatVal.length());
-		
-		if (checkFirstPart(first) == true && checkFirstPart(second) == true)
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean checkFirstPart(String first)
-	{
-	    if (first.equals("") == false && checkPart(first) == false)
-	    {
-	    	return false;
-	    }
-	    
-	    return true;
-	}
-	
-	private boolean checkPart(String part)
-	{
-	   if (Character.isDigit(part.charAt(0)) == false ||
-				Character.isDigit(part.charAt(part.length() - 1)) == false)
-		{
-			return false;
-		}
-		
-		NumberValidate nv = new IntegerValidate();
-		if (nv.validate(part) == false)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-}
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
-public class Solution {
-    public boolean isNumber(String s) {
-        NumberValidate nv = new NumberValidator();
+* solution-会做前面两个就根本不用看这个
 
-	    return nv.validate(s);
-    }
-}
+
+
+12.14
+
+#### 340. Longest Substring with At Most K Distinct Characters
+
+https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
+
+* solution-会做前面的这个也会做
+
+
+
+#### 395. Longest Substring with At Least K Repeating Characters
+
+https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
+
+* Solution-Divide and Conquer- worth doing and thinking
+
+```python
+def longestSubstring(self, s, k):
+    for c in set(s): 
+        if s.count(c) < k:
+            return max(self.longestSubstring(t, k) for t in s.split(c))
+    return len(s)
 ```
+
+
+
+#### 159. Longest Substring with At Most Two Distinct Characters
+
+https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
+
+* Solution-这就是340的降级版
+
+
+
+### Palindrome
+
+#### 125. Valid Palindrome
+
+https://leetcode.com/problems/valid-palindrome/
+
+* Solution-easy, Palindrome感觉一般都用two pointers?
+
+  我这里为了避免大小写，将大写小写都映射到同一个值
+
+
+
+#### 5. Longest Palindromic Substring
+
+https://leetcode.com/problems/longest-palindromic-substring/
+
+* Solution-dynamic programming
+* Solution-Manacher Algorithm-worth doing and thinking
+
+```python
+只要找到了最大的半径，就知道最长的回文子串的字符个数了。只知道长度无法定位子串，我们还需要知道子串的起始位置。 
+```
+
+
 
 
 
@@ -679,4 +507,37 @@ str.find(sub[, start[, end]] )
   * If substring exists inside the string, it returns the index of first occurence of the substring.
   * If substring doesn't exist inside the string, it returns -1.
 
-  
+
+
+
+#### set()可以对字符串操作
+
+```python
+s = 'apple'
+set(s) 
+# Out[11]: {'a', 'e', 'l', 'p'}
+```
+
+
+
+#### string.count()
+
+```python
+# S.count(sub[, start[, end]]) -> int
+s = 'apple'
+s.count('p') 
+# Out[12]: 2
+```
+
+
+
+#### string.isalnum()
+
+Return True if the string is an alpha-numeric string, False otherwise.
+
+```python
+In [16]: s='a'                                                                  
+In [17]: s.isalnum()                                                            
+Out[17]: True
+```
+
