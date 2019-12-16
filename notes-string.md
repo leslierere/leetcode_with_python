@@ -454,9 +454,63 @@ https://leetcode.com/problems/longest-palindromic-substring/
 * Solution-dynamic programming
 * Solution-Manacher Algorithm-worth doing and thinking
 
-```python
-只要找到了最大的半径，就知道最长的回文子串的字符个数了。只知道长度无法定位子串，我们还需要知道子串的起始位置。 
-```
+https://www.cnblogs.com/grandyang/p/4475985.html
+
+https://www.zhihu.com/question/37289584
+
+
+
+12.15
+
+#### 9. Palindrome Number
+
+https://leetcode.com/problems/palindrome-number/
+
+* Solution-翻转字符串, 通过取整和取余来获得想要的数字
+* Solution-只要翻转后半部分，和前面相等则True
+
+
+
+#### 214. Shortest Palindrome
+
+https://leetcode.com/problems/shortest-palindrome/
+
+* Solution-Brute force-O(N2)-可以想想
+* Solution-KMP, Knuth–Morris–Pratt, **worth doing and thinking**
+
+算法解释：https://www.cnblogs.com/grandyang/p/6992403.html
+
+
+
+#### 336. Palindrome Pairs
+
+https://leetcode.com/problems/palindrome-pairs/
+
+* solution-https://www.cnblogs.com/grandyang/p/5272039.html 注意边界的处理
+
+> 要用到哈希表来建立每个单词和其位置的映射.
+>
+> 然后需要一个set来保存出现过的单词的长度，
+>
+> Brach 1: 算法的思想是，遍历单词集，对于遍历到的单词，我们对其翻转一下，然后在哈希表查找翻转后的字符串是否存在，注意不能和原字符串的坐标位置相同，因为有可能一个单词翻转后和原单词相等，现在我们只是处理了bat和tab的情况
+>
+> Branch 2:还存在abcd和cba，dcb和abcd这些情况需要考虑，这就是我们为啥需要用set，由于set是自动排序的，我们可以找到当前单词长度在set中的iterator，然后从开头开始遍历set，遍历比当前单词小的长度，比如abcdd翻转后为ddcba，我们发现set中有长度为3的单词，1⃣️我们判断dd是否为回文串，若是，再看cba是否存在于哈希表，若存在，则说明abcdd和cba是回文对，存入结果中，2⃣️看另一边，判断ab是否是回文串，不是就skip。对于dcb和aabcd这类的情况也是同样处理，我们要在set里找的字符串要在遍历到的字符串的左边和右边分别尝试，看是否是回文对，这样遍历完单词集，就能得到所有的回文对，
+
+
+
+#### 131. Palindrome Partitioning
+
+https://leetcode.com/problems/palindrome-partitioning/
+
+* Solution- divide and conquer-worth doing and thinking
+
+设置递归出口
+
+ref：https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
+
+* solution-dfs, backtrack-worth doing and thinking
+
+ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 
 
 
@@ -541,3 +595,10 @@ In [17]: s.isalnum()
 Out[17]: True
 ```
 
+
+
+#### 乘除法
+
+**/** 默认得到float
+
+**//** 舍小数得到int
