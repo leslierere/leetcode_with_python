@@ -452,11 +452,61 @@ https://leetcode.com/problems/valid-palindrome/
 https://leetcode.com/problems/longest-palindromic-substring/
 
 * Solution-dynamic programming
+
+> Ref: https://www.cnblogs.com/grandyang/p/4464476.html
+>
+> 此题还可以用动态规划 Dynamic Programming 来解，跟 [Palindrome Partitioning II](http://www.cnblogs.com/grandyang/p/4271456.html) 的解法很类似，我们维护一个二维数组 dp，其中 dp[i][j] 表示字符串区间 [i, j] 是否为回文串，当 i = j 时，只有一个字符，肯定是回文串，如果 i = j + 1，说明是相邻字符，此时需要判断 s[i] 是否等于 s[j]，如果i和j不相邻，即 i - j >= 2 时，除了判断 s[i] 和 s[j] 相等之外，dp\[ + 1][j - 1] 若为真，就是回文串，通过以上分析，可以写出递推式如下：
+>
+> dp[i, j] = 1                        if i == j
+>
+> ​      = s[i] == s[j]                 if j = i + 1
+>
+> ​      = s[i] == s[j] && dp\[i + 1][j - 1]   if j > i + 1   
+
 * Solution-Manacher Algorithm-worth doing and thinking
 
 https://www.cnblogs.com/grandyang/p/4475985.html
 
 https://www.zhihu.com/question/37289584
+
+*This is also a method to make use of already known palindromes.*
+
+**main idea**:
+
+Add # to string:
+
+For an odd number length example, the original string is "bob". After adding "#", it becomes "#b#o#b#". Also, we add a "$" before it, that is "\$#b#o#b#", we call it "s1".
+
+In this way, the index of the longest palindrome here is "#b#o#b#", and the center is "o" with an index in s1 as 4, with a radius of 3(not including the center), the index of the beginning palindrome without #$ in the "bob" is 0 
+
+For an even number length example, the original string is "122223". After adding "#", it becomes "#1#2#2#2#2#3#". Also, we add a "$" before it, that is "\$#1#2#2#2#2#3#", we call it "s2".
+
+In this way, the index of the longest palindrome here is "#2#2#2#2#", and the center is "#" with an index in s2 as 7, with a radius of 4(not including the center), the index of the beginning palindrome without #$ in the "122223" is 1 
+
+And we found out, the radius is the length of the palindrome; **the difference** of the new index of the center minus the radius **and then divided by 2 is the palindrome's begining character index** in original string.(not the residual)
+
+
+
+**notation**:
+ma: strings after adding "#" in it
+
+mp[i]: the maximum radius of the palindrome with the center of i th character
+
+mx: the most right position of already known palindromes
+
+id: the center of the palindrome with the most right position in above
+
+**main problem**: How to update Mp[i]?(here we make use of the already known palindromes in the min part: min(p[2 * id - i], mx - i))
+
+```
+mp[i] = mx > i ? min(p[2 * id - i], mx - i) : 1;
+```
+
+If mx<=i, we can only use mp[i]=1, and then we would compare the characters beside it step by step
+
+If mx>i, we would try to make use of the index that is symmatric to i with the center of id.
+
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191216205337687.png" alt="image-20191216205337687" style="zoom:15%;" />
 
 
 
@@ -502,7 +552,7 @@ https://leetcode.com/problems/palindrome-pairs/
 
 https://leetcode.com/problems/palindrome-partitioning/
 
-* Solution- divide and conquer-worth doing and thinking
+* Solution- divide and conquer-**worth doing and thinking**
 
 设置递归出口
 
@@ -513,6 +563,76 @@ ref：https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 
 
+
+12.16
+
+#### 132. Palindrome Partitioning II
+
+https://leetcode.com/problems/palindrome-partitioning-ii/
+
+* Solution- dynamic programming-**worth doing and thinking**
+
+https://www.cnblogs.com/grandyang/p/4271456.html
+
+感觉关键是找递推方程
+
+> 一维的dp数组，其中dp[i]表示子串 [0, i] 范围内的最小分割数，那么我们最终要返回的就是 dp[n-1] 了.
+>
+> 并且加个corner case的判断，若s串为空，直接返回0。
+>
+> 而如何更新dp[i], 这个区间的每个位置都可以尝试分割开来，所以就用一个变量j来从0遍历到i，这样就可以把区间 [0, i] 分为两部分，[0, j-1] 和 [j, i]。而因为我们从前往后更新，所以我们已经知道区间 [0, j-1] 的最小分割数 dp[j-1]， 这样我们就只需要判断区间 [j, i] 内的子串是否为回文串了。
+
+如下图，先判断 `start` 到 `i` 是否是回文串，如果是的话，就用 `1 + d` 和之前的 `min` 比较。
+
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191216162740834.png" alt="image-20191216162740834" style="zoom:30%;" />
+
+如下图，`i` 后移，继续判断 `start` 到 `i` 是否是回文串，如果是的话，就用 `1 + c` 和之前的 `min`比较。
+
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191216162832270.png" alt="image-20191216162832270" style="zoom:30%;" />
+
+然后 `i` 继续后移重复上边的过程。每次选一个较小的切割次数，最后问号处就求出来了。
+
+接着 `start` 继续前移，重复上边的过程，直到求出 `start` 等于 `0` 的最小切割次数就是我们要找的了。
+
+仔细考虑下上边的状态，其实状态转移方程也就出来了。
+
+用 `dp[i]` 表示字符串 `s[i,s.lenght-1]`，也就是从 `i` 开始到末尾的字符串的最小切割次数。
+
+求 `dp[i]` 的话，假设 `s[i,j]` 是回文串。
+
+那么 `dp[i] = Min(min,dp[j + 1])`.
+
+然后考虑所有的 `j`，其中 `j > i` ，找出最小的即可。
+
+* Solution-backtrack-**worth doing and thinking**
+
+
+
+#### 267. Palindrome Permutation II
+
+https://leetcode.com/problems/palindrome-permutation-ii/
+
+* Solution-backtrack-**worth doing medium**
+
+https://leetcode.com/problems/palindrome-permutation-ii/discuss/120631/Short-Python-Solution-with-backtracking
+
+
+
+### Parentheses
+
+#### 20. Valid Parentheses
+
+https://leetcode.com/problems/valid-parentheses/
+
+* Solution-easy, 稍微想一下就好
+
+
+
+#### 22. Generate Parentheses
+
+https://leetcode.com/problems/generate-parentheses/
+
+* Solution-backtrack, 我想出来了！
 
 
 
