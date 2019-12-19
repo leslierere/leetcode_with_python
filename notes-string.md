@@ -636,6 +636,231 @@ https://leetcode.com/problems/generate-parentheses/
 
 
 
+12.17
+
+#### 32. Longest Valid Parentheses
+
+https://leetcode.com/problems/longest-valid-parentheses/
+
+* Solution-dynamic programming
+
+Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
+
+dp [ i ] 代表以下标 i 结尾的合法序列的最长长度
+
+* solution-stack-**worth thinking and doing**
+
+Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
+
+
+
+#### 241. Different Ways to Add Parentheses
+
+https://leetcode.com/problems/different-ways-to-add-parentheses/
+
+* Solution-divide and conquer- **worth thinking and doing**
+
+Ref: https://leetcode.com/problems/different-ways-to-add-parentheses/discuss/66419/Python-easy-to-understand-solution-(divide-and-conquer).
+
+
+
+#### 301. Remove Invalid Parentheses
+
+https://leetcode.com/problems/remove-invalid-parentheses/
+
+* solution-DFS- **worth thinking and doing**
+
+Ref: https://leetcode.com/problems/remove-invalid-parentheses/discuss/75027/Easy-Short-Concise-and-Fast-Java-DFS-3-ms-solution
+
+原答案plus一个人的评论，评论贴在下面了
+
+```java
+class DFSSolution:
+    def remove_invalid_parentheses(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        if not s:
+            return [s]
+
+        results = []
+        self.remove(s, 0, 0, results)
+        return results
+
+    def remove(self,
+               str_to_check,
+               start_to_count,
+               start_to_remove,
+               results,
+               pair=['(', ')']):
+        # start_to_count: the start position where we do the +1, -1 count,
+        # which is to find the position where the count is less than 0
+        #
+        # start_to_remove: the start position where we look for a parenthesis
+        # that can be removed
+
+        count = 0
+        for count_i in range(start_to_count, len(str_to_check)):
+            if str_to_check[count_i] == pair[0]:
+                count += 1
+            elif str_to_check[count_i] == pair[1]:
+                count -= 1
+
+            if count >= 0:
+                continue
+
+            # If it gets here, it means count < 0. Obviously.
+            # That means from start_to_count to count_i (inclusive), there is an extra
+            # pair[1].
+            # e.g. if sub_str = ()), then we can remove the middle )
+            # e.g. if sub_str = ()()), the we could remove sub_str[1], it becomes (())
+            #  or we could remove sub_str[3], it becomes ()()
+            # In the second example, for the last two )), we want to make sure we only
+            # consider remove the first ), not the second ). In this way, we can avoid
+            # duplicates in the results.
+            #
+            # In order to achieve this, we need this condition
+            #  str_to_check[remove_i] == pair[1] and str_to_check[remove_i - 1] != str_to_check[remove_i]
+            # But what if str_to_check[start_to_remove] == pair[1], 
+            # then remove_i - 1 is out of the range(start_to_remove, count_i + 1)
+            # so we need
+            # str_to_check[remove_i] == pair[1] and (start_to_remove == remove_i or str_to_check[remove_i - 1] != str_to_check[remove_i])
+            for remove_i in range(start_to_remove, count_i + 1):
+                if str_to_check[remove_i] == pair[1] and (start_to_remove == remove_i or str_to_check[remove_i - 1] != str_to_check[remove_i]):
+                    # we remove str_to_check[remove_i]
+                    new_str_to_check = str_to_check[0:remove_i] + str_to_check[remove_i + 1:]
+
+                    # The following part are the most confusing or magic part in this algorithm!!!
+                    # I'm too stupid and it took me two days to figure WTF is this?
+                    #
+                    # So for start_to_count value
+                    # we know in str_to_check, we have scanned up to count_i, right?
+                    # The next char in the str_to_check we want to look at is of index (count_i + 1) in str_to_check
+                    # We have remove one char bewteen start_to_remove and count_i inclusive to get the new_str_to_check
+                    # So the char we wanted to look at is of index (count_i + 1 - 1) in the new_str_to_check. (-1 because we removed one char)
+                    # That's count_i. BOOM!!!
+                    #
+                    # Same reason for remove_i
+                    # In str_to_check, we decide to remove the char of index remove_i
+                    # So the next char we will look at to decide weather we want to remove is of index (remove_i + 1) in str_to_check
+                    # we have remove [remove_i] char of the str_to_check to get the new_str_to_check.
+                    # So the char we wanted to look at when doing remove is of index (remove_i + 1 - 1) in the new_str_to_check.
+                    # That's remove_i. BOOM AGAIN!!!
+                    new_start_to_count = count_i
+                    new_start_to_remove = remove_i
+                    self.remove(new_str_to_check,
+                                new_start_to_count,
+                                new_start_to_remove,
+                                results,
+                                pair)
+
+            # Don't underestimate this return. It's very important
+            # if inside the outer loop, it reaches the above inner loop. You have scanned the str_to_check up to count_i
+            # In the above inner loop, when construct the new_str_to_check, we include the rest chars after count_i
+            # and call remove with it.
+            # So after the above inner loop finishes, we shouldn't allow the outer loop continue to next round because self.remove in the
+            # inner loop has taken care of the rest chars after count_i
+            return
+
+        # Why the hell do we need to check the reversed str?
+        # Because in the above count calculation, we only consider count < 0 case to remove stuff.
+        # The default pair is ['(', ')']. So we only consider the case where there are more ')'  than '('
+        # e.g "(()" can pass the above loop
+        # So we need to reverse it to ")((" and call it with pair [')', '(']
+        reversed_str_to_check = str_to_check[::-1]
+        if pair[0] == '(':
+            self.remove(reversed_str_to_check, 0, 0, results, pair=[')', '('])
+        else:
+            results.append(reversed_str_to_check)
+
+def main():
+    sol = DFSSolution()
+    print(sol.remove_invalid_parentheses("())())"))
+    print(sol.remove_invalid_parentheses("(()(()"))
+
+if __name__ == '__main__':
+    main()
+```
+
+
+
+12.18
+
+### Subsequence
+
+#### 392. Is Subsequence
+
+https://leetcode.com/problems/is-subsequence/
+
+
+
+#### 115. Distinct Subsequences
+
+https://leetcode.com/problems/distinct-subsequences/
+
+* solution-dynamic programming
+
+计数的题目通常用dp来做，两个string通常就是二维数组
+
+```python
+# mysolution @ 12.18
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        dp = [[1 for i in range(len(s)+1)]] + [[0 for i in range(len(s)+1)] for j in range(len(t))]
+
+        for i in range(1, len(t)+1):
+            for j in range(1, len(s)+1):
+                if t[i-1]==s[j-1]:
+                    dp[i][j] = dp[i-1][j-1] + dp[i][j-1]
+                else:
+                    dp[i][j] = dp[i][j-1]
+                    
+        return dp[len(t)][len(s)]
+```
+
+![image-20191218162133174](/Users/leslieren/Library/Application Support/typora-user-images/image-20191218162133174.png)
+
+
+
+#### 187. Repeated DNA Sequences
+
+https://leetcode.com/problems/repeated-dna-sequences/
+
+* Solution -hash table, bit manipulation
+
+```python
+class Solution:# my solution
+    def findRepeatedDnaSequences(self, s: str) -> List[str]:
+        # A: 1000001
+        # C: 1000011
+        # G: 1000111
+        # T: 1010100
+        # 7: 0000111
+        
+        toInt = {'A': 0, 'T': 1, 'G': 2, 'C': 3}
+
+        if len(s) < 11:
+            return []
+        keys = collections.defaultdict(int)
+        key = 0
+        answer = []
+        mask = (1 << 20) - 1
+        # bin(mask): '0b11111111111111111111'
+        # bin(): Return the binary representation of an integer.
+        for i in range(9):
+            key = (key << 2) | toInt[s[i]]
+        for i in range(9, len(s)):
+            key = (((key << 2) | toInt[s[i]])) & mask
+            keys[key] += 1
+            if keys[key]==2:
+                answer.append(s[i-9:i+1])
+            
+        return answer
+```
+
+
+
 
 
 ## 语法
@@ -653,14 +878,6 @@ number = ord(char)
 # Get the character given by an ASCII number
 char = chr(number)
 ```
-
-
-
-
-
-#### collections.defaultdict
-
-Usually, a Python dictionary throws a `KeyError` if you try to get an item with a key that is not currently in the dictionary. The `defaultdict` in contrast will simply create any items that you try to access (provided of course they do not exist yet). To create such a "default" item, it calls the function object that you pass to the constructor (more precisely, it's an arbitrary "callable" object, which includes function and type objects). 
 
 
 
@@ -709,11 +926,54 @@ s.count('p')
 
 Return True if the string is an alpha-numeric string, False otherwise.
 
+类似的还有string.isdigit() 
+
 ```python
 In [16]: s='a'                                                                  
 In [17]: s.isalnum()                                                            
 Out[17]: True
 ```
+
+
+
+#### bisect module
+
+Ref: https://docs.python.org/zh-cn/3.6/library/bisect.html
+
+这个模块对有序列表提供了支持，使得他们可以在插入新数据仍然保持有序。
+
+* `bisect.bisect_left(*a*, *x*, *lo=0*, *hi=len(a)*)`
+
+  在 *a* 中找到 *x* 合适的插入点以维持有序。参数 *lo* 和 *hi* 可以被用于确定需要考虑的子集；默认情况下整个列表都会被使用。如果 *x* 已经在 *a* 里存在，那么插入点会在已存在元素之前（也就是左边）。
+
+* `bisect.bisect_right(*a*, *x*, *lo=0*, *hi=len(a)*)`
+
+  Similar to bisect_left(), but returns an insertion point which comes after (to the right of) any existing entries of item in list.
+
+* `bisect.bisect(*a*, *x*, *lo=0*, *hi=len(a)*)`
+
+  Alias for `bisect_right()`
+
+```python
+In [39]: import bisect
+In [42]: data = [2,4,6,8]                                                            
+
+In [43]: bisect.bisect(data,1)                                                       
+Out[43]: 0
+
+In [44]: bisect.bisect(data,4)                                                       
+Out[44]: 2
+
+In [45]: bisect.bisect_right(data,4)                                                 
+Out[45]: 2
+
+In [46]: bisect.bisect_left(data,4)                                                  
+Out[46]: 1
+```
+
+
+
+
 
 
 
