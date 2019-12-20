@@ -846,8 +846,9 @@ class Solution:# my solution
         key = 0
         answer = []
         mask = (1 << 20) - 1
-        # bin(mask): '0b11111111111111111111'
+        # bin(mask): '0b11111111111111111111'后面有20个1
         # bin(): Return the binary representation of an integer.
+        # 1<<n则为2的多少次方
         for i in range(9):
             key = (key << 2) | toInt[s[i]]
         for i in range(9, len(s)):
