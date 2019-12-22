@@ -627,11 +627,22 @@ https://leetcode.com/problems/count-primes/
 
 * list
 
-  - 以list作为参数的
+  - 排序
 
-    sorted(l [,reverse = True])
+    * sorted()
 
-    min(l), max(l), sum(l)
+    It returns a new sorted list
+
+    ```python
+    >>> sorted([5, 2, 3, 1, 4])
+    [1, 2, 3, 4, 5]
+    ```
+
+    * [`list.sort()`](https://docs.python.org/3/library/stdtypes.html#list.sort)
+
+    It modifies the list in-place (and returns `None`).
+
+    Another difference is that the `list.sort()` method is only defined for lists. In contrast, the `sorted()`function accepts any iterable.
 
   - `numbers = list(range(1, 6, 2)) #[1, 3, 5]`
 

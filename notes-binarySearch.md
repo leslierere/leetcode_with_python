@@ -1,3 +1,31 @@
+#### 69. Sqrt(x)
+
+https://leetcode.com/problems/sqrtx/description/
+
+
+
+#### 167. Two Sum II - Input array is sorted
+
+https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
+
+
+
+#### 50. Pow(x, n)
+
+https://leetcode.com/problems/powx-n/description/
+
+
+
+#### 367. Valid Perfect Square
+
+https://leetcode.com/problems/valid-perfect-square/description/
+
+
+
+
+
+
+
 ##遗忘的语法
 
 * lambda
