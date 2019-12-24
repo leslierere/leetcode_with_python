@@ -289,7 +289,7 @@ https://leetcode.com/problems/text-justification/
 
 https://leetcode.com/problems/valid-number/
 
-#### DFA(Deterministic Finite Automaton)-worth doing and thinking
+#### DFA(Deterministic Finite Automaton)-worth doing and thinking, 下次画图@12.22
 
 Link: https://leetcode.com/problems/valid-number/discuss/23728/A-simple-solution-in-Python-based-on-DFA
 
@@ -381,7 +381,67 @@ class Solution(object):
 
 https://leetcode.com/problems/minimum-window-substring/
 
-* Solution- sliding window
+* Solution- sliding window, 再做，我觉得不难@12.23
+
+更快的解法
+
+```python
+from collections import Counter
+class Solution:
+    def minWindow(self, s, t):
+
+        if not t or not s:
+            return ""
+
+    # Dictionary which keeps a count of all the unique characters in t.
+        dict_t = Counter(t)
+
+    # Number of unique characters in t, which need to be present in the desired window.
+        required = len(dict_t)
+
+    # left and right pointer
+        l, r = 0, 0
+
+    # formed is used to keep track of how many unique characters in t are present in the current window in its desired frequency.
+    # e.g. if t is "AABC" then the window must have two A's, one B and one C. Thus formed would be = 3 when all these conditions are met.
+        formed = 0
+
+    # Dictionary which keeps a count of all the unique characters in the current window.
+        window_counts = {}
+
+    # ans tuple of the form (window length, left, right)
+        ans = float("inf"), None, None
+
+        while r < len(s):
+
+        # Add one character from the right to the window
+            character = s[r]
+            window_counts[character] = window_counts.get(character, 0) + 1
+
+        # If the frequency of the current character added equals to the desired count in t then increment the formed count by 1.
+            if character in dict_t and window_counts[character] == dict_t[character]:
+                formed += 1
+
+        # Try and contract the window till the point where it ceases to be 'desirable'.
+            while l <= r and formed == required:
+                character = s[l]
+
+            # Save the smallest window until now.
+                if r - l + 1 < ans[0]:
+                    ans = (r - l + 1, l, r)
+
+            # The character at the position pointed by the `left` pointer is no longer a part of the window.
+                window_counts[character] -= 1
+                if character in dict_t and window_counts[character] < dict_t[character]:
+                    formed -= 1
+
+            # Move the left pointer ahead, this would help to look for a new window.
+                l += 1    
+
+        # Keep expanding the window once we are done contracting.
+            r += 1    
+        return "" if ans[0] == float("inf") else s[ans[1] : ans[2] + 1]
+```
 
 
 
@@ -415,7 +475,7 @@ https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characte
 
 https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
 
-* Solution-Divide and Conquer- worth doing and thinking
+* Solution-Divide and Conquer- worth doing and thinking-12.23还是不会
 
 ```python
 def longestSubstring(self, s, k):
@@ -443,7 +503,9 @@ https://leetcode.com/problems/valid-palindrome/
 
 * Solution-easy, Palindrome感觉一般都用two pointers?
 
-  我这里为了避免大小写，将大写小写都映射到同一个值
+  我这里为了避免大小写，将大写小写都映射到同一个值。在python里并不需要字典
+  
+* Solution-用re模块, 会很快@12.23
 
 
 
@@ -451,17 +513,46 @@ https://leetcode.com/problems/valid-palindrome/
 
 https://leetcode.com/problems/longest-palindromic-substring/
 
-* Solution-dynamic programming
+* Solution-dynamic programming- **worth doing and thinking**
 
-> Ref: https://www.cnblogs.com/grandyang/p/4464476.html
+> Ref：https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html
 >
-> 此题还可以用动态规划 Dynamic Programming 来解，跟 [Palindrome Partitioning II](http://www.cnblogs.com/grandyang/p/4271456.html) 的解法很类似，我们维护一个二维数组 dp，其中 dp[i][j] 表示字符串区间 [i, j] 是否为回文串，当 i = j 时，只有一个字符，肯定是回文串，如果 i = j + 1，说明是相邻字符，此时需要判断 s[i] 是否等于 s[j]，如果i和j不相邻，即 i - j >= 2 时，除了判断 s[i] 和 s[j] 相等之外，dp\[ + 1][j - 1] 若为真，就是回文串，通过以上分析，可以写出递推式如下：
+> 首先定义 P（i，j）。
 >
-> dp[i, j] = 1                        if i == j
+> *P*(*i*,*j*)= True s[i,j] 是回文串
 >
-> ​      = s[i] == s[j]                 if j = i + 1
+> *P*(*i*,*j*)= False s[i,j] 不是回文串
 >
-> ​      = s[i] == s[j] && dp\[i + 1][j - 1]   if j > i + 1   
+> 接下来
+>
+> P(*i*,*j*)=(*P*(*i*+1,*j*−1)&&*S*[*i*]==*S*[*j*])
+>
+> （当求第 i 行的时候我们只需要第 i + 1 行的信息，并且 j 的话需要 j - 1 的信息，所以倒着遍历这样我们可以把二维数组转为用一维数组）
+>
+> <img src="/Users/leslieren/Desktop/Screen Shot 2019-12-23 at 9.49.52 PM.png" alt="Screen Shot 2019-12-23 at 9.49.52 PM" style="zoom:33%;" />
+>
+> ```python
+> public String longestPalindrome7(String s) {
+>         int n = s.length();
+>         String res = "";
+>         boolean[] P = new boolean[n];
+>         for (int i = n - 1; i >= 0; i--) {
+>             for (int j = n - 1; j >= i; j--) {
+>                 P[j] = s.charAt(i) == s.charAt(j) && (j - i < 3 || P[j - 1]);
+>               //j - i < 3 意味着字符串长度小于等于3，很好理解
+>               //P[j - 1] 上面那个圆圈是由下面的圆圈决定的，因为下面圆圈代表2起始3终点的substring是否palindromic
+>                 if (P[j] && j - i + 1 > res.length()) {
+>                     res = s.substring(i, j + 1);
+>                 }
+>             }
+>         }
+>         return res;
+>     }
+> ```
+>
+> 
+
+
 
 * Solution-Manacher Algorithm-worth doing and thinking
 
@@ -483,7 +574,7 @@ For an even number length example, the original string is "122223". After adding
 
 In this way, the index of the longest palindrome here is "#2#2#2#2#", and the center is "#" with an index in s2 as 7, with a radius of 4(not including the center), the index of the beginning palindrome without #$ in the "122223" is 1 
 
-And we found out, the radius is the length of the palindrome; **the difference** of the new index of the center minus the radius **and then divided by 2 is the palindrome's begining character index** in original string.(not the residual)
+And we found out, the radius is the length of the palindrome; **the difference** of the new index of the center minus the radius **and then divided by 2 (i.e. the quotient) is the palindrome's begining character index** in original string.(not the residual)
 
 
 
@@ -510,6 +601,38 @@ If mx>i, we would try to make use of the index that is symmatric to i with the c
 
 
 
+* solution-扩展中心, 应该会快一些-you can try@12.23
+
+Ref: https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html 解法4
+
+Ref2: https://leetcode.com/problems/longest-palindromic-substring/discuss/2954/Python-easy-to-understand-solution-with-comments-(from-middle-to-two-ends).
+
+```python
+def longestPalindrome(self, s):
+    res = ""
+    for i in xrange(len(s)):
+        # odd case, like "aba"
+        tmp = self.helper(s, i, i)
+        if len(tmp) > len(res):
+            res = tmp
+        # even case, like "abba"
+        tmp = self.helper(s, i, i+1)
+        if len(tmp) > len(res):
+            res = tmp
+    return res
+ 
+# get the longest palindrome, l, r are the middle indexes   
+# from inner to outer
+def helper(self, s, l, r):
+    while l >= 0 and r < len(s) and s[l] == s[r]:
+        l -= 1; r += 1
+    return s[l+1:r]
+```
+
+
+
+
+
 12.15
 
 #### 9. Palindrome Number
@@ -526,6 +649,33 @@ https://leetcode.com/problems/palindrome-number/
 https://leetcode.com/problems/shortest-palindrome/
 
 * Solution-Brute force-O(N2)-可以想想
+
+Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60099/AC-in-288-ms-simple-brute-force
+
+```python
+def shortestPalindrome(self, s):
+    r = s[::-1]
+    for i in range(len(s) + 1):
+        if s.startswith(r[i:]):
+            return r[:i] + s
+```
+
+* Solution-recursive-***worth thinking and doing*** @12.23
+
+Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursive-Python-solution
+
+```python
+	  if not s or len(s) == 1:
+        return s
+    j = 0
+    for i in reversed(range(len(s))):
+        if s[i] == s[j]:
+            j += 1
+    return s[::-1][:len(s)-j] + self.shortestPalindrome(s[:j-len(s)]) + s[j-len(s):]
+```
+
+
+
 * Solution-KMP, Knuth–Morris–Pratt, **worth doing and thinking**
 
 算法解释：https://www.cnblogs.com/grandyang/p/6992403.html
@@ -927,13 +1077,22 @@ s.count('p')
 
 Return True if the string is an alpha-numeric string, False otherwise.
 
-类似的还有string.isdigit() 
+类似的还有string.isdigit() , string.isalpha()
 
 ```python
 In [16]: s='a'                                                                  
 In [17]: s.isalnum()                                                            
 Out[17]: True
 ```
+
+#### isupper(), islower(), lower(), upper()
+
+```python
+In [133]: "9".lower()   # 不会报错                                                             
+Out[133]: '9'
+```
+
+
 
 
 
