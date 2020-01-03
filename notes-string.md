@@ -686,15 +686,34 @@ Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursiv
 
 https://leetcode.com/problems/palindrome-pairs/
 
-* solution-https://www.cnblogs.com/grandyang/p/5272039.html 注意边界的处理
+* solution-O(n*L^2), n is the number of words in the dict, L is the average length of each word.
 
-> 要用到哈希表来建立每个单词和其位置的映射.
->
-> 然后需要一个set来保存出现过的单词的长度，
->
-> Brach 1: 算法的思想是，遍历单词集，对于遍历到的单词，我们对其翻转一下，然后在哈希表查找翻转后的字符串是否存在，注意不能和原字符串的坐标位置相同，因为有可能一个单词翻转后和原单词相等，现在我们只是处理了bat和tab的情况
->
-> Branch 2:还存在abcd和cba，dcb和abcd这些情况需要考虑，这就是我们为啥需要用set，由于set是自动排序的，我们可以找到当前单词长度在set中的iterator，然后从开头开始遍历set，遍历比当前单词小的长度，比如abcdd翻转后为ddcba，我们发现set中有长度为3的单词，1⃣️我们判断dd是否为回文串，若是，再看cba是否存在于哈希表，若存在，则说明abcdd和cba是回文对，存入结果中，2⃣️看另一边，判断ab是否是回文串，不是就skip。对于dcb和aabcd这类的情况也是同样处理，我们要在set里找的字符串要在遍历到的字符串的左边和右边分别尝试，看是否是回文对，这样遍历完单词集，就能得到所有的回文对，
+Ref: https://leetcode.com/problems/palindrome-pairs/discuss/79219/Python-solution~
+
+```python
+class Solution:
+    def is_valid(self, s):
+        return s==s[::-1]
+    
+    def palindromePairs(self, words: List[str]) -> List[List[int]]:
+        dic = {word: i for i, word in enumerate(words)}
+        res = []
+        
+        for i, word in enumerate(words):
+            for j in range(len(word)+1):
+                prefix = word[:j]
+                suffix = word[j:]
+                # when j== len(word), prefix is the complete word, suffix is ""
+                # so we should not count it when j==0 in the second condition to eliminate duplicates
+                
+                if j!=0 and self.is_valid(prefix) and suffix[::-1] in dic and dic[suffix[::-1]]!=i:
+                    res.append([dic[suffix[::-1]],i])
+                if self.is_valid(suffix) and prefix[::-1] in dic and dic[prefix[::-1]]!=i:
+                    res.append([i, dic[prefix[::-1]]])
+        return res
+```
+
+
 
 
 
@@ -702,15 +721,84 @@ https://leetcode.com/problems/palindrome-pairs/
 
 https://leetcode.com/problems/palindrome-partitioning/
 
-* Solution- divide and conquer-**worth doing and thinking**
+by huahua: 优化的问题通常用dp或dfs
+
+* Solution- divide and conquer-**worth doing and thinking**@12.24
 
 设置递归出口
 
 ref：https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 
-* solution-dfs, backtrack-worth doing and thinking
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        return self.helper(s, 0)
+           
+    def helper(self, s, start):
+        if start==len(s):
+            return [[]]
+        
+        ans = []
+        
+        for i in range(start, len(s)):
+            if self.isPali(s[start:i+1]):
+                left = s[start:i+1]
+                for l in self.helper(s, i+1):
+                    ans.append([left]+l)
+        return ans
+            
+    def isPali(self, s):
+        # identify if a given string is a palindrome
+        return s==s[::-1]
+```
+
+加强版，引入动态规划
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        if not s:
+            return [[]]
+        
+        dp = {0: [[]], 1: [[s[0]]]}
+        for i in range(1, len(s)):
+            dp[i + 1] = []
+            for j in range(0, i + 1):
+                if self.is_valid(s[j:i + 1]):
+                    for sol in dp[j]:
+                        dp[i + 1].append(sol + [s[j:i + 1]])
+        
+        return dp[len(s)]
+                
+                
+    def is_valid(self, s):
+        return all(s[i] == s[~i] for i in range(len(s) // 2))
+```
+
+
+
+* solution-dfs, backtrack-**worth doing and thinking**@12.24
 
 ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        res = []
+        self.dfs(s, [], res)
+        return res
+
+    def dfs(self, s, path, res):
+        if not s:
+            res.append(path)
+            return
+        for i in range(1, len(s)+1):
+            if self.isPal(s[:i]):
+                self.dfs(s[i:], path+[s[:i]], res)
+
+    def isPal(self, s):
+        return s == s[::-1]
+```
 
 
 
@@ -754,7 +842,46 @@ https://www.cnblogs.com/grandyang/p/4271456.html
 
 然后考虑所有的 `j`，其中 `j > i` ，找出最小的即可。
 
-* Solution-backtrack-**worth doing and thinking**
+```python
+# by myself, slow, time: O(N^3)
+class Solution:
+    def minCut(self, s: str) -> int:
+      	# 加了种特殊的判断就会快很多
+        if self.isPal(s):
+            return 0
+        
+        for i in range(1, len(s)):
+            if s[:i] == s[:i][::-1] and s[i:] == s[i:][::-1]:
+                return 1
+      
+        dp = [len(s)-i-1 for i in range(len(s)+1)]
+        
+        for start in range(len(s)-1, -1, -1):
+            for i in range(start+1, len(s)+1):# max of i should be len(s)
+                if self.isPal(s[start:i]):#s[]
+                    dp[start] = min(dp[start], 1+dp[i])
+                    
+        return dp[0]
+                
+    def isPal(self, s):
+        return s==s[::-1]
+```
+
+可以dp存储一下回文字符串优化，降到O(N^2), 其他的问题，不是palindrome其他的一个function可以做类似处理，在判断valid这里使用dp存储
+
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191225091012152.png" alt="image-20191225091012152" style="zoom:50%;" />
+
+
+
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191225091155062.png" alt="image-20191225091155062" style="zoom:30%;" />
+
+
+
+
+
+* Solution-backtrack/dfs-**worth doing and thinking**
+
+by huahua, 这种长度未知的，一般使用dp而不用backtrack？？
 
 
 
@@ -762,7 +889,7 @@ https://www.cnblogs.com/grandyang/p/4271456.html
 
 https://leetcode.com/problems/palindrome-permutation-ii/
 
-* Solution-backtrack-**worth doing medium**
+* Solution-backtrack-**worth doing medium**, 对backtrack的理解还不到位@12.25
 
 https://leetcode.com/problems/palindrome-permutation-ii/discuss/120631/Short-Python-Solution-with-backtracking
 
@@ -782,7 +909,7 @@ https://leetcode.com/problems/valid-parentheses/
 
 https://leetcode.com/problems/generate-parentheses/
 
-* Solution-backtrack, 我想出来了！
+* Solution-backtrack, 我想出来了！突然不会@12.28
 
 
 
@@ -798,7 +925,7 @@ Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
 dp [ i ] 代表以下标 i 结尾的合法序列的最长长度
 
-* solution-stack-**worth thinking and doing**
+* solution-stack-**worth thinking and doing**, 想明白了@1.2
 
 Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
@@ -808,9 +935,37 @@ Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
 https://leetcode.com/problems/different-ways-to-add-parentheses/
 
-* Solution-divide and conquer- **worth thinking and doing**
+* Solution-divide and conquer- **worth thinking and doing**@1.2!!!循环找分割点
 
-Ref: https://leetcode.com/problems/different-ways-to-add-parentheses/discuss/66419/Python-easy-to-understand-solution-(divide-and-conquer).
+Ref: https://www.youtube.com/watch?v=gxYV8eZY0eQ&t=280s
+
+http://zxi.mytechroad.com/blog/leetcode/leetcode-241-different-ways-to-add-parentheses/
+
+```python
+# based on huahua's solution
+class Solution:
+    def diffWaysToCompute(self, input):
+        # a wise use of lambda
+        ops = {'+': lambda x,y:x+y,
+              '-': lambda x,y:x-y,
+              '*': lambda x,y:x*y}
+        
+        def ways(s):
+            ans=[]
+            for i in range(len(s)):
+                if s[i] in '+-*':
+                    # you csn use string rather than list ['+','-','*']
+                    ways1 = ways(s[:i])
+                    ways2 = ways(s[i+1:])
+                    ans += [ops[s[i]](l, r) for l in ways1 for r in ways2]
+                    # a wise use of lambda
+            if not ans:
+                ans.append(int(s))
+            return ans
+        return ways(input)
+```
+
+
 
 
 
@@ -820,117 +975,61 @@ https://leetcode.com/problems/remove-invalid-parentheses/
 
 * solution-DFS- **worth thinking and doing**
 
-Ref: https://leetcode.com/problems/remove-invalid-parentheses/discuss/75027/Easy-Short-Concise-and-Fast-Java-DFS-3-ms-solution
+Ref: https://www.youtube.com/watch?v=2k_rS_u6EBk
 
-原答案plus一个人的评论，评论贴在下面了
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200102154813925.png" alt="image-20200102154813925" style="zoom:50%;" />
 
-```java
-class DFSSolution:
-    def remove_invalid_parentheses(self, s):
-        """
-        :type s: str
-        :rtype: List[str]
-        """
-        if not s:
-            return [s]
 
-        results = []
-        self.remove(s, 0, 0, results)
-        return results
 
-    def remove(self,
-               str_to_check,
-               start_to_count,
-               start_to_remove,
-               results,
-               pair=['(', ')']):
-        # start_to_count: the start position where we do the +1, -1 count,
-        # which is to find the position where the count is less than 0
-        #
-        # start_to_remove: the start position where we look for a parenthesis
-        # that can be removed
-
-        count = 0
-        for count_i in range(start_to_count, len(str_to_check)):
-            if str_to_check[count_i] == pair[0]:
-                count += 1
-            elif str_to_check[count_i] == pair[1]:
-                count -= 1
-
-            if count >= 0:
-                continue
-
-            # If it gets here, it means count < 0. Obviously.
-            # That means from start_to_count to count_i (inclusive), there is an extra
-            # pair[1].
-            # e.g. if sub_str = ()), then we can remove the middle )
-            # e.g. if sub_str = ()()), the we could remove sub_str[1], it becomes (())
-            #  or we could remove sub_str[3], it becomes ()()
-            # In the second example, for the last two )), we want to make sure we only
-            # consider remove the first ), not the second ). In this way, we can avoid
-            # duplicates in the results.
-            #
-            # In order to achieve this, we need this condition
-            #  str_to_check[remove_i] == pair[1] and str_to_check[remove_i - 1] != str_to_check[remove_i]
-            # But what if str_to_check[start_to_remove] == pair[1], 
-            # then remove_i - 1 is out of the range(start_to_remove, count_i + 1)
-            # so we need
-            # str_to_check[remove_i] == pair[1] and (start_to_remove == remove_i or str_to_check[remove_i - 1] != str_to_check[remove_i])
-            for remove_i in range(start_to_remove, count_i + 1):
-                if str_to_check[remove_i] == pair[1] and (start_to_remove == remove_i or str_to_check[remove_i - 1] != str_to_check[remove_i]):
-                    # we remove str_to_check[remove_i]
-                    new_str_to_check = str_to_check[0:remove_i] + str_to_check[remove_i + 1:]
-
-                    # The following part are the most confusing or magic part in this algorithm!!!
-                    # I'm too stupid and it took me two days to figure WTF is this?
-                    #
-                    # So for start_to_count value
-                    # we know in str_to_check, we have scanned up to count_i, right?
-                    # The next char in the str_to_check we want to look at is of index (count_i + 1) in str_to_check
-                    # We have remove one char bewteen start_to_remove and count_i inclusive to get the new_str_to_check
-                    # So the char we wanted to look at is of index (count_i + 1 - 1) in the new_str_to_check. (-1 because we removed one char)
-                    # That's count_i. BOOM!!!
-                    #
-                    # Same reason for remove_i
-                    # In str_to_check, we decide to remove the char of index remove_i
-                    # So the next char we will look at to decide weather we want to remove is of index (remove_i + 1) in str_to_check
-                    # we have remove [remove_i] char of the str_to_check to get the new_str_to_check.
-                    # So the char we wanted to look at when doing remove is of index (remove_i + 1 - 1) in the new_str_to_check.
-                    # That's remove_i. BOOM AGAIN!!!
-                    new_start_to_count = count_i
-                    new_start_to_remove = remove_i
-                    self.remove(new_str_to_check,
-                                new_start_to_count,
-                                new_start_to_remove,
-                                results,
-                                pair)
-
-            # Don't underestimate this return. It's very important
-            # if inside the outer loop, it reaches the above inner loop. You have scanned the str_to_check up to count_i
-            # In the above inner loop, when construct the new_str_to_check, we include the rest chars after count_i
-            # and call remove with it.
-            # So after the above inner loop finishes, we shouldn't allow the outer loop continue to next round because self.remove in the
-            # inner loop has taken care of the rest chars after count_i
-            return
-
-        # Why the hell do we need to check the reversed str?
-        # Because in the above count calculation, we only consider count < 0 case to remove stuff.
-        # The default pair is ['(', ')']. So we only consider the case where there are more ')'  than '('
-        # e.g "(()" can pass the above loop
-        # So we need to reverse it to ")((" and call it with pair [')', '(']
-        reversed_str_to_check = str_to_check[::-1]
-        if pair[0] == '(':
-            self.remove(reversed_str_to_check, 0, 0, results, pair=[')', '('])
-        else:
-            results.append(reversed_str_to_check)
-
-def main():
-    sol = DFSSolution()
-    print(sol.remove_invalid_parentheses("())())"))
-    print(sol.remove_invalid_parentheses("(()(()"))
-
-if __name__ == '__main__':
-    main()
+```python
+# based on huahua's code
+class Solution:
+    def removeInvalidParentheses(self, s: str) -> List[str]:
+        l = 0
+        r = 0
+        
+        # calculate redundant left or right parenthesis
+        for char in s:
+            if char=='(':
+                l+=1
+            elif char ==')':
+                if l==0:
+                    r+=1
+                else:
+                    l-=1
+        # check if string of parenthesis is valid or not
+        def isValid(s):
+            count = 0
+            for char in s:
+                if char == '(':
+                    count+=1
+                if char == ')':
+                    count-=1
+                if count<0:
+                    return False
+            return count==0
+        
+        def dfs(s, start, l, r, ans):
+            if l==0 and r ==0:
+                if isValid(s):
+                    ans.append(s)
+                return
+            
+            for i in range(start, len(s)):
+                if i!= start and s[i]==s[i-1]:
+                    continue
+                if s[i]=='(' or s[i]==')':
+                    curr = s[:i]+s[i+1:]
+                # 一定要先移除右括号再移除左括号
+                if r>0 and s[i]==')':
+                    dfs(curr, i, l, r-1, ans)
+                elif l>0 and s[i]=='(':
+                    dfs(curr, i, l-1, r, ans)
+        
+        
+        ans = []
+        dfs(s, 0, l, r, ans)
+        return ans
 ```
 
 
@@ -949,7 +1048,9 @@ https://leetcode.com/problems/is-subsequence/
 
 https://leetcode.com/problems/distinct-subsequences/
 
-* solution-dynamic programming
+* solution-dynamic programming-**worth thinking and doing**
+
+https://www.youtube.com/watch?v=mPqqXh8XvWY
 
 计数的题目通常用dp来做，两个string通常就是二维数组
 
@@ -962,7 +1063,7 @@ class Solution:
         for i in range(1, len(t)+1):
             for j in range(1, len(s)+1):
                 if t[i-1]==s[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + dp[i][j-1]
+                    dp[i][j] = dp[i-1][j-1] + dp[i][j-1]#用当前匹配上的这个和不用当前匹配上的
                 else:
                     dp[i][j] = dp[i][j-1]
                     
@@ -977,7 +1078,7 @@ class Solution:
 
 https://leetcode.com/problems/repeated-dna-sequences/
 
-* Solution -hash table, bit manipulation
+* Solution -hash table, bit manipulation-又忘了字符串操作@1.02
 
 ```python
 class Solution:# my solution
@@ -999,10 +1100,12 @@ class Solution:# my solution
         # bin(mask): '0b11111111111111111111'后面有20个1
         # bin(): Return the binary representation of an integer.
         # 1<<n则为2的多少次方
-        for i in range(9):
-            key = (key << 2) | toInt[s[i]]
+        
+        # initialize the first 9 chars
+        for i in range(9): #要移两位是因为，二进制里要两位才能代表这四个字母，因为这里最大的十进制数位3
+            key = (key << 2) | toInt[s[i]] # bit manipulstion
         for i in range(9, len(s)):
-            key = (((key << 2) | toInt[s[i]])) & mask
+            key = (((key << 2) | toInt[s[i]])) & mask # bit manipulstion
             keys[key] += 1
             if keys[key]==2:
                 answer.append(s[i-9:i+1])
