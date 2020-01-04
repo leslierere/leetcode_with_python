@@ -133,9 +133,9 @@ class Solution:
 
 
 
+1.03
 
-
-#### 145. Binary Tree Postorder Traversal
+#### 145. Binary Tree Postorder Traversal-用这道作为所有的tree的iterative模版, 改到前面的基础里面去
 
 https://leetcode.com/problems/binary-tree-postorder-traversal/description/
 
@@ -148,6 +148,7 @@ https://www.youtube.com/watch?v=A6iCX_5xiU4
 ```python
 # 上面的核心思想是先做一个rev_postorder(root),这样就和最后要的结果刚好相反，但我们可以通过特殊操作，使用deque来使得最后的结果不需要reverse
 # my solution based on huahua's
+# 这一面很重要
 from collections import deque
 class Solution:
     def postorderTraversal(self, root: TreeNode) -> List[int]:
@@ -167,6 +168,209 @@ class Solution:
         
         return res
 ```
+
+
+
+* Solution-recursive-worth doing
+
+
+
+
+
+#### 102. Binary Tree Level Order Traversal
+
+https://leetcode.com/problems/binary-tree-level-order-traversal/description/
+
+* Solution-bfs-need speed up
+
+https://www.youtube.com/watch?v=Tuij96VBdu8
+
+* Solution-dfs-worth trying
+
+
+
+#### 100. Same Tree-用这道作为所有的tree的recursive模版
+
+https://leetcode.com/problems/same-tree/
+
+* Solution-iterative-32ms
+* Solution-recursive-worth doing, 我觉得我对回归有点问题，这个
+
+```python
+# solution里面的解法
+# 要把握住相同的时候的最终态为两个node为null
+class Solution:
+    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+        
+        if not p and not q:
+            return True
+        if not p or not q: # one of p and q is None
+            return False
+        if p.val!=q.val:
+            return False
+        return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)
+```
+
+
+
+#### 101. Symmetric Tree
+
+https://leetcode.com/problems/symmetric-tree/description/
+
+* Solution-recursive
+
+```python
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        return self.helper(root.left, root.right)
+        
+    def helper(self, l, r):
+        if not l and not r:
+            return True
+        if not l or not r:
+            return False
+        if l.val!=r.val:
+            return False
+        return self.helper(l.left, r.right) and self.helper(l.right, r.left)
+        # 我开始把上面一句写的是
+        # self.helper(l.left, r.right)
+        # self.helper(l.right, r.left)
+```
+
+
+
+* Solution-iterative
+
+```python
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        return self.helper(root.left, root.right)
+    
+    def helper(self, l, r):
+        stack1 = [l]
+        stack2 = [r]
+        
+        while stack1 and stack2:
+            top1 = stack1.pop()
+            top2 = stack2.pop()
+            
+            if top1 and top2:
+                if top1.val!=top2.val:
+                    return False
+                stack1.append(top1.left)
+                stack2.append(top2.right)
+                stack1.append(top1.right)
+                stack2.append(top2.left)
+            elif top1 or top2:
+                return False
+        if stack1 or stack2:
+            return False
+        return True
+```
+
+
+
+#### 226. Invert Binary Tree
+
+https://leetcode.com/problems/invert-binary-tree/description/
+
+* Solution-recursive
+
+```python
+# by me, 28ms
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if root:
+            root.left, root.right = root.right, root.left
+            self.invertTree(root.left)
+            self.invertTree(root.right)
+        return root
+# 24ms
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if root:
+            root.right, root.left = root.left, root.right
+            self.invertTree(root.left)
+            self.invertTree(root.right)
+            return root
+```
+
+
+
+#### 257. Binary Tree Paths
+
+https://leetcode.com/problems/binary-tree-paths/
+
+* solution-bfs, iterative, queue-下次把字符串加进去
+* Solution-dfs, recursive, worth doing
+* Solution-dfs, iterative, stack, worth doing
+
+
+
+#### 112. Path Sum
+
+https://leetcode.com/problems/path-sum/description/
+
+* Solution-dfs, recursive, 做出来了
+
+```python
+class Solution:
+    def hasPathSum(self, root: TreeNode, sum: int) -> bool:
+        if not root:
+            return False
+        
+        return self.dfs(root, 0, sum)
+
+        
+    def dfs(self, node, agg, sum):
+        if node:
+            if not node.left and not node.right and agg+node.val==sum:
+                return True
+            agg += node.val
+            return self.dfs(node.left, agg, sum) or self.dfs(node.right, agg, sum)
+```
+
+
+
+* Solution-dfs, iterative, stack, worth doing
+* solution-bfs, iterative, queue，worth doing 
+
+
+
+#### 113. Path Sum II
+
+https://leetcode.com/problems/path-sum-ii/description/
+
+* Solution-dfs, recursive, 做出来了, memory很高
+
+```python
+class Solution:
+    def pathSum(self, root: TreeNode, agg: int) -> List[List[int]]:
+        res = []
+        
+        def dfs(path, node):
+            if node:
+                if not node.left and not node.right:
+                    if agg==sum(path)+node.val:
+                        res.append(path+[node.val])
+                else:
+                    dfs(path+[node.val], node.left)
+                    dfs(path+[node.val], node.right)
+                    
+        dfs([], root)
+        return res
+```
+
+
+
+* Solution-dfs, iterative, stack, worth doing
+* solution-bfs, iterative, queue，worth doing 
+
+
 
 
 
@@ -229,6 +433,8 @@ public void postorder() {
 
 #### deque
 
+https://docs.python.org/zh-cn/3/library/collections.html#collections.deque
+
 *class* `collections.deque([*iterable*[, *maxlen*]])`
 
 双向队列对象
@@ -280,3 +486,48 @@ IndexError: pop from an empty deque
 deque(['c', 'b', 'a'])
 ```
 
+
+
+
+
+#### queue模块
+
+https://docs.python.org/3/library/queue.html
+
+* *class* `queue.Queue(*maxsize=0*)`
+
+Constructor for a **FIFO** queue. *maxsize* is an integer that sets the upperbound limit on the number of items that can be placed in the queue. Insertion will block once this size has been reached, until queue items are consumed. If *maxsize* is less than or equal to zero, the queue size is infinite.
+
+* *class* `queue.LifoQueue(maxsize=0)`
+
+Constructor for a **LIFO** queue. 
+
+* class `queue.PriorityQueue(maxsize=0)`
+
+Constructor for a priority queue. The lowest valued entries are retrieved first (the lowest valued entry is the one returned by `sorted(list(entries))[0]`).
+
+##### Public methods for [`Queue`](https://docs.python.org/3/library/queue.html#queue.Queue), [`LifoQueue`](https://docs.python.org/3/library/queue.html#queue.LifoQueue), or [`PriorityQueue`](https://docs.python.org/3/library/queue.html#queue.PriorityQueue)
+
+* `Queue.qsize()`
+
+  Return the approximate size of the queue. Note, qsize() > 0 doesn’t guarantee that a subsequent get() will not block, nor will qsize() < maxsize guarantee that put() will not block.
+
+* `Queue.empty()`
+
+  Return `True` if the queue is empty, `False` otherwise.
+
+* `Queue.full()`
+
+  Return `True` if the queue is full, `False` otherwise. 
+
+* `Queue.put(item, block=True, timeout=None)`
+
+  Put item into the queue. If optional args block is true and timeout is None (the default), block if necessary until a free slot is available. If timeout is a positive number, it blocks at most timeout seconds and raises the Full exception if no free slot was available within that time. Otherwise (block is false), put an item on the queue if a free slot is immediately available, else raise the Full exception (timeout is ignored in that case).
+
+* `Queue.get(*block=True*, *timeout=None*)`
+
+  Remove and return an item from the queue. 
+
+* `Queue.join()`
+
+  Blocks until all items in the queue have been gotten and processed.
