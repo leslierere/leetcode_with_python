@@ -372,6 +372,291 @@ class Solution:
 
 
 
+1.4
+
+#### 129. Sum Root to Leaf Numbers
+
+https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
+
+* Solution-dfs, recursive, 做出来了
+
+* Solution-dfs, iterative, stack, need speed up
+* solution-bfs, iterative, queue，worth doing 
+
+
+
+#### 298. Binary Tree Longest Consecutive Sequence
+
+https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/description/
+
+* Solution-dfs, recursive, worth doing
+* Solution-dfs, stack, 做出来了
+
+```python
+class Solution:
+    def longestConsecutive(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        
+        stack = [(root, float('inf'), 1)]
+        res = 1
+        
+        while stack:
+            node, value, layer = stack.pop()
+            if not node.left and not node.right:
+                if node.val-1 == value:
+                    layer+=1
+                res = max(res, layer)
+            if node.left:
+                if node.val-1 == value:
+                    stack.append((node.left, node.val, layer+1))
+                else:
+                    res = max(res, layer)
+                    stack.append((node.left, node.val, 1))
+            if node.right:
+                if node.val-1 == value:
+                    stack.append((node.right, node.val, layer+1))
+                else:
+                    res = max(res, layer)
+                    stack.append((node.right, node.val, 1))
+                    
+        return res
+```
+
+* solution-bfs, iterative, queue，worth doing 
+
+```python
+class Solution:
+    def longestConsecutive(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        
+        queue = [(root, float("inf"), 1)] 
+        # the middle element remembers the value of parent node
+        res = 1
+        
+        while queue:
+            size = len(queue)
+            for i in range(size):
+                node, value, layer = queue.pop(0)
+                
+                if not node.left and not node.right:
+                    res = max(res, layer+1) if node.val-1 == value else max(res, layer)
+                if node.left:
+                    if node.val-1 == value:
+                        queue.append((node.left, node.val, layer+1))
+                    else:
+                        res = max(res, layer)
+                        queue.append((node.left, node.val, 1))
+                if node.right:
+                    if node.val-1 == value:
+                        queue.append((node.right, node.val, layer+1))
+                    else:
+                        res = max(res, layer)
+                        queue.append((node.right, node.val, 1))
+                        
+        return res
+```
+
+
+
+#### 111. Minimum Depth of Binary Tree-可以作为bfs的范例了
+
+https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
+
+* Solution-dfs, recursive, 没做
+
+* Solution-dfs, iterative, stack, 没做
+* solution-bfs, iterative, queue
+
+```python
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        
+        queue = [(root, 0)]
+        
+        while queue:
+            node, layer = queue.pop(0)
+            if not node.left and not node.right:
+                return layer+1
+            if node.left:
+                queue.append((node.left, layer+1))
+            if node.right:
+                queue.append((node.right, layer+1))
+```
+
+
+
+#### 104. Maximum Depth of Binary Tree
+
+https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
+
+* Solution-dfs, recursive, 没做
+
+* Solution-dfs, iterative, stack, 没做
+* solution-bfs, iterative, queue, 做了
+
+
+
+#### 110. Balanced Binary Tree
+
+https://leetcode.com/problems/balanced-binary-tree/description/
+
+* Solution-recursive-O(n) worth doing and thinking
+
+Ref: http://zxi.mytechroad.com/blog/leetcode/leetcode-110-balanced-binary-tree/
+
+```python
+# based on huahua's, O(nlogn)
+# 这个时间范围度值得思考
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        left_height = self.height(root.left)
+        right_height = self.height(root.right)
+        
+        return abs(left_height-right_height)<2 and self.isBalanced(root.left) and self.isBalanced(root.right)
+        
+    def height(self, root):
+        if not root:
+            return 0
+        return max(1+self.height(root.left), 1+self.height(root.right))
+      
+# based on huahua's, O(logn)
+# 求解高度时一边看左右节点高度是否平衡
+# @1.4 我开始错的原因是balanced进来是拷贝变量，所以需要使用全局变量或者返回
+```
+
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200104152112111.png" alt="image-20200104152112111" style="zoom:30%;" />
+
+最差的情况是左右两边除了一边最下面一个不平衡其他都平衡
+
+* Solution-dfs, iterative, stack
+* solution-bfs, iterative, queue
+
+
+
+#### 124. Binary Tree Maximum Path Sum
+
+https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
+
+>  My understanding is that a valid path is a "straight line" that connects all the nodes, in other words, it can't "fork".
+>
+> Ref: https://leetcode.com/problems/binary-tree-maximum-path-sum/discuss/39811/What-is-the-meaning-of-path-in-this-problem
+
+* Solution-recursive
+
+```python
+# based on huahua's
+class Solution:
+    def maxPathSum(self, root: TreeNode) -> int:
+        self.res = float("-inf")
+        self.dfs(root)
+        return self.res
+        
+    def dfs(self, node):
+        if not node:
+            return float("-inf") # or if the leaf has a negative value, it will still work
+        
+        left = max(self.dfs(node.left), 0) # 0 suggests if the left child's max is a negative number, we don't consider them anymore
+        right = max(self.dfs(node.right), 0)
+        self.res = max(self.res, node.val+left+right)
+        return node.val + max(left, right)
+```
+
+
+
+#### 250. Count Univalue Subtrees
+
+https://leetcode.com/problems/count-univalue-subtrees/description/
+
+* Solution-bottom up-by myself, 下次用手拿test case写一遍
+
+```python
+class Solution:
+    res = 0
+    
+    def countUnivalSubtrees(self, root: TreeNode) -> int:
+        
+        self.helper(root)
+        return self.res
+        
+    def helper(self, node):
+        if node:
+            if not node.left and not node.right:
+                self.res += 1
+                return node.val
+            if node.left and node.right:
+                left = self.helper(node.left)
+                right = self.helper(node.right)
+                if left!= node.val or right!=node.val:
+                    return None
+            elif node.left:
+                left = self.helper(node.left)
+                if left!= node.val:
+                    return None
+            else:
+                right = self.helper(node.right)
+                if right!= node.val:
+                    return None
+            
+            self.res+=1
+            return node.val
+```
+
+
+
+#### 366. Find Leaves of Binary Tree
+
+https://leetcode.com/problems/find-leaves-of-binary-tree/description/
+
+* solution- **worth doing and thinking**
+
+Ref: https://leetcode.com/problems/find-leaves-of-binary-tree/discuss/83778/10-lines-simple-Java-solution-using-recursion-with-explanation
+
+```python
+class Solution:
+    def findLeaves(self, root: TreeNode) -> List[List[int]]:
+        res = []
+        
+        def height(node):
+            if not node:
+                return -1
+            h = max(height(node.left)+1, height(node.right)+1)
+            if len(res) < h+1:
+                res.append([])
+            res[h].append(node.val)
+            return h
+        
+        height(root)
+        return res
+```
+
+
+
+
+
+#### 337. House Robber III
+
+https://leetcode.com/problems/house-robber-iii/description/
+
+* Solution-**worth doing and thinking!!! look at the reference**
+
+ref: https://leetcode.com/problems/house-robber-iii/discuss/79330/Step-by-step-tackling-of-the-problem
+
+
+
+
+
+
+
+
+
+
+
 
 
 ### Notion
