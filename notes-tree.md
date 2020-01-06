@@ -651,6 +651,246 @@ ref: https://leetcode.com/problems/house-robber-iii/discuss/79330/Step-by-step-t
 
 
 
+1.5
+
+下次接下来三道可试试dfs
+
+#### 107. Binary Tree Level Order Traversal II
+
+https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
+
+* solution-bfs，和103差不多，但可以通过一些方法不用deque
+
+
+
+#### 103. Binary Tree Zigzag Level Order Traversal
+
+https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
+
+* solution-bfs-和107差不多
+
+```python
+class Solution:
+    def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        res = []
+        queue = [root]
+        left = True
+        
+        while queue:
+            if left:
+                res.append([i.val for i in queue])
+            else:
+                res.append([queue[i].val for i in range(len(queue)-1, -1, -1)])
+            
+            size = len(queue)
+            
+            for i in range(size):
+                node = queue.pop(0)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            left = not left
+            
+        return res
+```
+
+
+
+#### 199. Binary Tree Right Side View
+
+https://leetcode.com/problems/binary-tree-right-side-view/description/
+
+* Solution-bfs
+
+```python
+class Solution:
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        res = []
+        
+        queue = [root]
+        
+        while queue:
+            res.append(queue[-1].val)
+            size = len(queue)
+            
+            for i in range(size):
+                node = queue.pop(0)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+                    
+        return res
+```
+
+
+
+#### 98. Validate Binary Search Tree
+
+https://leetcode.com/problems/validate-binary-search-tree/
+
+* Solution-inorder
+
+```python
+class Solution:
+    def isValidBST(self, node: TreeNode) -> bool:
+        if not node:
+            return True
+        return self.helper(node, float('-inf')) != float("inf")
+        
+        
+    def helper(self, node, flag):
+        if node:
+            if node.left:
+                cur = self.helper(node.left, flag)
+                if not cur >flag:
+                    return float("inf")
+                else:
+                    flag = cur
+                    
+            if not node.val> flag:
+                return float("inf")
+            flag = node.val
+            
+            if node.right:
+                cur = self.helper(node.right, flag)
+                if not cur >flag:
+                    return float("inf")
+                else:
+                    flag = cur
+            return flag
+```
+
+
+
+#### 235. Lowest Common Ancestor of a Binary Search Tree
+
+https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
+
+* solution-recursive, iterative， worth doing@下次做
+
+利用好bst的特性
+
+Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tree/
+
+
+
+#### 236. Lowest Common Ancestor of a Binary Tree
+
+https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+
+* Solution-dfs-**worth thinking and doing**
+
+Ref: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/discuss/158060/Python-DFS-tm
+
+https://www.cnblogs.com/grandyang/p/4641968.html
+
+
+
+#### 108. Convert Sorted Array to Binary Search Tree
+
+* Solution-dfs, recursive, need speed up
+
+值得一看：https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree.html
+
+> 递归都可以转为迭代的形式。
+>
+> 一部分递归算法，可以转成动态规划，实现空间换时间，例如 [5题](https://leetcode.windliang.cc/leetCode-5-Longest-Palindromic-Substring.html)，[10题](https://leetcode.windliang.cc/leetCode-10-Regular-Expression-Matching.html)，[53题](https://leetcode.windliang.cc/leetCode-53-Maximum-Subarray.html?h=动态规划)，[72题](https://leetcode.wang/leetCode-72-Edit-Distance.html)，从自顶向下再向顶改为了自底向上。
+>
+> 一部分递归算法，只是可以用栈去模仿递归的过程，对于时间或空间的复杂度没有任何好处，比如这道题，唯一好处可能就是能让我们更清楚的了解递归的过程吧。
+
+
+
+> 但这样有一个缺点，我们知道`int`的最大值是 `Integer.MAX_VALUE` ，也就是`2147483647`。那么有一个问题，如果 `start = 2147483645`，`end = 2147483645`，虽然 `start` 和 `end`都没有超出最大值，但是如果利用上边的公式，加起来的话就会造成溢出，从而导致`mid`计算错误。
+>
+> 解决的一个方案就是利用数学上的技巧，我们可以加一个 `start` 再减一个 `start` 将公式变形。
+>
+> ```python
+> (start + end) / 2 = (start + end + start - start) / 2 = start + (end - start) / 2
+> ```
+>
+> 所以python有溢出的问题吗？
+
+
+
+* Solution-dfs, stack, worth doing
+
+Ref: https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree.html
+
+
+
+#### 109. Convert Sorted List to Binary Search Tree
+
+https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/description/
+
+* Solution-先把链表转为list
+* Solution-快慢指针 **worth doing and thinking**
+
+Ref: https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/discuss/35474/Python-recursive-solution-with-detailed-comments-(operate-linked-list-directly).
+
+* Solution-厉害！！**worth doing and thinking**
+
+Ref: https://leetcode.wang/leetcode-109-Convert-Sorted-List-to-Binary-Search-Tree.html
+
+
+
+
+
+#### 173. Binary Search Tree Iterator
+
+https://leetcode.com/problems/binary-search-tree-iterator/description/
+
+* Solution-**worth doing and thinking** 其实就是94题, inorder traversal
+
+Ref: https://leetcode.wang/leetcode-173-Binary-Search-Tree-Iterator.html
+
+刚开始弄错是因为初始化的时候我就把root加了进去
+
+
+
+#### 230. Kth Smallest Element in a BST
+
+https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
+
+Ref: https://www.cnblogs.com/grandyang/p/4620012.html
+
+* Solution-**worth doing and thinking** 其实就是94题,  inorder traversal, iterative
+
+```python
+class Solution:
+    def kthSmallest(self, root: TreeNode, k: int) -> int:
+        stack = []
+        
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+
+            root = stack.pop()
+            k-=1
+            if k==0:
+                return root.val
+            
+            root = root.right
+```
+
+
+
+* Solution-  inorder traversal, recursive
+* Solution- divide and conquer-**worth doing and thinking**
+
+* Solution-**Follow up:**
+  What if the BST is modified (insert/delete operations) often and you need to find the kth smallest frequently? How would you optimize the kthSmallest routine?
+
+B+tree的思想
+
+Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
+
 
 
 
