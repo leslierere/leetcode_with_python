@@ -597,7 +597,7 @@ If mx<=i, we can only use mp[i]=1, and then we would compare the characters besi
 
 If mx>i, we would try to make use of the index that is symmatric to i with the center of id.
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191216205337687.png" alt="image-20191216205337687" style="zoom:15%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4wyed1j31c00u0nce.jpg" alt="image-20191216205337687" style="zoom:15%;" />
 
 
 
@@ -822,11 +822,11 @@ https://www.cnblogs.com/grandyang/p/4271456.html
 
 如下图，先判断 `start` 到 `i` 是否是回文串，如果是的话，就用 `1 + d` 和之前的 `min` 比较。
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191216162740834.png" alt="image-20191216162740834" style="zoom:30%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4t6f0gj30t410c0uq.jpg" alt="image-20191216162740834" style="zoom:30%;" />
 
 如下图，`i` 后移，继续判断 `start` 到 `i` 是否是回文串，如果是的话，就用 `1 + c` 和之前的 `min`比较。
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191216162832270.png" alt="image-20191216162832270" style="zoom:30%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4yhto8j30p4114q4w.jpg" alt="image-20191216162832270" style="zoom:30%;" />
 
 然后 `i` 继续后移重复上边的过程。每次选一个较小的切割次数，最后问号处就求出来了。
 
@@ -869,11 +869,11 @@ class Solution:
 
 可以dp存储一下回文字符串优化，降到O(N^2), 其他的问题，不是palindrome其他的一个function可以做类似处理，在判断valid这里使用dp存储
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191225091012152.png" alt="image-20191225091012152" style="zoom:50%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4w8fmfj31c00u0gyj.jpg" alt="image-20191225091012152" style="zoom:50%;" />
 
 
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20191225091155062.png" alt="image-20191225091155062" style="zoom:30%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4v862dj31c00u0nak.jpg" alt="image-20191225091155062" style="zoom:30%;" />
 
 
 
@@ -977,7 +977,7 @@ https://leetcode.com/problems/remove-invalid-parentheses/
 
 Ref: https://www.youtube.com/watch?v=2k_rS_u6EBk
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200102154813925.png" alt="image-20200102154813925" style="zoom:50%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4trb7kj30t410c0uq.jpg" alt="image-20200102154813925" style="zoom:50%;" />
 
 
 
@@ -1070,7 +1070,7 @@ class Solution:
         return dp[len(t)][len(s)]
 ```
 
-![image-20191218162133174](/Users/leslieren/Library/Application Support/typora-user-images/image-20191218162133174.png)
+![image-20191218162133174](https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4ubxo5j31c00u0nce.jpg)
 
 
 

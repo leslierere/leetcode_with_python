@@ -117,7 +117,7 @@ class Solution:
         stack = []
         cur = root
         
-        while cur!= None or stack:
+        while cur or stack:
             
             while cur:
                 stack.append(cur)
@@ -143,7 +143,7 @@ https://leetcode.com/problems/binary-tree-postorder-traversal/description/
 
 https://www.youtube.com/watch?v=A6iCX_5xiU4
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200103114811047.png" alt="image-20200103114811047" style="zoom:80%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5v7u8sj31c00u0wvg.jpg" alt="image-20200103114811047" style="zoom:80%;" />
 
 ```python
 # 上面的核心思想是先做一个rev_postorder(root),这样就和最后要的结果刚好相反，但我们可以通过特殊操作，使用deque来使得最后的结果不需要reverse
@@ -530,7 +530,7 @@ class Solution:
 # @1.4 我开始错的原因是balanced进来是拷贝变量，所以需要使用全局变量或者返回
 ```
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200104152112111.png" alt="image-20200104152112111" style="zoom:30%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5t4tqij30xq08qmy5.jpg" alt="image-20200104152112111" style="zoom:30%;" />
 
 最差的情况是左右两边除了一边最下面一个不平衡其他都平衡
 
@@ -893,7 +893,312 @@ Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
 
 
 
+1.6
 
+#### 297. Serialize and Deserialize Binary Tree
+
+https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
+
+我觉得这个本质上就是preorder<->treenode, 跟前面一个题类似
+
+* Solution-preorder-**worth doing and thinking**, need speed up
+
+Ref: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/discuss/74259/Recursive-preorder-Python-and-C%2B%2B-O(n)
+
+尝试用bit 优化https://www.youtube.com/watch?v=JL4OjKV_pGE
+
+By huahua, 其他人快使用的iterative
+
+* Solution-level order/bfs-**worth doing and thinking**
+
+
+
+
+
+#### 285. Inorder Successor in BST
+
+https://leetcode.com/problems/inorder-successor-in-bst/
+
+* Solution-iterative-太强了！！**worth doing and thinking**，利用好bst的特性，但还是可以尝试常规的办法
+
+Ref: https://leetcode.com/problems/inorder-successor-in-bst/discuss/72656/JavaPython-solution-O(h)-time-and-O(1)-space-iterative
+
+```python
+def inorderSuccessor(self, root, p):
+    succ = None
+    while root:
+        if p.val < root.val:
+            succ = root
+            root = root.left
+        else:
+            root = root.right
+    return succ
+
+```
+
+
+
+#### 270. Closest Binary Search Tree Value
+
+https://leetcode.com/problems/closest-binary-search-tree-value/description/
+
+* Solution-inorder, iterative-**worth doing and thinking**
+
+开始用了一个res来保存当前所有遍历到的，其实没必要，仔细想想这道题最快的还是inorder
+
+```python
+class Solution:
+    def closestValue(self, root: TreeNode, target: float) -> int:
+        if not root:
+            return None
+        
+        
+        stack = []
+        lessnode = root
+        while stack or root:
+            while root:
+                
+                stack.append(root)
+                root = root.left
+
+            root = stack.pop()
+
+            if root.val>target:
+                break
+            lessnode = root# the node that is less than target
+            root = root.right
+        # if root, root should be the node that is just larger than target   
+        if root and abs(root.val-target) < abs(target - lessnode.val):
+          # 开始没加abs，而target不一定是一个中间值，可能比最小值小，可能比最大值大
+            return root.val
+        # if not root, which means target is larger than all the nodes
+        else:
+            return lessnode.val
+```
+
+
+
+* Solution-preorder, iterative, fast
+
+
+
+#### 272. Closest Binary Search Tree Value II
+
+https://leetcode.com/problems/closest-binary-search-tree-value-ii/description/
+
+* Solution-inorder，先inorder-bymyself, slow
+
+```python
+class Solution:
+    def closestKValues(self, root: TreeNode, target: float, k: int) -> List[int]:
+        if not root:
+            return []
+        
+        nodel = []
+        self.inorder(root, nodel)
+        res = []
+        i = 0
+        
+        # get the index in nodel that is just larger than the target
+        while i < len(nodel):
+            if nodel[i]>target:
+                break
+            i+=1
+        
+        while k>0:
+            if i==0:
+                res.append(nodel.pop(0))
+            elif i== len(nodel):
+                res.append(nodel.pop(-1))
+                i-=1
+            else:
+                if abs(nodel[i-1]-target) < abs(nodel[i]-target):
+                    res.append(nodel.pop(i-1))
+                    i-=1
+                else:
+                    res.append(nodel.pop(i))
+            k -= 1
+            
+        return res
+        
+        
+    def inorder(self, node, nodel):
+        if node:
+            self.inorder(node.left, nodel)
+            nodel.append(node.val)
+            self.inorder(node.right, nodel)
+```
+
+* Solution-一边inorder，一边更新, 40ms, **worth doing and thinking**
+
+```python
+from collections import deque
+
+
+class Solution:
+    def closestKValues(self, root: TreeNode, target: float, k: int) -> List[int]:
+        res = deque()
+
+        def ino(node):
+            if node is None:
+                return
+            ino(node.left)
+            if len(res) < k:
+                res.append(node.val)
+            elif abs(node.val - target) < abs(res[0] - target):
+                res.popleft()
+                res.append(node.val)
+            else:
+                return
+            ino(node.right)
+
+        ino(root)
+        return res
+```
+
+
+
+* Solution-two stack-**worth doing and trying**
+
+
+
+#### 99. Recover Binary Search Tree
+
+https://leetcode.com/problems/recover-binary-search-tree/
+
+* solution- inorder- **worth doing and thinking**
+
+主要是得分两种情况, ref: https://leetcode.wang/leetcode-99-Recover-Binary-Search-Tree.html
+
+> 回到这道题，题目交换了两个数字，其实就是在有序序列中交换了两个数字。而我们只需要把它还原。
+>
+> 交换的位置的话就是两种情况。
+>
+> - 相邻的两个数字交换
+>
+>   [ 1 2 3 4 5 ] 中 2 和 3 进行交换，[ 1 3 2 4 5 ]，这样的话只产生一组逆序的数字（正常情况是从小到大排序，交换后产生了从大到小），3 2。
+>
+>   我们只需要遍历数组，找到后，把这一组的两个数字进行交换即可。
+>
+> - 不相邻的两个数字交换
+>
+>   [ 1 2 3 4 5 ] 中 2 和 5 进行交换，[ 1 5 3 4 2 ]，这样的话其实就是产生了两组逆序的数字对。5 3 和 4 2。
+>
+>   所以我们只需要遍历数组，然后找到这两组逆序对，然后把第一组前一个数字和第二组后一个数字进行交换即完成了还原。
+
+
+
+* Solution-morris!!!
+
+
+
+#### 116. Populating Next Right Pointers in Each Node
+
+https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
+
+* solution-dfs-recursive-**worth doing and thinking**, 这个人的写法感觉抓到了关键
+
+Ref: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/discuss/37715/Python-solutions-(Recursively-BFS%2Bqueue-DFS%2Bstack)
+
+```python
+def connect1(self, root):
+    if root and root.left and root.right:
+        root.left.next = root.right
+        if root.next:
+            root.right.next = root.next.left#这个是关键
+        self.connect(root.left)
+        self.connect(root.right)
+```
+
+* Solution - dis - stack
+* Solution - bfs
+
+
+
+#### 117. Populating Next Right Pointers in Each Node II
+
+https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/description/
+
+* Solution-bfs/level order, done
+* Solution-recursive-看看别人的
+
+
+
+
+
+#### 314. Binary Tree Vertical Order Traversal
+
+https://leetcode.com/problems/binary-tree-vertical-order-traversal/description/
+
+* Solution-hash table, **worth thinking and doing**, 很巧妙
+
+https://leetcode.com/problems/binary-tree-vertical-order-traversal/discuss/76424/Python-solution
+
+
+
+#### 95. Unique Binary Search Trees II
+
+https://leetcode.com/problems/unique-binary-search-trees-ii/
+
+* Solution-recursive, **worth thinking and doing**
+
+https://leetcode.wang/leetCode-95-Unique-Binary-Search-TreesII.html
+
+* Solution-dynamic programming-太强了-**worth doing and thinking**
+
+https://leetcode.com/problems/unique-binary-search-trees-ii/discuss/31493/Java-Solution-with-DP
+
+```java
+public static List<TreeNode> generateTrees(int n) {
+    List<TreeNode>[] result = new List[n + 1];
+    result[0] = new ArrayList<TreeNode>();
+    if (n == 0) {
+        return result[0];
+    }
+
+    result[0].add(null);
+    for (int len = 1; len <= n; len++) {
+        result[len] = new ArrayList<TreeNode>();
+        for (int j = 0; j < len; j++) {
+            for (TreeNode nodeL : result[j]) {
+                for (TreeNode nodeR : result[len - j - 1]) {
+                    TreeNode node = new TreeNode(j + 1);
+                    node.left = nodeL;
+                    node.right = clone(nodeR, j + 1);
+                    result[len].add(node);
+                }
+            }
+        }
+    }
+    return result[n];
+}
+
+// 因为和左边结构是一样的，所以复制之前的结构，只是把值改成右边的值（反正都是连续自然数）
+private static TreeNode clone(TreeNode n, int offset) {
+    if (n == null) {
+        return null;
+    }
+    TreeNode node = new TreeNode(n.val + offset);
+    node.left = clone(n.left, offset);
+    node.right = clone(n.right, offset);
+    return node;
+}
+//result[i] stores the result until length i
+```
+
+
+
+
+
+#### 96. Unique Binary Search Trees
+
+https://leetcode.com/problems/unique-binary-search-trees/description/
+
+* solution-**Catalan number **
+
+Ref: https://leetcode.wang/leetCode-96-Unique-Binary-Search-Trees.html
+
+* Solutions-延续95题的做法
 
 
 
@@ -901,11 +1206,29 @@ Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
 
 ### Notion
 
+#### Catalan number
+
+Definition: 
+
+> 令h ( 0 ) = 1，catalan 数满足递推式：
+>
+> **h ( n ) = h ( 0 ) \* h ( n - 1 ) + h ( 1 ) \* h ( n - 2 ) + ... + h ( n - 1 ) \* h ( 0 ) ( n >=1 )**
+>
+> 例如：h ( 2 ) = h ( 0 ) * h ( 1 ) + h ( 1 ) * h ( 0 ) = 1 * 1 + 1 * 1 = 2
+>
+> h ( 3 ) = h ( 0 ) * h ( 2 ) + h ( 1 ) * h ( 1 ) + h ( 2 ) * h ( 0 ) = 1 * 2 + 1 * 1 + 2 * 1 = 5
+>
+> 卡塔兰数有一个通项公式。
+>
+> <img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaolecv6wvj30i808qdgm.jpg" alt="image-20200107130949465" style="zoom:33%;" />
+
+
+
 #### Traversal
 
 ref: https://www.youtube.com/watch?v=A6iCX_5xiU4
 
-![image-20200103121202462](/Users/leslieren/Library/Application Support/typora-user-images/image-20200103121202462.png)
+![image-20200103121202462](https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5wbuomj31c00u0n9b.jpg)
 
 * In a **_preorder_** traversal, you visit each node before recursively visiting its children, which are visited from left to right. The root is visited first.
 
@@ -940,7 +1263,7 @@ public void postorder() {
 
 ​	A postorder traversal visits the nodes in this order.
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200102202316343.png" alt="image-20200102202316343" style="zoom:40%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5x3gfzj308y06uaa3.jpg" alt="image-20200102202316343" style="zoom:40%;" />
 
 ​	The postorder() code is trickier than it looks. The best way to understand it is to draw a depth-two tree on paper, then pretend you’re the computer and execute the algorithm carefully. Trust me on this. It’s worth your time.
 
