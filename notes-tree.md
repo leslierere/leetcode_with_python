@@ -7,6 +7,8 @@ https://leetcode.com/problems/binary-tree-preorder-traversal/description/
 * Solution-statck, iterative
 
 ```python
+# 这个思路，将左右子树分别压栈，然后每次从栈里取元素。需要注意的是，因为我们应该先访问左子树，而栈的话是先进后出，所以我们压栈先压右子树
+# 但这样inorder就不太行
 class Solution:
     def preorderTraversal(self, root: TreeNode) -> List[int]:
         res = []
@@ -20,26 +22,41 @@ class Solution:
                 stack.append(last.left)
         return res
       
-# 更快的一种
+# 上下两个写法没有啥差别，但比第三个写法慢。。。
 class Solution:
     def preorderTraversal(self, root: TreeNode) -> List[int]:
-        queue = []
-        curr = root
-        ret = []
-        while True:
-            if curr:
-                queue.append(curr)
-                ret.append(curr.val)
-                curr = curr.left
-            elif queue:
-                tmp = queue.pop() 
-                curr = tmp.right
-            else:
-                break               
-        return ret
+        if not root:
+            return []
+        
+        res = []
+        stack = [root]
+        
+        while stack:
+            node = stack.pop()
+            res.append(node.val)
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+                
+        return res
+      
+# 时间10.63%, 模拟递归，入栈的时候加值
+# 这个通告改value append时间可以改为inorder
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        stack, result = [], []
+        while stack or root:
+            while root:
+                result.append(root.val)
+                stack.append(root)
+                root = root.left
+            root = stack.pop().right
+
+        return result
 ```
 
-* Solution-recuresive
+* Solution-recursive
 
 ```python
 def preorderTraversal1(self, root):
@@ -96,9 +113,9 @@ public List<Integer> preorderTraversal(TreeNode root) {
     }
     return list;
 }
-
-
 ```
+
+
 
 
 
@@ -146,7 +163,10 @@ https://www.youtube.com/watch?v=A6iCX_5xiU4
 <img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5v7u8sj31c00u0wvg.jpg" alt="image-20200103114811047" style="zoom:80%;" />
 
 ```python
-# 上面的核心思想是先做一个rev_postorder(root),这样就和最后要的结果刚好相反，但我们可以通过特殊操作，使用deque来使得最后的结果不需要reverse
+# 上面的核心思想
+# 后序遍历的顺序是 左 -> 右 -> 根。
+# 前序遍历的顺序是 根 -> 左 -> 右，左右其实是等价的，所以我们也可以轻松的写出 根 -> 右 -> 左 的代码。
+# 然后把 根 -> 右 -> 左 逆序，就是 左 -> 右 -> 根，也就是后序遍历了
 # my solution based on huahua's
 # 这一面很重要
 from collections import deque
@@ -172,6 +192,12 @@ class Solution:
 
 
 * Solution-recursive-worth doing
+
+
+
+### 小结
+
+基本上preorder，inorder， postorder traversal就是用recursive或者iterative(模拟递归)来做
 
 
 
