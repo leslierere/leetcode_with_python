@@ -1,5 +1,3 @@
-##Practice
-
 ###7.15
 
 ####500. Keyboard Row

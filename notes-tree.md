@@ -1,10 +1,10 @@
 1.02
 
-#### 144.Binary Tree Preorder Traversal
+### 144.Binary Tree Preorder Traversal
 
 https://leetcode.com/problems/binary-tree-preorder-traversal/description/
 
-* Solution-statck, iterative
+#### Solution-statck, iterative
 
 ```python
 # 这个思路，将左右子树分别压栈，然后每次从栈里取元素。需要注意的是，因为我们应该先访问左子树，而栈的话是先进后出，所以我们压栈先压右子树
@@ -56,7 +56,7 @@ class Solution:
         return result
 ```
 
-* Solution-recursive
+#### Solution-recursive
 
 ```python
 def preorderTraversal1(self, root):
@@ -119,7 +119,7 @@ public List<Integer> preorderTraversal(TreeNode root) {
 
 
 
-#### 94. Binary Tree Inorder Traversal
+### 94. Binary Tree Inorder Traversal
 
 https://leetcode.com/problems/binary-tree-inorder-traversal/description/
 
@@ -152,7 +152,7 @@ class Solution:
 
 1.03
 
-#### 145. Binary Tree Postorder Traversal-用这道作为所有的tree的iterative模版, 改到前面的基础里面去
+### 145. Binary Tree Postorder Traversal-用这道作为所有的tree的iterative模版, 改到前面的基础里面去
 
 https://leetcode.com/problems/binary-tree-postorder-traversal/description/
 
@@ -203,7 +203,7 @@ class Solution:
 
 
 
-#### 102. Binary Tree Level Order Traversal
+### 102. Binary Tree Level Order Traversal
 
 https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 
@@ -215,7 +215,7 @@ https://www.youtube.com/watch?v=Tuij96VBdu8
 
 
 
-#### 100. Same Tree-用这道作为所有的tree的recursive模版
+### 100. Same Tree-用这道作为所有的tree的recursive模版
 
 https://leetcode.com/problems/same-tree/
 
@@ -239,7 +239,7 @@ class Solution:
 
 
 
-#### 101. Symmetric Tree
+### 101. Symmetric Tree
 
 https://leetcode.com/problems/symmetric-tree/description/
 
@@ -300,7 +300,7 @@ class Solution:
 
 
 
-#### 226. Invert Binary Tree
+### 226. Invert Binary Tree
 
 https://leetcode.com/problems/invert-binary-tree/description/
 
@@ -327,7 +327,7 @@ class Solution:
 
 
 
-#### 257. Binary Tree Paths
+### 257. Binary Tree Paths
 
 https://leetcode.com/problems/binary-tree-paths/
 
@@ -337,7 +337,7 @@ https://leetcode.com/problems/binary-tree-paths/
 
 
 
-#### 112. Path Sum
+### 112. Path Sum
 
 https://leetcode.com/problems/path-sum/description/
 
@@ -367,7 +367,7 @@ class Solution:
 
 
 
-#### 113. Path Sum II
+### 113. Path Sum II
 
 https://leetcode.com/problems/path-sum-ii/description/
 
@@ -400,7 +400,7 @@ class Solution:
 
 1.4
 
-#### 129. Sum Root to Leaf Numbers
+### 129. Sum Root to Leaf Numbers
 
 https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 
@@ -411,7 +411,7 @@ https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 
 
 
-#### 298. Binary Tree Longest Consecutive Sequence
+### 298. Binary Tree Longest Consecutive Sequence
 
 https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/description/
 
@@ -486,7 +486,7 @@ class Solution:
 
 
 
-#### 111. Minimum Depth of Binary Tree-可以作为bfs的范例了
+### 111. Minimum Depth of Binary Tree-可以作为bfs的范例了
 
 https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
 
@@ -515,7 +515,7 @@ class Solution:
 
 
 
-#### 104. Maximum Depth of Binary Tree
+### 104. Maximum Depth of Binary Tree
 
 https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 
@@ -526,7 +526,7 @@ https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 
 
 
-#### 110. Balanced Binary Tree
+### 110. Balanced Binary Tree
 
 https://leetcode.com/problems/balanced-binary-tree/description/
 
@@ -565,7 +565,7 @@ class Solution:
 
 
 
-#### 124. Binary Tree Maximum Path Sum
+### 124. Binary Tree Maximum Path Sum
 
 https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 
@@ -595,7 +595,7 @@ class Solution:
 
 
 
-#### 250. Count Univalue Subtrees
+### 250. Count Univalue Subtrees
 
 https://leetcode.com/problems/count-univalue-subtrees/description/
 
@@ -635,7 +635,7 @@ class Solution:
 
 
 
-#### 366. Find Leaves of Binary Tree
+### 366. Find Leaves of Binary Tree
 
 https://leetcode.com/problems/find-leaves-of-binary-tree/description/
 
@@ -665,7 +665,7 @@ class Solution:
 
 
 
-#### 337. House Robber III
+### 337. House Robber III
 
 https://leetcode.com/problems/house-robber-iii/description/
 
@@ -681,7 +681,7 @@ ref: https://leetcode.com/problems/house-robber-iii/discuss/79330/Step-by-step-t
 
 下次接下来三道可试试dfs
 
-#### 107. Binary Tree Level Order Traversal II
+### 107. Binary Tree Level Order Traversal II
 
 https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
 
@@ -689,7 +689,7 @@ https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
 
 
 
-#### 103. Binary Tree Zigzag Level Order Traversal
+### 103. Binary Tree Zigzag Level Order Traversal
 
 https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
 
@@ -725,7 +725,7 @@ class Solution:
 
 
 
-#### 199. Binary Tree Right Side View
+### 199. Binary Tree Right Side View
 
 https://leetcode.com/problems/binary-tree-right-side-view/description/
 
@@ -756,7 +756,7 @@ class Solution:
 
 
 
-#### 98. Validate Binary Search Tree
+### 98. Validate Binary Search Tree
 
 https://leetcode.com/problems/validate-binary-search-tree/
 
@@ -794,7 +794,7 @@ class Solution:
 
 
 
-#### 235. Lowest Common Ancestor of a Binary Search Tree
+### 235. Lowest Common Ancestor of a Binary Search Tree
 
 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 
@@ -806,7 +806,7 @@ Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tre
 
 
 
-#### 236. Lowest Common Ancestor of a Binary Tree
+### 236. Lowest Common Ancestor of a Binary Tree
 
 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
@@ -818,7 +818,7 @@ https://www.cnblogs.com/grandyang/p/4641968.html
 
 
 
-#### 108. Convert Sorted Array to Binary Search Tree
+### 108. Convert Sorted Array to Binary Search Tree
 
 * Solution-dfs, recursive, need speed up
 
@@ -850,7 +850,7 @@ Ref: https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tr
 
 
 
-#### 109. Convert Sorted List to Binary Search Tree
+### 109. Convert Sorted List to Binary Search Tree
 
 https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/description/
 
@@ -867,7 +867,7 @@ Ref: https://leetcode.wang/leetcode-109-Convert-Sorted-List-to-Binary-Search-Tre
 
 
 
-#### 173. Binary Search Tree Iterator
+### 173. Binary Search Tree Iterator
 
 https://leetcode.com/problems/binary-search-tree-iterator/description/
 
@@ -879,7 +879,7 @@ Ref: https://leetcode.wang/leetcode-173-Binary-Search-Tree-Iterator.html
 
 
 
-#### 230. Kth Smallest Element in a BST
+### 230. Kth Smallest Element in a BST
 
 https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
 
@@ -921,7 +921,7 @@ Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
 
 1.6
 
-#### 297. Serialize and Deserialize Binary Tree
+### 297. Serialize and Deserialize Binary Tree
 
 https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
 
@@ -941,7 +941,7 @@ By huahua, 其他人快使用的iterative
 
 
 
-#### 285. Inorder Successor in BST
+### 285. Inorder Successor in BST
 
 https://leetcode.com/problems/inorder-successor-in-bst/
 
@@ -964,7 +964,7 @@ def inorderSuccessor(self, root, p):
 
 
 
-#### 270. Closest Binary Search Tree Value
+### 270. Closest Binary Search Tree Value
 
 https://leetcode.com/problems/closest-binary-search-tree-value/description/
 
@@ -1008,7 +1008,7 @@ class Solution:
 
 
 
-#### 272. Closest Binary Search Tree Value II
+### 272. Closest Binary Search Tree Value II
 
 https://leetcode.com/problems/closest-binary-search-tree-value-ii/description/
 
@@ -1088,7 +1088,7 @@ class Solution:
 
 
 
-#### 99. Recover Binary Search Tree
+### 99. Recover Binary Search Tree
 
 https://leetcode.com/problems/recover-binary-search-tree/
 
@@ -1118,7 +1118,7 @@ https://leetcode.com/problems/recover-binary-search-tree/
 
 
 
-#### 116. Populating Next Right Pointers in Each Node
+### 116. Populating Next Right Pointers in Each Node
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
 
@@ -1141,7 +1141,7 @@ def connect1(self, root):
 
 
 
-#### 117. Populating Next Right Pointers in Each Node II
+### 117. Populating Next Right Pointers in Each Node II
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/description/
 
@@ -1152,7 +1152,7 @@ https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/des
 
 
 
-#### 314. Binary Tree Vertical Order Traversal
+### 314. Binary Tree Vertical Order Traversal
 
 https://leetcode.com/problems/binary-tree-vertical-order-traversal/description/
 
@@ -1162,7 +1162,7 @@ https://leetcode.com/problems/binary-tree-vertical-order-traversal/discuss/76424
 
 
 
-#### 95. Unique Binary Search Trees II
+### 95. Unique Binary Search Trees II
 
 https://leetcode.com/problems/unique-binary-search-trees-ii/
 
@@ -1216,7 +1216,7 @@ private static TreeNode clone(TreeNode n, int offset) {
 
 
 
-#### 96. Unique Binary Search Trees
+### 96. Unique Binary Search Trees
 
 https://leetcode.com/problems/unique-binary-search-trees/description/
 
