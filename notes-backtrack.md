@@ -326,6 +326,371 @@ class Solution:
 
 https://leetcode.com/problems/combination-sum-iv/description/
 
-* Solution-dynamic programming
+#### Solution-dynamic programming
 
-> 技术题目一般用dp来做
+> 计数题目一般用dp来做
+
+
+
+#### Solution-Recursion + Memorization
+
+Ref: http://zxi.mytechroad.com/blog/dynamic-programming/leetcode-377-combination-sum-iv/
+
+```python
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        self.m = [1] + [-1] * target 
+        # target为i时可能的结果，设为-1表示我还不知道为i时的结果方便后面判断
+        # 根据stephan的意见改了一下
+        return self.dp(nums, target)
+    
+    def dp(self, nums, target):
+        if target<0:
+            return 0
+        if self.m[target]!=-1:
+            return self.m[target]
+        
+        ans = 0
+        for num in nums:
+            ans += self.dp(nums, target-num)
+        
+        self.m[target] = ans
+        return ans
+```
+
+
+
+
+
+### 254. Factor Combinations
+
+https://leetcode.com/problems/factor-combinations/
+
+#### Solution1-backtrack
+
+```python
+class Solution:
+    def getFactors(self, n: int) -> List[List[int]]:
+        res = []
+        self.helper(res, 2, [], n)
+        return res
+        
+        
+    def helper(self, res, start, temp, remain):
+        if remain==1 and len(temp)>1:
+            res.append(temp)
+        else:    
+            for i in range(start, remain+1):
+                if remain%i == 0:
+                    self.helper(res, i, temp+[i], remain//i)
+```
+
+
+
+#### Solution2-backtrack-improvement-worth
+
+```python
+class Solution:
+    def getFactors(self, n: int) -> List[List[int]]:
+        res = []
+        self.helper(res, 2, [], n)
+        return res
+        
+        
+    def helper(self, res, start, path, remain):
+        if len(path)>0:
+            res.append(path+[remain])
+        for i in range(start, int(remain**0.5)+1):
+            if remain%i == 0:
+                self.helper(res, i, path+[i], remain//i)
+```
+
+
+
+### 46. Permutations
+
+https://leetcode.com/problems/permutations/description/
+
+#### Solution-Recursive, take any number as first
+
+```python
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        self.helper(res, nums, [])
+        return res
+        
+        
+    def helper(self, res, nums, path):
+        if not nums:
+            res.append(path)
+            
+        for i in range(len(nums)):
+            self.helper(res, nums[:i]+nums[i+1:], path+[nums[i]])
+```
+
+
+
+#### Solution-Recursive, insert the remaining first number
+
+Ref: https://leetcode.wang/leetCode-46-Permutations.html
+
+
+
+#### Solution-recursive, swap
+
+还没想清楚
+
+
+
+### 47. Permutations II
+
+https://leetcode.com/problems/permutations-ii/description/
+
+#### Solution-backtrack
+
+```python
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        res = []
+        self.helper(res, nums, [])
+        return res
+        
+    def helper(self, res, nums, path):
+        if not nums:
+            res.append(path)
+            
+        for i in range(len(nums)):
+            if i>0 and nums[i]==nums[i-1]:
+                continue
+            self.helper(res, nums[:i]+nums[i+1:], path+[nums[i]])
+```
+
+
+
+### 31. Next Permutation
+
+https://leetcode.com/problems/next-permutation/description/
+
+#### Solution-iterative
+
+我居然自己想出来大概了，厉害厉害！但还是可以优化
+
+
+
+
+
+### 60. Permutation Sequence
+
+https://leetcode.com/problems/permutation-sequence/description/
+
+#### Solution-不难，主要是细节
+
+```python
+import math
+class Solution:
+    def getPermutation(self, n: int, k: int) -> str:
+        groupSize = math.factorial(n)
+        nums = list(range(1,n+1))
+        return self.helper("", nums, k, groupSize)
+        
+        
+    def helper(self, path, nums, k, groupSize):
+        if len(nums) == 0:
+            return path
+        groupSize = groupSize//len(nums)
+        initial = nums.pop((k-1)//groupSize)
+        nextK = groupSize if k%groupSize==0 else k%groupSize
+        return self.helper(path+str(initial), nums, nextK,groupSize)
+```
+
+
+
+### 291. Word Pattern II
+
+https://leetcode.com/problems/word-pattern-ii/description/
+
+#### Solution-backtraking-worth
+
+
+
+
+
+### 17. Letter Combinations of a Phone Number
+
+https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
+
+#### Solution-backtrack-常规
+
+
+
+### 320. Generalized Abbreviation
+
+#### Solution-dfs
+
+Ref: https://leetcode.com/problems/generalized-abbreviation/discuss/77190/Java-backtracking-solution
+
+```java
+public List<String> generateAbbreviations(String word){
+        List<String> ret = new ArrayList<String>();
+        backtrack(ret, word, 0, "", 0);
+
+        return ret;
+    }
+
+    private void backtrack(List<String> ret, String word, int pos, String cur, int count){
+        if(pos==word.length()){
+            if(count > 0) cur += count;
+            ret.add(cur);
+        }
+        else{
+            backtrack(ret, word, pos + 1, cur, count + 1);
+            backtrack(ret, word, pos+1, cur + (count>0 ? count : "") + word.charAt(pos), 0);
+        }
+    }
+```
+
+
+
+#### Solution-bit manipulation-worth
+
+[Reference](https://leetcode.com/problems/generalized-abbreviation/discuss/77209/O(m*n)-bit-manipulation-java)
+
+```java
+public List<String> generateAbbreviations(String word) {
+    List<String> ret = new ArrayList<>();
+    int n = word.length();
+    for(int mask = 0;mask < (1 << n);mask++) {//二进制数
+        int count = 0;
+        StringBuffer sb = new StringBuffer();
+      //循环word里面每一个单词，加上去
+        for(int i = 0;i <= n;i++) {
+            if(((1 << i) & mask) > 0) {//当前又要变数字
+                count++;
+            } else {
+                if(count != 0) {
+                    sb.append(count);
+                    count = 0;
+                }
+                if(i < n) sb.append(word.charAt(i));
+            }
+        }
+        ret.add(sb.toString());
+    }
+    return ret;
+}
+```
+
+
+
+
+
+### 282. Expression Add Operators
+
+https://leetcode.com/problems/expression-add-operators/description/
+
+#### Solution-backtrack-worth
+
+[Reference](https://leetcode.com/problems/expression-add-operators/discuss/71895/Java-Standard-Backtrace-AC-Solutoin-short-and-clear)
+
+```java
+public class Solution {
+    public List<String> addOperators(String num, int target) {
+        List<String> rst = new ArrayList<String>();
+        if(num == null || num.length() == 0) return rst;
+        helper(rst, "", num, target, 0, 0, 0);
+        return rst;
+    }
+    public void helper(List<String> rst, String path, String num, int target, int pos, long eval, long multed){//eval is the current evaluation
+        if(pos == num.length()){
+            if(target == eval)
+                rst.add(path);
+            return;
+        }
+        for(int i = pos; i < num.length(); i++){
+            if(i != pos && num.charAt(pos) == '0') break;//deal with 0 sequence
+            long cur = Long.parseLong(num.substring(pos, i + 1));
+            if(pos == 0){
+                helper(rst, path + cur, num, target, i + 1, cur, cur);
+            }
+            else{
+                helper(rst, path + "+" + cur, num, target, i + 1, eval + cur , cur);
+                
+                helper(rst, path + "-" + cur, num, target, i + 1, eval -cur, -cur);
+                
+                helper(rst, path + "*" + cur, num, target, i + 1, eval - multed + multed * cur, multed * cur );
+            }
+        }
+    }
+}
+```
+
+
+
+
+
+### 140. Word Break II
+
+https://leetcode.com/problems/word-break-ii/description/
+
+Ref: https://www.youtube.com/watch?v=JqOIRBC0_9c
+
+![image-20200110131829109](https://tva1.sinaimg.cn/large/006tNbRwgy1gas2if0ca2j31c00u0npd.jpg)
+
+> 找分割点，右边子串必须在字典里，再对左边子串递归求解。
+>
+> 每一个wordbreak返回来，我们都记忆一下，比如这里catsand->['cat sand', 'cats and'], 下次就可以直接返回
+
+
+
+
+
+### 351. Android Unlock Patterns
+
+https://leetcode.com/problems/android-unlock-patterns/
+
+#### Solution1
+
+Ref: https://www.cnblogs.com/grandyang/p/5541012.html
+
+> 那么我们先来看一下哪些是非法的，首先1不能直接到3，必须经过2，同理的有4到6，7到9，1到7，2到8，3到9，还有就是对角线必须经过5，例如1到9，3到7等。我们建立一个二维数组jumps，用来记录两个数字键之间是否有中间键，然后再用一个一位数组visited来记录某个键是否被访问过，然后我们用递归来解，我们先对1调用递归函数，在递归函数中，我们遍历1到9每个数字next，然后找他们之间是否有jump数字，如果next没被访问过，并且jump为0，或者jump被访问过，我们对next调用递归函数。数字1的模式个数算出来后，由于1,3,7,9是对称的，所以我们乘4即可，然后再对数字2调用递归函数，2,4,6,9也是对称的，再乘4，最后单独对5调用一次，然后把所有的加起来就是最终结果了
+>
+> ```c++
+> class Solution {
+> public:
+>     int numberOfPatterns(int m, int n) {
+>         int res = 0;
+>         vector<bool> visited(10, false);
+>         vector<vector<int>> jumps(10, vector<int>(10, 0));
+>         jumps[1][3] = jumps[3][1] = 2;
+>         jumps[4][6] = jumps[6][4] = 5;
+>         jumps[7][9] = jumps[9][7] = 8;
+>         jumps[1][7] = jumps[7][1] = 4;
+>         jumps[2][8] = jumps[8][2] = 5;
+>         jumps[3][9] = jumps[9][3] = 6;
+>         jumps[1][9] = jumps[9][1] = jumps[3][7] = jumps[7][3] = 5;
+>         res += helper(1, 1, 0, m, n, jumps, visited) * 4;
+>         res += helper(2, 1, 0, m, n, jumps, visited) * 4;
+>         res += helper(5, 1, 0, m, n, jumps, visited);
+>         return res;
+>     }
+>     int helper(int num, int len, int res, int m, int n, vector<vector<int>> &jumps, vector<bool> &visited) {
+>         if (len >= m) ++res;
+>         ++len;
+>         if (len > n) return res;
+>         visited[num] = true;
+>         for (int next = 1; next <= 9; ++next) {
+>             int jump = jumps[num][next];
+>             if (!visited[next] && (jump == 0 || visited[jump])) {
+>                 res = helper(next, len, res, m, n, jumps, visited);
+>             }
+>         }
+>         visited[num] = false;
+>         return res;
+>     }
+> };
+> ```
+
+
+

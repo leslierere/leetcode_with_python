@@ -4,7 +4,7 @@
 
 https://leetcode.com/problems/binary-tree-preorder-traversal/description/
 
-#### Solution-statck, iterative
+#### Solution-stack, iterative，solution3模版
 
 ```python
 # 这个思路，将左右子树分别压栈，然后每次从栈里取元素。需要注意的是，因为我们应该先访问左子树，而栈的话是先进后出，所以我们压栈先压右子树
@@ -41,8 +41,8 @@ class Solution:
                 
         return res
       
-# 时间10.63%, 模拟递归，入栈的时候加值
-# 这个通告改value append时间可以改为inorder
+# 时间10.63%, 模拟递归，一直入栈（入栈时打印），没有了就出栈
+# 这个通过改value append的位置可以改为inorder
 class Solution:
     def preorderTraversal(self, root: TreeNode) -> List[int]:
         stack, result = [], []
@@ -73,7 +73,7 @@ def dfs(self, root, res):
 
 
 
-* Solution-Morris Traversal-***worth doing and thinking***
+#### Solution-Morris Traversal-***worth doing and thinking***
 
 ```java
 // Step 1: Initialize current as root
@@ -123,7 +123,7 @@ public List<Integer> preorderTraversal(TreeNode root) {
 
 https://leetcode.com/problems/binary-tree-inorder-traversal/description/
 
-* Solution- iterative, stack，试着写写
+#### Solution- iterative, stack，试着写写
 
 https://leetcode.wang/leetCode-94-Binary-Tree-Inorder-Traversal.html
 
@@ -146,7 +146,7 @@ class Solution:
         return res
 ```
 
-* solution-recursive, 试着写写
+#### solution-recursive, 试着写写
 
 
 
@@ -156,7 +156,7 @@ class Solution:
 
 https://leetcode.com/problems/binary-tree-postorder-traversal/description/
 
-* Solution-iterative
+#### Solution-iterative
 
 https://www.youtube.com/watch?v=A6iCX_5xiU4
 
@@ -191,7 +191,7 @@ class Solution:
 
 
 
-* Solution-recursive-worth doing
+#### Solution-recursive-worth doing
 
 
 
@@ -199,7 +199,13 @@ class Solution:
 
 基本上preorder，inorder， postorder traversal就是用recursive或者iterative(模拟递归)来做
 
+* Dfs
+  * preorder traversal (self-left-right): stack(模拟递归，**左右子节点同时入栈**)
+  * inorder traversal (left-self-right): stack
+  * Postorder traversal (left-right-self): stack(模拟递归，**左右子节点同时入栈**)
 
+* bfs
+  * level-order traversal
 
 
 
@@ -207,11 +213,11 @@ class Solution:
 
 https://leetcode.com/problems/binary-tree-level-order-traversal/description/
 
-* Solution-bfs-need speed up
+#### Solution-bfs-need speed up
 
 https://www.youtube.com/watch?v=Tuij96VBdu8
 
-* Solution-dfs-worth trying
+#### Solution-dfs-worth trying
 
 
 
@@ -219,8 +225,9 @@ https://www.youtube.com/watch?v=Tuij96VBdu8
 
 https://leetcode.com/problems/same-tree/
 
-* Solution-iterative-32ms
-* Solution-recursive-worth doing, 我觉得我对回归有点问题，这个
+#### Solution-iterative-32ms
+
+#### Solution-recursive-easy
 
 ```python
 # solution里面的解法
@@ -239,11 +246,11 @@ class Solution:
 
 
 
-### 101. Symmetric Tree
+### 101. Symmetric Tree-和上一题差不多
 
 https://leetcode.com/problems/symmetric-tree/description/
 
-* Solution-recursive
+#### Solution-recursive
 
 ```python
 class Solution:
@@ -267,9 +274,10 @@ class Solution:
 
 
 
-* Solution-iterative
+#### Solution-iterative-非模拟recursive的解法
 
 ```python
+# 左右子树分别压栈
 class Solution:
     def isSymmetric(self, root: TreeNode) -> bool:
         if not root:
@@ -300,11 +308,11 @@ class Solution:
 
 
 
-### 226. Invert Binary Tree
+### 226. Invert Binary Tree-easy
 
 https://leetcode.com/problems/invert-binary-tree/description/
 
-* Solution-recursive
+#### Solution-recursive
 
 ```python
 # by me, 28ms
@@ -327,13 +335,17 @@ class Solution:
 
 
 
-### 257. Binary Tree Paths
+### 257. Binary Tree Paths-worth
 
 https://leetcode.com/problems/binary-tree-paths/
 
-* solution-bfs, iterative, queue-下次把字符串加进去
-* Solution-dfs, recursive, worth doing
-* Solution-dfs, iterative, stack, worth doing
+Ref: https://leetcode.com/problems/binary-tree-paths/discuss/68272/Python-solutions-(dfs%2Bstack-bfs%2Bqueue-dfs-recursively).
+
+#### Solution-bfs, iterative, queue-下次把字符串加进去
+
+#### Solution-dfs, recursive, backtrack, worth doing
+
+#### Solution-dfs, iterative, stack, worth doing
 
 
 
@@ -341,7 +353,7 @@ https://leetcode.com/problems/binary-tree-paths/
 
 https://leetcode.com/problems/path-sum/description/
 
-* Solution-dfs, recursive, 做出来了
+#### Solution-dfs, recursive, 做出来了
 
 ```python
 class Solution:
@@ -362,8 +374,9 @@ class Solution:
 
 
 
-* Solution-dfs, iterative, stack, worth doing
-* solution-bfs, iterative, queue，worth doing 
+#### Solution-dfs, iterative, stack, worth doing@1.10
+
+#### Solution-bfs, iterative, queue，worth doing @1.10
 
 
 
@@ -371,7 +384,7 @@ class Solution:
 
 https://leetcode.com/problems/path-sum-ii/description/
 
-* Solution-dfs, recursive, 做出来了, memory很高
+#### Solution-dfs, recursive, 做出来了, memory很高
 
 ```python
 class Solution:
@@ -393,8 +406,9 @@ class Solution:
 
 
 
-* Solution-dfs, iterative, stack, worth doing
-* solution-bfs, iterative, queue，worth doing 
+#### Solution-dfs, iterative, stack, worth, did@1.9
+
+#### solution-bfs, iterative, queue，worth doing 
 
 
 
@@ -404,10 +418,11 @@ class Solution:
 
 https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 
-* Solution-dfs, recursive, 做出来了
+#### Solution-dfs, recursive, 做出来了
 
-* Solution-dfs, iterative, stack, need speed up
-* solution-bfs, iterative, queue，worth doing 
+#### Solution-dfs, iterative, stack, need speed up, did@1.10
+
+#### solution-bfs, iterative, queue，worth doing 
 
 
 
@@ -415,8 +430,9 @@ https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 
 https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/description/
 
-* Solution-dfs, recursive, worth doing
-* Solution-dfs, stack, 做出来了
+#### Solution-dfs, recursive, worth doing
+
+#### Solution-dfs, stack, 做出来了
 
 ```python
 class Solution:
@@ -449,7 +465,7 @@ class Solution:
         return res
 ```
 
-* solution-bfs, iterative, queue，worth doing 
+#### solution-bfs, iterative, queue，worth doing, did@1.10
 
 ```python
 class Solution:
@@ -486,14 +502,15 @@ class Solution:
 
 
 
-### 111. Minimum Depth of Binary Tree-可以作为bfs的范例了
+### 111. Minimum Depth of Binary Tree-可以作为bfs的范例了，easy
 
 https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
 
-* Solution-dfs, recursive, 没做
+#### Solution-dfs, recursive, 没做
 
-* Solution-dfs, iterative, stack, 没做
-* solution-bfs, iterative, queue
+#### Solution-dfs, iterative, stack, 没做
+
+#### solution-bfs, iterative, queue
 
 ```python
 class Solution:
@@ -515,22 +532,23 @@ class Solution:
 
 
 
-### 104. Maximum Depth of Binary Tree
+### 104. Maximum Depth of Binary Tree，easy
 
 https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 
-* Solution-dfs, recursive, 没做
+#### Solution-dfs, recursive, 没做
 
-* Solution-dfs, iterative, stack, 没做
-* solution-bfs, iterative, queue, 做了
+#### Solution-dfs, iterative, stack, 没做
+
+#### solution-bfs, iterative, queue, 做了
 
 
 
-### 110. Balanced Binary Tree
+### 110. Balanced Binary Tree-worth
 
 https://leetcode.com/problems/balanced-binary-tree/description/
 
-* Solution-recursive-O(n) worth doing and thinking
+#### Solution-recursive-O(n) worth doing and thinking，把问题分解
 
 Ref: http://zxi.mytechroad.com/blog/leetcode/leetcode-110-balanced-binary-tree/
 
@@ -560,12 +578,11 @@ class Solution:
 
 最差的情况是左右两边除了一边最下面一个不平衡其他都平衡
 
-* Solution-dfs, iterative, stack
-* solution-bfs, iterative, queue
+#### Solution-dfs-postorder
 
 
 
-### 124. Binary Tree Maximum Path Sum
+### 124. Binary Tree Maximum Path Sum-worth
 
 https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 
@@ -573,7 +590,7 @@ https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 >
 > Ref: https://leetcode.com/problems/binary-tree-maximum-path-sum/discuss/39811/What-is-the-meaning-of-path-in-this-problem
 
-* Solution-recursive
+#### Solution-recursive, 把问题分解
 
 ```python
 # based on huahua's
@@ -599,7 +616,7 @@ class Solution:
 
 https://leetcode.com/problems/count-univalue-subtrees/description/
 
-* Solution-bottom up-by myself, 下次用手拿test case写一遍
+#### Solution-bottom up-by myself, 下次用手拿test case写一遍
 
 ```python
 class Solution:
@@ -633,13 +650,54 @@ class Solution:
             return node.val
 ```
 
+#### 为啥这样写就会错？？？
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def countUnivalSubtrees(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        self.res = 0
+        self.helper(root)
+        return self.res
+    
+    def helper(self, node):
+        if node:
+            if not node.right and not node.left:
+                self.res+=1
+                return node.val
+            if node.right and node.left:
+                # left = self.helper(node.left)
+                # right = self.helper(node.right)
+                if self.helper(node.left)!=node.val or node.val!= self.helper(node.right):
+                    return None
+
+            elif node.left:
+                if self.helper(node.left)!=node.val:
+                    return None
+            else:
+                if self.helper(node.right)!=node.val:
+                    return None
+            self.res+=1
+            return node.val 
+```
+
+
+
 
 
 ### 366. Find Leaves of Binary Tree
 
 https://leetcode.com/problems/find-leaves-of-binary-tree/description/
 
-* solution- **worth doing and thinking**
+#### solution- **worth doing and thinking**
 
 Ref: https://leetcode.com/problems/find-leaves-of-binary-tree/discuss/83778/10-lines-simple-Java-solution-using-recursion-with-explanation
 
