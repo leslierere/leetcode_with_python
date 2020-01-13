@@ -656,11 +656,34 @@ size = (b-a)//(len(num)-1) or 1
 
 ### heapq模块
 
+可以参照cs61b-priority queue
+
+#### priority queue基本概念
+
+A priority queue is like a dictionary, it contains entries that each consists of a key and an associated value. However, while a dictionary is used when we want to be able to look up arbitrary key, a priority queue is used to prioritize entries, thus that you can easily access and manipulate the value with the largest/smallest key.
+
+#### 一般的operation
+
+* insert()
+* min()
+* removeMin()
+
+#### Implementation
+
+Binary heap(i.e. a complete binary tree whose entries satisfy keep-order property. For example, the key of a child always >= the key of its parent, and in this way, 这是一个最小堆)
+
+To store as array, map treenodes to array indices with level-numbering: level-order traversal with root at index 1. In this way, node i's children are 2i and 2i+1, parent is i//2
+
+#### Priority queue in Python
+
+**堆**
+
 > 堆是一种树形数据结构，其中子节点与父节点之间是一种有序关系。最大堆中父节点大于或等于两个子节点，最小堆父节点小于或等于两个子节点。Python的heapq模块实现了一个最小堆。
 
 * 创建堆
 
   * 用[]初始化
+  
 * 已有list转化为heap，[heapify()](https://docs.python.org/zh-cn/3/library/heapq.html#heapq.heapify)，heapq.heapify(*list*)
   
 * heapq模块可以接受元组对象，默认元组的第一个元素作为`priority`
@@ -676,6 +699,10 @@ size = (b-a)//(len(num)-1) or 1
 * heapq.heappushpop(*heap*, *item*)
 
   将 item 放入堆中，然后弹出并返回 heap 的最小元素。该组合操作比先调用  heappush() 再调用 heappop()运行起来更有效率。
+
+#### Real Priority queue in Python	
+
+[`PriorityQueue`](https://docs.python.org/3/library/queue.html#queue.PriorityQueue)
 
 
 
