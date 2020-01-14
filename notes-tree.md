@@ -697,7 +697,7 @@ class Solution:
 
 https://leetcode.com/problems/find-leaves-of-binary-tree/description/
 
-#### solution- **worth doing and thinking**
+#### solution- **worth doing and thinking**, did @1.13
 
 Ref: https://leetcode.com/problems/find-leaves-of-binary-tree/discuss/83778/10-lines-simple-Java-solution-using-recursion-with-explanation
 
@@ -719,7 +719,7 @@ class Solution:
         return res
 ```
 
-
+@1.13 我做的时候建了字典，其实没有必要，因为一定是先出现更小的 height。所以出现一个新的高度就在列表中新加一个子列表就好，最后就可以直接返回结果
 
 
 
@@ -727,7 +727,7 @@ class Solution:
 
 https://leetcode.com/problems/house-robber-iii/description/
 
-* Solution-**worth doing and thinking!!! look at the reference**
+#### Solution-**worth doing and thinking!!! look at the reference** @1.13还是没想到
 
 ref: https://leetcode.com/problems/house-robber-iii/discuss/79330/Step-by-step-tackling-of-the-problem
 
@@ -743,7 +743,29 @@ ref: https://leetcode.com/problems/house-robber-iii/discuss/79330/Step-by-step-t
 
 https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
 
-* solution-bfs，和103差不多，但可以通过一些方法不用deque
+#### Solution-bfs，和103差不多
+
+#### Solution-dfs, 思想和366一样, worth@1.13
+
+Ref: https://leetcode.com/problems/binary-tree-level-order-traversal-ii/discuss/34978/Python-solutions-(dfs-recursively-dfs%2Bstack-bfs%2Bqueue).
+
+```python
+# dfs recursively
+def levelOrderBottom1(self, root):
+    res = []
+    self.dfs(root, 0, res)
+    return res
+
+def dfs(self, root, level, res):
+    if root:
+        if len(res) < level + 1:
+            res.insert(0, [])
+        res[-(level+1)].append(root.val)
+        self.dfs(root.left, level+1, res)
+        self.dfs(root.right, level+1, res)
+```
+
+
 
 
 
@@ -751,7 +773,7 @@ https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
 
 https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
 
-* solution-bfs-和107差不多
+#### Solution-bfs-和107差不多
 
 ```python
 class Solution:
@@ -783,11 +805,17 @@ class Solution:
 
 
 
+#### Solution-dfs, did@1.13
+
+
+
+
+
 ### 199. Binary Tree Right Side View
 
 https://leetcode.com/problems/binary-tree-right-side-view/description/
 
-* Solution-bfs
+#### Solution-bfs
 
 ```python
 class Solution:
@@ -812,13 +840,35 @@ class Solution:
         return res
 ```
 
+#### Solution-dfs, did@1.13, 下次想一下思路就好
+
+不过居然更慢了。。。
+
+```python
+class Solution:
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        res = []
+        self.dfs(root, 1, res)
+        return res
+        
+    def dfs(self, node, level, res):
+        if not node:
+            return
+        if len(res)<level:
+            res.append(node.val)
+        self.dfs(node.right, level+1, res)
+        self.dfs(node.left, level+1, res)
+```
+
+
+
 
 
 ### 98. Validate Binary Search Tree
 
 https://leetcode.com/problems/validate-binary-search-tree/
 
-* Solution-inorder
+#### Solution-inorder
 
 ```python
 class Solution:
@@ -852,13 +902,58 @@ class Solution:
 
 
 
+#### Solution-dfs, did@1.13
+
+```python
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        self.res = True
+        self.dfs(root)
+        return self.res
+        
+    # return the smallest and the largest value in the subtree
+    # one node's value must be larger than the max in left subtree and
+    # must be smaller than the min in the right subtree
+    
+    def dfs(self, node):
+        if not node.left and not node.right:
+            return node.val, node.val
+        if not self.res:
+            return 0,0
+        val1 = node.val
+        val2 = node.val
+        if node.left:
+            left1, left2 = self.dfs(node.left) # left1 is the small one
+            val1 = left1
+            
+            if not node.val>left2:
+                self.res = False
+        if node.right:
+            right1, right2 = self.dfs(node.right)
+            val2 = right2
+            if not node.val<right1:
+                self.res = False
+            
+        return val1, val2
+```
+
+
+
+
+
 ### 235. Lowest Common Ancestor of a Binary Search Tree
 
 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
 
-* solution-recursive, iterative， worth doing@下次做
+#### Solution-did@1.13
 
 利用好bst的特性
+
+> 1. Left subtree of a node N contains nodes whose values are lesser than or equal to node N's value.
+> 2. Right subtree of a node N contains nodes whose values are greater than node N's value.
+> 3. Both left and right subtrees are also BSTs.
 
 Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tree/
 
@@ -868,17 +963,39 @@ Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tre
 
 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
-* Solution-dfs-**worth thinking and doing**
+* Solution-dfs-**worth thinking and doing**@1.13
 
 Ref: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/discuss/158060/Python-DFS-tm
 
-https://www.cnblogs.com/grandyang/p/4641968.html
+
 
 
 
 ### 108. Convert Sorted Array to Binary Search Tree
 
-* Solution-dfs, recursive, need speed up
+https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
+
+#### Solution-dfs, recursive, need speed up
+
+我觉得这个比较好，不要用额外空间@1.13
+
+```python
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        return self.helper(nums, 0, len(nums)-1)        
+        
+    def helper(self, nums, start, end):
+        if start>end:
+            return None
+        mid = (end+start)//2
+        cur = TreeNode(nums[mid])
+        
+        cur.left = self.helper(nums, start, mid-1)
+        cur.right = self.helper(nums, mid+1, end)
+        return cur
+```
+
+
 
 值得一看：https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree.html
 
@@ -898,11 +1015,11 @@ https://www.cnblogs.com/grandyang/p/4641968.html
 > (start + end) / 2 = (start + end + start - start) / 2 = start + (end - start) / 2
 > ```
 >
-> 所以python有溢出的问题吗？
+> 所以python有溢出的问题吗？没有，python自己帮你转换了，所以python慢
 
 
 
-* Solution-dfs, stack, worth doing
+#### Solution-dfs, stack, worth doing
 
 Ref: https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tree.html
 
@@ -912,12 +1029,15 @@ Ref: https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tr
 
 https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/description/
 
-* Solution-先把链表转为list
-* Solution-快慢指针 **worth doing and thinking**
+#### Solution-先把链表转为list
+
+#### Solution-快慢指针
 
 Ref: https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/discuss/35474/Python-recursive-solution-with-detailed-comments-(operate-linked-list-directly).
 
-* Solution-厉害！！**worth doing and thinking**
+#### Solution-厉害！！**worth doing and thinking**
+
+@1.13还是想不到, 其实是inorder traversal的思想
 
 Ref: https://leetcode.wang/leetcode-109-Convert-Sorted-List-to-Binary-Search-Tree.html
 
@@ -929,11 +1049,42 @@ Ref: https://leetcode.wang/leetcode-109-Convert-Sorted-List-to-Binary-Search-Tre
 
 https://leetcode.com/problems/binary-search-tree-iterator/description/
 
-* Solution-**worth doing and thinking** 其实就是94题, inorder traversal
+#### Solution-worth其实就是94题, inorder traversal
 
 Ref: https://leetcode.wang/leetcode-173-Binary-Search-Tree-Iterator.html
 
 刚开始弄错是因为初始化的时候我就把root加了进去
+
+```python
+
+class BSTIterator:
+
+    def __init__(self, root: TreeNode):
+        self.root = root
+        self.stack = []
+
+    def next(self) -> int:
+        """
+        @return the next smallest number
+        """
+        while self.root:
+            self.stack.append(self.root)
+            self.root = self.root.left
+        top = self.stack.pop()
+        self.root = top.right
+        return top.val
+        
+
+    def hasNext(self) -> bool:
+        """
+        @return whether we have a next smallest number
+        """
+        return self.root or self.stack
+```
+
+
+
+
 
 
 
@@ -943,7 +1094,9 @@ https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
 
 Ref: https://www.cnblogs.com/grandyang/p/4620012.html
 
-* Solution-**worth doing and thinking** 其实就是94题,  inorder traversal, iterative
+#### Solution-**worth doing and thinking** 其实就是94题,  inorder traversal, iterative, 
+
+easy@1.13
 
 ```python
 class Solution:
@@ -965,13 +1118,15 @@ class Solution:
 
 
 
-* Solution-  inorder traversal, recursive
-* Solution- divide and conquer-**worth doing and thinking**
+#### Solution-inorder traversal, recursive
 
-* Solution-**Follow up:**
-  What if the BST is modified (insert/delete operations) often and you need to find the kth smallest frequently? How would you optimize the kthSmallest routine?
+#### Solution-Follow up:worth@1.13
+
+What if the BST is modified (insert/delete operations) often and you need to find the kth smallest frequently? How would you optimize the kthSmallest routine?
 
 B+tree的思想
+
+> combine an indexing structure (we could keep BST here) with a double linked list.
 
 Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
 
@@ -983,17 +1138,108 @@ Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
 
 https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
 
-我觉得这个本质上就是preorder<->treenode, 跟前面一个题类似
+我觉得这个本质上就是preorder<->treenode, 跟前面一个题类似, **蛮重要的**
 
-* Solution-preorder-**worth doing and thinking**, need speed up
+#### Solution-preorder-**worth doing and thinking**, need speed up
+
+别人快的区别在deserialize时别人用了iter模块，放在下面了
 
 Ref: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/discuss/74259/Recursive-preorder-Python-and-C%2B%2B-O(n)
 
 尝试用bit 优化https://www.youtube.com/watch?v=JL4OjKV_pGE
 
-By huahua, 其他人快使用的iterative
+By huahua, 其他人快是用的iterative
 
-* Solution-level order/bfs-**worth doing and thinking**
+```python
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        def doit(node):
+            if node:
+                nodel.append(str(node.val))
+                doit(node.left)
+                doit(node.right)
+            else:
+                nodel.append("#")
+                
+        nodel = []
+        doit(root)
+        return " ".join(nodel)
+        
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        if data == '#':
+            return []
+        
+        def doit(value):
+            if not nodeL:return
+            if value!="#":    
+                node = TreeNode(int(value))
+                node.left = doit(nodeL.pop(0))
+                node.right = doit(nodeL.pop(0))
+                return node
+            
+            
+        nodeL = data.split(" ")
+        
+        return doit(int(nodeL.pop(0)))
+```
+
+别人的快的
+
+```python
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        def preorder(node):
+            if node == None:
+                vals.append("#")
+            else:
+                vals.append(str(node.val))
+                preorder(node.left)
+                preorder(node.right)
+        
+        vals = [];
+        preorder(root)
+        return " ".join(vals)
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        def build():
+            val = next(vals)
+            if (val == "#"):
+                return None
+            else:
+                node = TreeNode(int(val))
+                node.left = build()
+                node.right = build()
+                return node
+            
+        vals = iter(data.split())
+        return build()
+```
+
+
+
+#### Solution-level order/bfs-**worth doing and thinking**，did@1.13
 
 
 
@@ -1003,7 +1249,7 @@ By huahua, 其他人快使用的iterative
 
 https://leetcode.com/problems/inorder-successor-in-bst/
 
-* Solution-iterative-太强了！！**worth doing and thinking**，利用好bst的特性，但还是可以尝试常规的办法
+#### Solution-iterative-worth doing and thinking，利用好bst的特性，但还是可以尝试常规的办法
 
 Ref: https://leetcode.com/problems/inorder-successor-in-bst/discuss/72656/JavaPython-solution-O(h)-time-and-O(1)-space-iterative
 
@@ -1026,7 +1272,7 @@ def inorderSuccessor(self, root, p):
 
 https://leetcode.com/problems/closest-binary-search-tree-value/description/
 
-* Solution-inorder, iterative-**worth doing and thinking**
+#### Solution-inorder, iterative-**worth doing and thinking**
 
 开始用了一个res来保存当前所有遍历到的，其实没必要，仔细想想这道题最快的还是inorder
 
@@ -1062,7 +1308,7 @@ class Solution:
 
 
 
-* Solution-preorder, iterative, fast
+#### Solution-preorder, iterative, fast
 
 
 
@@ -1363,7 +1609,7 @@ public void postorder() {
 
 
 
-#### deque
+#### collections.deque
 
 https://docs.python.org/zh-cn/3/library/collections.html#collections.deque
 

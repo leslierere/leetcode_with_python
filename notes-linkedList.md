@@ -300,7 +300,7 @@ def isPalindrome(self, head):
 
 https://leetcode.com/problems/reorder-list/description/
 
-#### Solution-dfs
+#### Solution-dfs, 写到一半
 
 #### Solution
 
@@ -488,7 +488,7 @@ https://leetcode.com/problems/rotate-list/description/
 
 https://leetcode.com/problems/partition-list/description/
 
-#### Solution1- two pointers
+#### Solution1- two pointers， 写到一半
 
 #### Solution2- 这个思路实现起来简单一些
 
@@ -553,9 +553,11 @@ https://leetcode.com/problems/merge-k-sorted-lists/description/
 
 
 
+### 147. Insertion Sort List
 
+https://leetcode.com/problems/insertion-sort-list/description/
 
-
+不难
 
 
 

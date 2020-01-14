@@ -623,243 +623,247 @@ https://leetcode.com/problems/count-primes/
 
 ##语法
 
-* list
+#### Container
 
-  - 排序
+##### list
 
-    * sorted()
+- 排序
 
-    It returns a new sorted list
+  * sorted()
 
-    ```python
-    >>> sorted([5, 2, 3, 1, 4])
-    [1, 2, 3, 4, 5]
-    ```
-
-    * [`list.sort()`](https://docs.python.org/3/library/stdtypes.html#list.sort)
-
-    It modifies the list in-place (and returns `None`).
-
-    Another difference is that the `list.sort()` method is only defined for lists. In contrast, the `sorted()`function accepts any iterable.
-
-  - `numbers = list(range(1, 6, 2)) #[1, 3, 5]`
-
-  - 复制列表
-
-    `list2 = list1[:]`
-
-* tuple
-
-  * 如果要定义一个空的tuple，可以写成`()`
-
-    ```pytho
-    >>> t = ()
-    >>> t
-    ()
-    ```
-
-  * 只有1个元素的tuple定义时必须加一个逗号`,`，来消除歧义：
-
-    ```python
-    >>> t = (1,)
-    >>> t
-    (1,)
-    ```
-
-* dict
-
-  - dict的get()
-
-    如果key不存在，可以返回`None`，或者自己指定的value
-
-    ```python
-    >>> d.get('Thomas')
-    >>> d.get('Thomas', -1)
-    -1
-    ```
-
-* set
-
-  set和dict类似，也是一组key的集合，但不存储value。由于key不能重复，所以，在set中，没有重复的key。要创建一个set，需要提供一个list作为输入集合.
-
-  * 将一个字符串变为单个字母的set
+  It returns a new sorted list
 
   ```python
-  s1 = set("QWERTYUIOPqwertyuiop")
+  >>> sorted([5, 2, 3, 1, 4])
+  [1, 2, 3, 4, 5]
+  ```
+
+  * [`list.sort()`](https://docs.python.org/3/library/stdtypes.html#list.sort)
+
+  It modifies the list in-place (and returns `None`).
+
+  Another difference is that the `list.sort()` method is only defined for lists. In contrast, the `sorted()`function accepts any iterable.
+
+- `numbers = list(range(1, 6, 2)) #[1, 3, 5]`
+
+- 复制列表
+
+  `list2 = list1[:]`
+
+##### tuple
+
+* 如果要定义一个空的tuple，可以写成`()`
+
+  ```pytho
+  >>> t = ()
+  >>> t
+  ()
+  ```
+
+* 只有1个元素的tuple定义时必须加一个逗号`,`，来消除歧义：
+
+  ```python
+  >>> t = (1,)
+  >>> t
+  (1,)
+  ```
+
+##### dict
+
+- dict的get()
+
+  如果key不存在，可以返回`None`，或者自己指定的value
+
+  ```python
+  >>> d.get('Thomas')
+  >>> d.get('Thomas', -1)
+  -1
+  ```
+
+##### set
+
+set和dict类似，也是一组key的集合，但不存储value。由于key不能重复，所以，在set中，没有重复的key。要创建一个set，需要提供一个list作为输入集合.
+
+* 将一个字符串变为单个字母的set
+
+```python
+s1 = set("QWERTYUIOPqwertyuiop")
+
+print(s1)
+#{'T', 'e', 't', 'P', 'O', 'r', 'u', 'Y', 'I', 'Q', 'q', 'y', 'p', 'W', 'R', 'w', 'i', 'E', 'o', 'U'}
+```
+
+* set可以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作：
+
+```python
+>>> s1 = set([1, 2, 3])
+>>> s2 = set([2, 3, 4])
+>>> s1 & s2
+{2, 3}
+>>> s1 | s2
+{1, 2, 3, 4}
+```
+
+ 
+
+#### collection module
+
+##### collections.Counter()
+
+Ref: https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter
+
+一个 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 是一个 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 的子类，用于计数可哈希对象。它是一个集合，元素像字典键(key)一样存储，它们的计数存储为值。计数可以是任何整数值，包括0和负数。
+
+```python
+s='apple'
+count = collections.Counter(s) 
+In [15]: count                                                                  
+Out[15]: Counter({'a': 1, 'p': 2, 'l': 1, 'e': 1})
+
+In [17]: c = collections.Counter({'red': 4, 'blue': 2})                         
+In [18]: c                                                                      
+Out[18]: Counter({'red': 4, 'blue': 2})
   
-  print(s1)
-  #{'T', 'e', 't', 'P', 'O', 'r', 'u', 'Y', 'I', 'Q', 'q', 'y', 'p', 'W', 'R', 'w', 'i', 'E', 'o', 'U'}
-  ```
+In [19]: c =collections.Counter(cats=4, dogs=8)                                 
+In [20]: c                                                                      
+Out[20]: Counter({'cats': 4, 'dogs': 8})
+```
 
-  * set可以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作：
 
-  ```python
-  >>> s1 = set([1, 2, 3])
-  >>> s2 = set([2, 3, 4])
-  >>> s1 & s2
-  {2, 3}
-  >>> s1 | s2
-  {1, 2, 3, 4}
-  ```
 
-   
-
-* collections.Counter()
-
-  Ref: https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter
-
-  一个 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 是一个 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 的子类，用于计数可哈希对象。它是一个集合，元素像字典键(key)一样存储，它们的计数存储为值。计数可以是任何整数值，包括0和负数。
+* Counter对象有一个字典接口，如果引用的键没有任何记录，就返回一个0，而不是弹出一个 [`KeyError`](https://docs.python.org/zh-cn/3/library/exceptions.html#KeyError)
 
   ```python
-  s='apple'
-  count = collections.Counter(s) 
-  In [15]: count                                                                  
-  Out[15]: Counter({'a': 1, 'p': 2, 'l': 1, 'e': 1})
+  >>> c = Counter(['eggs', 'ham'])
+  >>> c['bacon']# count of a missing element is zero
+  0
+  ```
+
+* 使用 `del` 来删除key
+
+* elements()
+
+  返回一个迭代器，每个元素重复计数的个数。元素顺序是任意的。如果一个元素的计数小于1， [`elements()`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter.elements) 就会忽略它。
+
+  ```python
+  >>> c = Counter(a=4, b=2, c=0, d=-2)
+  >>> sorted(c.elements())
+  ['a', 'a', 'a', 'a', 'b', 'b']
+  ```
+
+* 通常字典方法都可用于 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 对象
+
+```python
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        count = collections.Counter(s)
+        l = count.values()#返回每个值个数的一个list
+        
+        for k, v in enumerate(s):
+            if count[v]==1:
+                return k
+        return -1
+```
+
+* 常用方法
+
+```python
+In [20]: c                                                                      
+Out[20]: Counter({'cats': 4, 'dogs': 8})
   
-  In [17]: c = collections.Counter({'red': 4, 'blue': 2})                         
-  In [18]: c                                                                      
-  Out[18]: Counter({'red': 4, 'blue': 2})
-    
-  In [19]: c =collections.Counter(cats=4, dogs=8)                                 
-  In [20]: c                                                                      
-  Out[20]: Counter({'cats': 4, 'dogs': 8})
-  ```
-
+sum(c.values())                 # total of all counts
+c.clear()                       # reset all counts
+list(c)                         # list unique elements
+In [22]: list(c)                                                                  
+Out[22]: ['cats', 'dogs']
   
-
-  * Counter对象有一个字典接口，如果引用的键没有任何记录，就返回一个0，而不是弹出一个 [`KeyError`](https://docs.python.org/zh-cn/3/library/exceptions.html#KeyError)
-
-    ```python
-    >>> c = Counter(['eggs', 'ham'])
-    >>> c['bacon']# count of a missing element is zero
-    0
-    ```
-
-  * 使用 `del` 来删除key
-
-  * elements()
-
-    返回一个迭代器，每个元素重复计数的个数。元素顺序是任意的。如果一个元素的计数小于1， [`elements()`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter.elements) 就会忽略它。
-
-    ```python
-    >>> c = Counter(a=4, b=2, c=0, d=-2)
-    >>> sorted(c.elements())
-    ['a', 'a', 'a', 'a', 'b', 'b']
-    ```
-
-  * 通常字典方法都可用于 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 对象
-
-  ```python
-  class Solution:
-      def firstUniqChar(self, s: str) -> int:
-          count = collections.Counter(s)
-          l = count.values()#返回每个值个数的一个list
-          
-          for k, v in enumerate(s):
-              if count[v]==1:
-                  return k
-          return -1
-  ```
-
-  * 常用方法
-
-  ```python
-  In [20]: c                                                                      
-  Out[20]: Counter({'cats': 4, 'dogs': 8})
-    
-  sum(c.values())                 # total of all counts
-  c.clear()                       # reset all counts
-  list(c)                         # list unique elements
-  In [22]: list(c)                                                                  
-  Out[22]: ['cats', 'dogs']
-    
-  set(c)                          # convert to a set
-  In [21]: set(c)                                                                   
-  Out[21]: {'cats', 'dogs'}
-    
-  dict(c)                         # convert to a regular dictionary
-  c.items()                       # convert to a list of (elem, cnt) pairs
-  In [23]: c.items()                                                                
-  Out[23]: dict_items([('cats', 4), ('dogs', 8)])
-    
-  +c                              # remove zero and negative counts
-  >>> c = Counter(a=2, b=-4)
-  >>> +c
-  Counter({'a': 2})
-  ```
-
-  * 数学操作
-
-  ```python
-  >>> c = Counter(a=3, b=1)
-  >>> d = Counter(a=1, b=2)
-  >>> c + d                       # add two counters together:  c[x] + d[x]
-  Counter({'a': 4, 'b': 3})
-  >>> c - d                       # subtract (keeping only positive counts)
-  Counter({'a': 2})
-  >>> c & d                       # intersection:  min(c[x], d[x]) 
-  Counter({'a': 1, 'b': 1})
-  >>> c | d                       # union:  max(c[x], d[x])
-  Counter({'a': 3, 'b': 2})
-  ```
-
+set(c)                          # convert to a set
+In [21]: set(c)                                                                   
+Out[21]: {'cats', 'dogs'}
   
-
-* collections.defaultdict()
-
-  * *class* `collections.defaultdict`([*default_factory*[, *...*]])
-
-    返回一个新的类似字典的对象。 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 是内置 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 类的子类。它重载了一个方法并添加了一个可写的实例变量。其余的功能与 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 类相同，此处不再重复说明。
-
-    第一个参数 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 提供了一个初始值。它默认为 `None` 。所有的其他参数都等同与 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 构建器中的参数对待，包括关键词参数。
-
-  * 使用 [`list`](https://docs.python.org/zh-cn/3/library/stdtypes.html#list) 作为 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory)
-
-  ```python
-  In [24]: s = [('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]    
-  In [26]: d = collections.defaultdict(list)                                           
-  In [27]: for k, v in s: 
-      ...:     d[k].append(v) 
-      ...:                                                                             
-  In [28]: d                                                                           
-  Out[28]: defaultdict(list, {'yellow': [1, 3], 'blue': [2, 4], 'red': [1]})
-  # 当每个键第一次遇见时，它还没有在字典里面；所以条目自动创建，通过 default_factory 方法，并返回一个空的 list 。 list.append() 操作添加值到这个新的列表里。当键再次被存取时，就正常操作， list.append() 添加另一个值到列表中。这个计数比它的等价方法 dict.setdefault() 要快速和简单
-  ```
-
-  * 设置 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 为 [`int`](https://docs.python.org/zh-cn/3/library/functions.html#int) ，使 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 在计数方面发挥好的作用（像其他语言中的bag或multiset）
-
-  ```python
-  In [32]: d = collections.defaultdict(int)                                            
-  In [33]: s = 'mississippi'                                                           
-  In [34]: d = collections.defaultdict(int)                                            
+dict(c)                         # convert to a regular dictionary
+c.items()                       # convert to a list of (elem, cnt) pairs
+In [23]: c.items()                                                                
+Out[23]: dict_items([('cats', 4), ('dogs', 8)])
   
-  In [35]: for k in s: 
-      ...:     d[k] += 1 
-      ...:                                                                             
-  In [36]: d                                                                           
-  Out[36]: defaultdict(int, {'m': 1, 'i': 4, 's': 4, 'p': 2})
-  # 当一个字母首次遇到时，它就查询失败，所以 default_factory 调用 int() 来提供一个整数0作为默认值。自增操作然后建立对每个字母的计数。
-  ```
++c                              # remove zero and negative counts
+>>> c = Counter(a=2, b=-4)
+>>> +c
+Counter({'a': 2})
+```
 
-  * 设置 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 为 [`set`](https://docs.python.org/zh-cn/3/library/stdtypes.html#set) 使 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 用于构建字典集合
+* 数学操作
 
-  ```python
-  >>> s = [('red', 1), ('blue', 2), ('red', 3), ('blue', 4), ('red', 1), ('blue', 4)]
-  >>> d = defaultdict(set)
-  >>> for k, v in s:
-  ...     d[k].add(v)
-  ...
-  >>> sorted(d.items())
-  [('blue', {2, 4}), ('red', {1, 3})]
-  ```
-
-  
-
+```python
+>>> c = Counter(a=3, b=1)
+>>> d = Counter(a=1, b=2)
+>>> c + d                       # add two counters together:  c[x] + d[x]
+Counter({'a': 4, 'b': 3})
+>>> c - d                       # subtract (keeping only positive counts)
+Counter({'a': 2})
+>>> c & d                       # intersection:  min(c[x], d[x]) 
+Counter({'a': 1, 'b': 1})
+>>> c | d                       # union:  max(c[x], d[x])
+Counter({'a': 3, 'b': 2})
+```
 
 
 
+##### collections.defaultdict()
 
-* join的用法：join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
+* *class* `collections.defaultdict`([*default_factory*[, *...*]])
+
+  返回一个新的类似字典的对象。 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 是内置 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 类的子类。它重载了一个方法并添加了一个可写的实例变量。其余的功能与 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 类相同，此处不再重复说明。
+
+  第一个参数 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 提供了一个初始值。它默认为 `None` 。所有的其他参数都等同与 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 构建器中的参数对待，包括关键词参数。
+
+* 使用 [`list`](https://docs.python.org/zh-cn/3/library/stdtypes.html#list) 作为 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory)
+
+```python
+In [24]: s = [('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]    
+In [26]: d = collections.defaultdict(list)                                           
+In [27]: for k, v in s: 
+    ...:     d[k].append(v) 
+    ...:                                                                             
+In [28]: d                                                                           
+Out[28]: defaultdict(list, {'yellow': [1, 3], 'blue': [2, 4], 'red': [1]})
+# 当每个键第一次遇见时，它还没有在字典里面；所以条目自动创建，通过 default_factory 方法，并返回一个空的 list 。 list.append() 操作添加值到这个新的列表里。当键再次被存取时，就正常操作， list.append() 添加另一个值到列表中。这个计数比它的等价方法 dict.setdefault() 要快速和简单
+```
+
+* 设置 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 为 [`int`](https://docs.python.org/zh-cn/3/library/functions.html#int) ，使 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 在计数方面发挥好的作用（像其他语言中的bag或multiset）
+
+```python
+In [32]: d = collections.defaultdict(int)                                            
+In [33]: s = 'mississippi'                                                           
+In [34]: d = collections.defaultdict(int)                                            
+
+In [35]: for k in s: 
+    ...:     d[k] += 1 
+    ...:                                                                             
+In [36]: d                                                                           
+Out[36]: defaultdict(int, {'m': 1, 'i': 4, 's': 4, 'p': 2})
+# 当一个字母首次遇到时，它就查询失败，所以 default_factory 调用 int() 来提供一个整数0作为默认值。自增操作然后建立对每个字母的计数。
+```
+
+* 设置 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 为 [`set`](https://docs.python.org/zh-cn/3/library/stdtypes.html#set) 使 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 用于构建字典集合
+
+```python
+>>> s = [('red', 1), ('blue', 2), ('red', 3), ('blue', 4), ('red', 1), ('blue', 4)]
+>>> d = defaultdict(set)
+>>> for k, v in s:
+...     d[k].add(v)
+...
+>>> sorted(d.items())
+[('blue', {2, 4}), ('red', {1, 3})]
+```
+
+
+
+
+
+#### join的用法
+
+* join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
 
   The string whose method is called is inserted in between each given string.
 
@@ -867,15 +871,19 @@ https://leetcode.com/problems/count-primes/
 
   ​    Example: '.'.join(['ab', 'pq', 'rs']) -> 'ab.pq.rs'
 
-* Ascii码和character的转换
-
-  ```python
-  # Get the ASCII number of a character
-  number = ord(char)
   
-  # Get the character given by an ASCII number
-  char = chr(number)
-  ```
+
+  
+
+#### Ascii码和character的转换
+
+```python
+# Get the ASCII number of a character
+number = ord(char)
+
+# Get the character given by an ASCII number
+char = chr(number)
+```
 
 * Return
 
