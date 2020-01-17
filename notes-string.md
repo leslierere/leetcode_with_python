@@ -1,6 +1,6 @@
 ##basics
 
-#### 8.5
+8.5
 
 #### 28. Implement strStr()
 
@@ -68,9 +68,7 @@ https://leetcode.com/problems/reverse-vowels-of-a-string/
 
 https://leetcode.com/problems/flip-game/
 
-
-
-#### 8.13
+8.13
 
 ####  294. Flip Game II
 
@@ -375,7 +373,7 @@ class Solution(object):
 
 
 
-### Substring
+## Substring
 
 #### 76. Minimum Window Substring
 
@@ -495,7 +493,7 @@ https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-charac
 
 
 
-### Palindrome
+## Palindrome
 
 #### 125. Valid Palindrome
 
@@ -895,7 +893,7 @@ https://leetcode.com/problems/palindrome-permutation-ii/discuss/120631/Short-Pyt
 
 
 
-### Parentheses
+## Parentheses
 
 #### 20. Valid Parentheses
 
@@ -1036,7 +1034,7 @@ class Solution:
 
 12.18
 
-### Subsequence
+## Subsequence
 
 #### 392. Is Subsequence
 
