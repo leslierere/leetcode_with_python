@@ -2,7 +2,5 @@
 
 
 
-## Algorithm
+* Route: Binary search->hash table->sort->string->math->tree->backtrack->linked list->dp
 
-* Start from: 8.12
-* Route: Binary search->hash table->sort->
