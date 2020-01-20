@@ -1,6 +1,4 @@
-## Foundation
-
-### 7.23
+7.23
 
 #### 27. Remove Element-two pointers
 
@@ -26,7 +24,7 @@ https://leetcode.com/problems/find-the-celebrity/
 
 
 
-### 7.24
+7.24
 
 #### 189. Rotate Array
 
@@ -77,7 +75,7 @@ https://leetcode.com/problems/h-index/
 
 
 
-### 7.25
+7.25
 
 #### 275. H-Index II
 
@@ -113,7 +111,7 @@ https://leetcode.com/problems/shortest-word-distance-ii/
 
 
 
-### 7.26
+7.26
 
 #### 245. Shortest Word Distance III
 
@@ -151,7 +149,7 @@ https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 
 
 
-### 7.27
+7.27
 
 #### 123. Best Time to Buy and Sell Stock III
 
@@ -214,7 +212,7 @@ https://leetcode.com/problems/increasing-triplet-subsequence/
 
 
 
-### 7.29
+7.29
 
 #### 42. Trapping Rain Water-not submitted
 
@@ -241,7 +239,7 @@ https://leetcode.com/problems/maximum-gap/submissions/
 
   
 
-### 7.30
+7.30
 
 #### 287. Find the Duplicate Number-similar to 136 Single number
 
@@ -300,7 +298,7 @@ https://leetcode.com/problems/insert-interval/
 
 
 
-### 7.31
+7.31
 
 #### 253. Meeting Rooms II
 
@@ -374,7 +372,7 @@ https://leetcode.com/problems/find-median-from-data-stream/
 
 
 
-### 8.2
+8.2
 
 #### 325. Maximum Size Subarray Sum Equals k
 
@@ -463,7 +461,7 @@ https://leetcode.com/problems/maximum-product-subarray/
 
 
 
-### 8.4
+8.4
 
 #### 163. Missing Ranges
 
@@ -560,7 +558,7 @@ https://leetcode.com/problems/wiggle-subsequence/
 
 
 
-### 8.5
+8.5
 
 #### 280. Wiggle Sort
 

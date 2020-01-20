@@ -371,6 +371,242 @@ https://leetcode.com/problems/maximal-rectangle/discuss/29054/Share-my-DP-soluti
 
 
 
+1.17
+
+### 363. Max Sum of Rectangle No Larger Than K
+
+https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/description/
+
+#### Solution-dp-worth
+
+First consider the problem *Max Sum of Rectangle* which is actually the 2D of the problem of *Max Sum of subarray* which can be solved using [Kadane’s Algorithm](https://hackernoon.com/kadanes-algorithm-explained-50316f4fd8a6)
+
+```java
+public int maxSumSubmatrix(int[][] matrix, int k) {
+    //2D Kadane's algorithm + 1D maxSum problem with sum limit k
+    //2D subarray sum solution
+    
+    //boundary check
+    if(matrix.length == 0) return 0;
+    
+    int m = matrix.length, n = matrix[0].length;
+    int result = Integer.MIN_VALUE;
+    
+    //outer loop should use smaller axis
+    //now we assume we have more rows than cols, therefore outer loop will be based on cols 
+    for(int left = 0; left < n; left++){
+        //array that accumulate sums for each row from left to right 
+        int[] sums = new int[m];
+        for(int right = left; right < n; right++){
+            //update sums[] to include values in curr right col
+            for(int i = 0; i < m; i++){
+                sums[i] += matrix[i][right];
+            }
+            
+            //we use TreeSet to help us find the rectangle with maxSum <= k with O(logN) time
+            TreeSet<Integer> set = new TreeSet<Integer>();
+            //add 0 to cover the single row case
+            set.add(0);//a set given for every different left and right boundary
+            int currSum = 0;
+            
+            for(int sum : sums){
+                currSum += sum; 
+                //we use sum subtraction (curSum - sum) to get the subarray with sum <= k
+                //therefore we need to look for the smallest sum >= currSum - k
+                Integer num = set.ceiling(currSum - k);//这个想法很赞
+              // ceiling()返回在这个集合中大于或者等于给定元素的最小元素，如果不存在这样的元素,返回null.
+                if(num != null) result = Math.max( result, currSum - num );
+                set.add(currSum);
+            }
+        }
+    }
+    
+    return result;
+}
+```
+
+
+
+### 198. House Robber
+
+https://leetcode.com/problems/house-robber/
+
+#### Solution-dp-easy
+
+会做tree里的337这个就没问题
+
+
+
+
+
+### 213. House Robber II
+
+https://leetcode.com/problems/house-robber-ii/
+
+#### Solution-dp
+
+A little change on the solution of 212, **1. not rob the 1st house; 2. not rob the last house**
+
+> Ref: https://leetcode.com/problems/house-robber-ii/discuss/59934/Simple-AC-solution-in-Java-in-O(n)-with-explanation
+>
+> Great solution. It took me a while to figure out why this is logically correct. At the first glance, I think the perfect way to split the problem is 1. not rob the 1st house; 2. rob 1st house, because 1 and 2 won't have any intersection (code below follows this idea and beats 100%). However, the way this solution splits this problem is 1. not rob the 1st house; 2. not rob the last house. As you can see, the second statement of these two split strategies are different and they are not logically equal because ***"not rob the last house" means you can choose to rob the 1st house or not***. Then why it is still correct? It is because the 2nd statement from the 2nd strategy contains the 2nd statement from the 1st strategy. In other words, the 2nd set has some overlap with the 1st set in the 2nd strategy. Since our goal is only to find the max, it is okay to include some overlap.
+
+
+
+### 276. Paint Fence
+
+https://leetcode.com/problems/paint-fence/description/
+
+#### Solution-recursive-TLE
+
+```python
+class Solution:
+    def numWays(self, n: int, k: int) -> int:
+        if n==0:
+            return 0
+        if n==1:
+            return k
+        if n==2:
+            return k**2
+        
+        return self.helper(3, n, k, k) + self.helper(2, n, k, k)
+            
+    def helper(self, begin, n, k, curSum): 
+        # every time we starts from the one with 2 choices
+        # which means last time we choose a color that's different from its previous one
+        if begin == n:
+            return curSum*(k-1)
+        elif begin>n:
+            return curSum
+        
+        elif begin+1<=n: # normal case
+            return self.helper(begin+2, n, k, curSum*(k-1)) + self.helper(begin+1, n, k, curSum*(k-1))
+```
+
+
+
+
+
+#### Solution-dp
+
+Ref: https://leetcode.com/problems/paint-fence/discuss/178010/The-only-solution-you-need-to-read
+
+其实还是可以根据recursive的推导出来，只是确实没想到
+
+```java
+class Solution {
+    public int numWays(int n, int k) {
+        // if there are no posts, there are no ways to paint them
+        if (n == 0) return 0;
+        
+        // if there is only one post, there are k ways to paint it
+        if (n == 1) return k;
+        
+        // if there are only two posts, you can't make a triplet, so you 
+        // are free to paint however you want.
+        // first post, k options. second post, k options
+        if (n == 2) return k*k;
+        
+        int table[] = new int[n+1];
+        table[0] = 0;
+        table[1] = k;
+        table[2] = k*k;
+        for (int i = 3; i <= n; i++) {
+            // the recursive formula that we derived
+            table[i] = (table[i-1] + table[i-2]) * (k-1);
+        }
+        return table[n];
+    }
+}
+```
+
+
+
+### 91. Decode Ways
+
+https://leetcode.com/problems/decode-ways/description/
+
+#### Solution-dp-by myself
+
+Think of it in the way as the one in 276
+
+```python
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        s1 = s.lstrip("0")
+        if s1!=s: # if there is 0 on the left side, unable to decode
+            return 0
+        
+        if len(s)<=1:
+            return len(s)
+        
+        dp = [1]
+        if int(s[0]+s[1])<=26:
+            if s[1] == '0':
+                dp.append(1)
+            else:
+                dp.append(2)
+        else:
+            if s[1]== '0':
+                return 0
+            else:
+                dp.append(1)
+            
+        for i in range(2, len(s)):
+            digits = int(s[i-1]+s[i])
+            if digits == 0:
+                return 0
+            elif digits<10: # 1-9
+                dp.append(dp[i-1])
+            elif digits==10 or digits==20:
+                dp.append(dp[i-2])
+            elif digits<=26:
+                dp.append(dp[i-2] + dp[i-1])
+                # dp[i-2] is the one the current will combine with the previous one
+            else:
+                if s[i]=='0':
+                    return 0
+                dp.append(dp[i-1])
+                
+        return dp[-1]
+```
+
+
+
+1.18
+
+### 10. Regular Expression Matching
+
+https://leetcode.com/problems/regular-expression-matching/description/
+
+#### Solution-dp-worth!!!
+
+Ref: https://leetcode.com/problems/regular-expression-matching/discuss/5684/C%2B%2B-O(n)-space-DP
+
+如何定义dp\[i][j], 开始想的是表示starting和ending的地方，但其实这个思路是不对的，想想backtrack时即使回退也是回退到s和p前面都match的index:
+
+> We define `dp[i][j]` to be `true` if `s[0..i)` matches `p[0..j)` and `false` otherwise. 
+
+state equation: 在这里我们相当于只有当前匹配上了我们才看之前的是否匹配上再进行更新，不然就肯定为False，也就是默认值
+
+> 1. `dp[i][j] = dp[i - 1][j - 1]`, if `p[j - 1] != '*' && (s[i - 1] == p[j - 1] || p[j - 1] == '.')`;
+> 2. `dp[i][j] = dp[i][j - 2]`, if `p[j - 1] == '*'` and the pattern repeats for 0 time;
+> 3. `dp[i][j] = dp[i - 1][j] && (s[i - 1] == p[j - 2] || p[j - 2] == '.')`, if `p[j - 1] == '*'` and the pattern repeats for at least 1 time.
+
+
+
+#### Solution-recursive-worth
+
+
+
+
+
+### 44. Wildcard Matching
+
+https://leetcode.com/problems/wildcard-matching/description/
+
+#### Solution-dp
+
 
 
 

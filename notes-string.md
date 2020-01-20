@@ -595,7 +595,7 @@ If mx<=i, we can only use mp[i]=1, and then we would compare the characters besi
 
 If mx>i, we would try to make use of the index that is symmatric to i with the center of id.
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4wyed1j31c00u0nce.jpg" alt="image-20191216205337687" style="zoom:15%;" />
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4wyed1j31c00u0nce.jpg" alt="image-20191216205337687" style="zoom:55%;" />
 
 
 
@@ -871,7 +871,7 @@ class Solution:
 
 
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4v862dj31c00u0nak.jpg" alt="image-20191225091155062" style="zoom:30%;" />
+
 
 
 
@@ -1030,6 +1030,8 @@ class Solution:
         return ans
 ```
 
+![image-20191218162133174](https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4ubxo5j31c00u0nce.jpg)
+
 
 
 12.18
@@ -1068,7 +1070,11 @@ class Solution:
         return dp[len(t)][len(s)]
 ```
 
-![image-20191218162133174](https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4ubxo5j31c00u0nce.jpg)
+
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4v862dj31c00u0nak.jpg" alt="image-20191225091155062" style="zoom:50%;" />
+
+
 
 
 
