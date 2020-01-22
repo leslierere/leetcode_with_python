@@ -1312,7 +1312,7 @@ class Solution:
 
 
 
-### 272. Closest Binary Search Tree Value II
+### 272. Closest Binary Search Tree Value II-$
 
 https://leetcode.com/problems/closest-binary-search-tree-value-ii/description/
 
@@ -1359,11 +1359,10 @@ class Solution:
             self.inorder(node.right, nodel)
 ```
 
-* Solution-一边inorder，一边更新, 40ms, **worth doing and thinking**
+* Solution-一边inorder，一边更新, 40ms, **worth doing and thinking**, 还是没想到@1.21
 
 ```python
 from collections import deque
-
 
 class Solution:
     def closestKValues(self, root: TreeNode, target: float, k: int) -> List[int]:
@@ -1389,6 +1388,10 @@ class Solution:
 
 
 * Solution-two stack-**worth doing and trying**
+
+Ref: https://leetcode.com/problems/closest-binary-search-tree-value-ii/discuss/70534/O(k-%2B-logn)-Python-Solution
+
+先得到了一个包含target的区间（sucessorStack, PredecessorStack), 建造函数来获取next successor和predecessor（从和target最近的往远处找）
 
 
 
@@ -1440,23 +1443,51 @@ def connect1(self, root):
         self.connect(root.right)
 ```
 
-* Solution - dis - stack
+by myself@1.21
+
+dfs向下伸时，左儿子指到右儿子，看看爸爸有没有右兄弟，如果有，右儿子指到爸爸兄弟的左儿子
+
+```python
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        if not root or not root.left:
+            return root
+        root.left.next = root.right
+        if root.next:
+            root.right.next = root.next.left
+        self.connect(root.left)
+        self.connect(root.right)
+        return root
+```
+
+
+
+* Solution - dfs - stack
 * Solution - bfs
 
 
 
-### 117. Populating Next Right Pointers in Each Node II
+### 117. Populating Next Right Pointers in Each Node II-$
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/description/
 
 * Solution-bfs/level order, done
+
+就用普通的level order还是简单的，但这样空间复杂度是O(N)
+
+另一种：https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/discuss/37824/AC-Python-O(1)-space-solution-12-lines-and-easy-to-understand
+
 * Solution-recursive-看看别人的
 
 
 
 
 
-### 314. Binary Tree Vertical Order Traversal
+
+
+### 314. Binary Tree Vertical Order Traversal-$
+
+想到思路实现很简单@1.21
 
 https://leetcode.com/problems/binary-tree-vertical-order-traversal/description/
 
@@ -1466,17 +1497,52 @@ https://leetcode.com/problems/binary-tree-vertical-order-traversal/discuss/76424
 
 
 
-### 95. Unique Binary Search Trees II
+### 95. Unique Binary Search Trees II-$
 
 https://leetcode.com/problems/unique-binary-search-trees-ii/
 
-* Solution-recursive, **worth thinking and doing**
+* Solution-recursive, **worth thinking and doing**-$
 
-https://leetcode.wang/leetCode-95-Unique-Binary-Search-TreesII.html
+Ref: https://leetcode.wang/leetCode-95-Unique-Binary-Search-TreesII.html
 
-* Solution-dynamic programming-太强了-**worth doing and thinking**
+但可以用memo加快
 
-https://leetcode.com/problems/unique-binary-search-trees-ii/discuss/31493/Java-Solution-with-DP
+```python
+class Solution:
+    def generateTrees(self, n: int) -> List[TreeNode]:
+        if not n:
+            return []
+        return self.helper(1, n)
+        
+    def helper(self, start, end):
+        
+        if start==end:
+            return [TreeNode(start)]
+        if start>end:
+            return [None]
+        
+        res = []
+        for i in range(start, end+1):
+            
+            lefts = self.helper(start, i-1)
+            rights = self.helper(i+1, end)
+            for left in lefts:
+                for right in rights:
+                    root = TreeNode(i)
+                    root.left = left
+                    root.right = right
+                    res.append(root)
+
+        return res
+```
+
+
+
+* Solution-dynamic programming-太强了-**worth doing and thinking**-$
+
+Ref: https://leetcode.com/problems/unique-binary-search-trees-ii/discuss/31493/Java-Solution-with-DP
+
+> **result[i]** stores the result until length **i**. For the result for length i+1, select the root node j from 0 to i, combine the result from left side and right side. Note for the right side we have to clone the nodes as the value will be offsetted by **j**.
 
 ```java
 public static List<TreeNode> generateTrees(int n) {
@@ -1520,11 +1586,11 @@ private static TreeNode clone(TreeNode n, int offset) {
 
 
 
-### 96. Unique Binary Search Trees
+### 96. Unique Binary Search Trees-$
 
 https://leetcode.com/problems/unique-binary-search-trees/description/
 
-* solution-**Catalan number **
+* solution-**Catalan number **-$
 
 Ref: https://leetcode.wang/leetCode-96-Unique-Binary-Search-Trees.html
 
@@ -1540,11 +1606,15 @@ Ref: https://leetcode.wang/leetCode-96-Unique-Binary-Search-Trees.html
 
 Definition: 
 
-> 令h ( 0 ) = 1，catalan 数满足递推式：
+> 令h ( 0 ) = 1， catalan 数满足递推式：(总之每项是两个（和为n-1）变量的函数的乘积)
 >
 > **h ( n ) = h ( 0 ) \* h ( n - 1 ) + h ( 1 ) \* h ( n - 2 ) + ... + h ( n - 1 ) \* h ( 0 ) ( n >=1 )**
 >
-> 例如：h ( 2 ) = h ( 0 ) * h ( 1 ) + h ( 1 ) * h ( 0 ) = 1 * 1 + 1 * 1 = 2
+> 例如：
+>
+> h ( 1 ) = h ( 0 ) * h ( 0 ) = 1
+>
+> h ( 2 ) = h ( 0 ) * h ( 1 ) + h ( 1 ) * h ( 0 ) = 1 * 1 + 1 * 1 = 2
 >
 > h ( 3 ) = h ( 0 ) * h ( 2 ) + h ( 1 ) * h ( 1 ) + h ( 2 ) * h ( 0 ) = 1 * 2 + 1 * 1 + 2 * 1 = 5
 >
