@@ -4,11 +4,11 @@
 
 1.7
 
-### 78. Subsets-经典题
+### 78. Subsets-经典题-$
 
 https://leetcode.com/problems/subsets/description/
 
-#### solution-recursive
+#### solution-recursive-$
 
 Ref: https://www.cnblogs.com/grandyang/p/4309345.html
 
@@ -59,7 +59,7 @@ private void getAns(int[] nums, int start, ArrayList<Integer> temp, List<List<In
 
 
 
-#### solution-iterative
+#### solution-iterative-$
 
 Ref: https://leetcode.com/problems/subsets/discuss/27278/C%2B%2B-RecursiveIterativeBit-Manipulation
 
@@ -89,7 +89,7 @@ public:
 
 
 
-* Solution-bit manipulation
+#### Solution-bit manipulation-$
 
 Ref: https://leetcode.wang/leetCode-78-Subsets.html
 
@@ -120,11 +120,15 @@ public List<List<Integer>> subsets(int[] nums) {
 
 
 
-### 90. Subsets II
+### 90. Subsets II-$
 
 https://leetcode.com/problems/subsets-ii/description/
 
 #### Solution-iterative, 在上一道基础上检查
+
+> Ref: https://leetcode.com/problems/subsets-ii/discuss/30137/Simple-iterative-solution
+>
+> If we want to insert an element which is a dup, we can only insert it after the newly inserted elements from last step.
 
 ```python
 class Solution:
@@ -150,7 +154,7 @@ class Solution:
 
 
 
-#### Solution-recursive-worth
+#### Solution-recursive-在上一道上改
 
 
 
@@ -183,7 +187,7 @@ class Solution:
 
 
 
-#### Solution2-backtrack-improvement
+#### Solution2-backtrack-improvement-$
 
 Ref: https://leetcode.com/problems/combinations/discuss/27002/Backtracking-Solution-Java/173730
 
@@ -251,17 +255,9 @@ class Solution:
 
 
 
-#### Solution-backtrack-worth
-
-还没写
 
 
-
-
-
-
-
-### 40. Combination Sum II
+### 40. Combination Sum II-看看comment
 
 https://leetcode.com/problems/combination-sum-ii/
 
@@ -294,7 +290,7 @@ class Solution:
 
 
 
-### 216. Combination Sum III
+### 216. Combination Sum III-看一下comment
 
 https://leetcode.com/problems/combination-sum-iii/description/
 
@@ -312,23 +308,42 @@ class Solution:
         if k<0 or remain<0:
             return
         
-        if k==0 and remain==0:
+        if k==0 and remain==0:#同时改变k就不用使用len(temp)来判断
             res.append(temp)
-        #k>0 and remain>0
-        elif k>0:    
-            for i in range(start,10):
-                self.helper(k-1, remain-i, res, i+1, temp+[i])
+           
+        for i in range(start,10):
+          	# 加下面两行进行判断
+        		if i>remain:
+                break  
+            self.helper(k-1, remain-i, res, i+1, temp+[i])
 ```
 
 
 
-### 377. Combination Sum IV
+### 377. Combination Sum IV-$
 
 https://leetcode.com/problems/combination-sum-iv/description/
 
-#### Solution-dynamic programming
+#### Solution-dynamic programming-worth
+
+
+
+Ref: http://zxi.mytechroad.com/blog/dynamic-programming/leetcode-377-combination-sum-iv/
 
 > 计数题目一般用dp来做
+
+```c++
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        dp = [1]+[0]*target # dp[i] represents for a target at i, the number of combinations
+        
+        for i in range(1, target+1):
+            for j in nums:
+                if i-j>=0:
+                    dp[i] += dp[i-j]
+                    
+        return dp[target]
+```
 
 
 
@@ -359,6 +374,10 @@ class Solution:
 ```
 
 
+
+#### Solution-followup
+
+https://leetcode.com/problems/combination-sum-iv/discuss/85041/7-liner-in-Python-and-follow-up-question
 
 
 
