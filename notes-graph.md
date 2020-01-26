@@ -311,3 +311,146 @@ class Solution(object):
         return [find_path(q) for q in queries]
 ```
 
+
+
+
+
+### 310. Minimum Height Trees
+
+https://leetcode.com/problems/minimum-height-trees/description/
+
+#### Solution-bfs-worth
+
+Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some-thoughts
+
+```python
+class Solution:
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        if n==1:
+            return [0]
+        nodes = [set() for _ in range(n)]# 这里不需要用字典，这里的list就是一个天然字典
+        
+        for i,j in edges:
+            nodes[i].add(j)
+            nodes[j].add(i)
+        
+        leaves = [i for i in range(n) if len(nodes[i])==1]
+        while n>2:
+            n-=len(leaves)
+            newLeaves = []
+            for leaf in leaves:
+                v = nodes[leaf].pop()
+                nodes[v].remove(leaf)
+                if len(nodes[v])==1:
+                    newLeaves.append(v)
+               
+            leaves = newLeaves
+                
+        return leaves
+```
+
+
+
+### 149. Max Points on a Line
+
+https://leetcode.com/problems/max-points-on-a-line/
+
+Ref: https://www.youtube.com/watch?v=7FPL7nAi9aM
+
+![image-20200125175557438](https://tva1.sinaimg.cn/large/006tNbRwgy1gb9mtptw7dj31c00u0nfy.jpg)
+
+```python
+# based on huahua's
+class Solution:
+    def maxPoints(self, points: List[List[int]]) -> int:
+        ans = 0
+        
+        
+        for i in range(len(points)):
+            sameP = 1
+            otherP = 0
+            dic = {}
+            point1 = points[i]
+            for j in range(i+1, len(points)):
+                point2 = points[j]
+                if point1[0]==point2[0] and point1[1]==point2[1]:
+                    sameP+=1
+                else:
+                    slope = self.getSlope(point1, point2)
+                    dic[slope] = dic.get(slope, 0)+1
+                    otherP = max(otherP, dic[slope])
+            ans = max(ans, sameP+otherP)
+            
+        return ans
+    
+    def getSlope(self, i, j):
+        dx = i[0]-j[0]
+        dy = i[1]-j[1]
+        
+        if dx==0:
+            return (i[0], 0)
+        if dy==0:
+            return (0, i[1])
+        
+        d = self.gcd(dx, dy)
+        return (dx//d, dy//d)
+    
+    def gcd(self, x, y):
+        if y==0:
+            return x
+        else:
+            return self.gcd(y, x%y)
+```
+
+
+
+
+
+
+
+
+
+### Knowledge
+
+Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some-thoughts
+
+> (1) A tree is an undirected graph in which any two vertices are
+> connected by exactly one path.
+>
+> (2) Any connected graph who has `n` nodes with `n-1` edges is a tree.
+>
+> (3) The degree of a vertex of a graph is the number of
+> edges incident to the vertex.
+>
+> (4) A leaf is a vertex of degree 1. An internal vertex is a vertex of
+> degree at least 2.
+>
+> (5) A path graph is a tree with two or more vertices that is not
+> branched at all.
+>
+> (6) A tree is called a rooted tree if one vertex has been designated
+> the root.
+>
+> (7) The height of a rooted tree is the number of edges on the longest
+> downward path between root and a leaf.
+
+
+
+
+
+#### gcd经典写法
+
+```python
+def gcd(self, x, y):
+  if y==0:
+    return x
+  else:
+    return self.gcd(y, x%y)
+```
+
+
+
+
+
+#### Trie
+
