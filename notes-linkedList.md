@@ -575,6 +575,3 @@ Ref: https://leetcode.com/problems/delete-node-in-a-linked-list/discuss/65454/Wh
 
 
 
-新写法：from [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii)
-
- "while ... else" clause

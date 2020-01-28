@@ -1,0 +1,1128 @@
+Python可以直接比较object吗？
+
+Counter 对不存在的直接加？
+
+
+
+
+
+## Notion
+
+### Tree
+
+Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some-thoughts
+
+> (1) A tree is an undirected graph in which any two vertices are
+> connected by exactly one path.
+>
+> (2) Any connected graph who has `n` nodes with `n-1` edges is a tree.
+>
+> (3) The degree of a vertex of a graph is the number of
+> edges incident to the vertex.
+>
+> (4) A leaf is a vertex of degree 1. An internal vertex is a vertex of
+> degree at least 2.
+>
+> (5) A path graph is a tree with two or more vertices that is not
+> branched at all.
+>
+> (6) A tree is called a rooted tree if one vertex has been designated
+> the root.
+>
+> (7) The height of a rooted tree is the number of edges on the longest
+> downward path between root and a leaf.
+
+
+
+### Return
+
+函数体内部可以用`return`随时返回函数结果；
+
+函数执行完毕也没有`return`语句时，自动`return None`。
+
+函数可以同时返回多个值，但其实就是一个tuple。
+
+
+
+
+
+### boolean
+
+The following values are considered false in Python:
+
+- `None`
+- `False`
+- Zero of any numeric type. For example, `0`, `0.0`, `0j`
+- Empty sequence. For example, `()`, `[]`, `''`.
+- Empty mapping. For example, `{}`
+- objects of Classes which has `__bool__()` or `__len()__` method which returns `0` or `False`
+
+
+
+### Bit Operation(Python)
+
+* ~ Binary Ones Complement
+
+  flips all the bits
+
+* & Binary AND
+
+  bits are turned on only if both original bits are turned on
+
+  > Used with 1, it basically masks the value to extract the lowest bit, or in other words will tell you if the value is even or odd.
+
+* |Binary OR
+
+  It copies a bit if it exists in either operand.
+
+* ^ Binary XOR(excluesive or)
+
+  turned on only if exaclty one of the original bits are turned on
+
+* \>\> Binary Right Shift
+
+  Bitwise right shift, it shifts the bits to the right by the specified number of places.
+
+```python
+a = 60            # 60 = 0011 1100 
+b = 13            # 13 = 0000 1101 
+
+c = a & b;        # 12 = 0000 1100
+
+c = a | b;        # 61 = 0011 1101 
+
+c = a ^ b;        # 49 = 0011 0001
+
+c = ~a;           # -61 = 1100 0011
+
+c = a << 2;       # 240 = 1111 0000
+
+c = a >> 2;       # 15 = 0000 1111
+```
+
+
+
+### Catalan number
+
+Definition: 
+
+> 令h ( 0 ) = 1， catalan 数满足递推式：(总之每项是两个（和为n-1）变量的函数的乘积)
+>
+> **h ( n ) = h ( 0 ) \* h ( n - 1 ) + h ( 1 ) \* h ( n - 2 ) + ... + h ( n - 1 ) \* h ( 0 ) ( n >=1 )**
+>
+> 例如：
+>
+> h ( 1 ) = h ( 0 ) * h ( 0 ) = 1
+>
+> h ( 2 ) = h ( 0 ) * h ( 1 ) + h ( 1 ) * h ( 0 ) = 1 * 1 + 1 * 1 = 2
+>
+> h ( 3 ) = h ( 0 ) * h ( 2 ) + h ( 1 ) * h ( 1 ) + h ( 2 ) * h ( 0 ) = 1 * 2 + 1 * 1 + 2 * 1 = 5
+>
+> 卡塔兰数有一个通项公式。
+>
+> <img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaolecv6wvj30i808qdgm.jpg" alt="image-20200107130949465" style="zoom:33%;" />
+
+
+
+### Dynamic Programming
+
+> Dynamic Programming is mainly an optimization over plain [recursion](https://www.geeksforgeeks.org/recursion/). Wherever we see a recursive solution that has repeated calls for same inputs, we can optimize it using Dynamic Programming. The idea is to simply store the results of subproblems, so that we do not have to re-compute them when needed later. This simple optimization reduces time complexities from exponential to polynomial. For example, if we write simple recursive solution for [Fibonacci Numbers](https://www.geeksforgeeks.org/program-for-nth-fibonacci-number/), we get exponential time complexity and if we optimize it by storing solutions of subproblems, time complexity reduces to linear.
+
+![](https://www.geeksforgeeks.org/wp-content/uploads/Dynamic-Programming-1.png)
+
+
+
+### Divide and Conquer
+
+Let's follow here a solution template for the divide and conquer problems :
+
+- Define the base case(s).
+- Split the problem into subproblems and solve them recursively.
+- Merge the solutions for the subproblems to obtain the solution for the original problem.
+
+
+
+### priority queue
+
+A priority queue is like a dictionary, it contains entries that each consists of a key and an associated value. However, while a dictionary is used when we want to be able to look up arbitrary key, a priority queue is used to prioritize entries, thus that you can easily access and manipulate the value with the largest/smallest key.
+
+* 一般的operation
+  * insert()
+  * min()
+  * removeMin()
+
+* Implementation
+
+Binary heap(i.e. a complete binary tree whose entries satisfy keep-order property. For example, the key of a child always >= the key of its parent, and in this way, 这是一个最小堆)
+
+To store as array, map treenodes to array indices with level-numbering: level-order traversal with root at index 1. In this way, node i's children are 2i and 2i+1, parent is i//2
+
+
+
+### hashtable&dictionary
+
+> A dictionary is a general concept that maps keys to values. There are many ways to implement such a mapping. A hashtable is a specific way to implement a dictionary. 
+>
+> In python, dictionary is a hash table.
+
+(ref: [https://stackoverflow.com/questions/2061222/what-is-the-true-difference-between-a-dictionary-and-a-hash-table](https://stackoverflow.com/questions/2061222/what-is-the-true-difference-between-a-dictionary-and-a-hash-table), https://mail.python.org/pipermail/python-list/2000-March/031607.html)
+
+
+
+### 正负无穷
+
+```python
+正无穷：float("inf"); 负无穷：float("-inf")
+```
+
+利用 inf 做简单加、乘算术运算仍会得到 inf
+
+
+
+### 乘除法
+
+**/** 默认得到float
+
+**//** 舍小数得到int
+
+
+
+## Function
+
+### split()
+
+不管中间空格有几个都可以分组
+
+
+
+### join()
+
+join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
+
+The string whose method is called is inserted in between each given string.
+
+The result is returned as a new string.
+
+Example: 
+
+```python
+'.'.join(['ab', 'pq', 'rs'])
+>>>'ab.pq.rs'
+```
+
+
+
+
+
+
+
+### count()
+
+```
+list.count(obj)
+str.count(sub, start= 0,end=len(string))
+#sub -- 搜索的子字符串
+#start -- 字符串开始搜索的位置。默认为第一个字符,第一个字符索引值为0。
+#end -- 字符串中结束搜索的位置。字符中第一个字符的索引为 0。默认为字符串的最后一个位置。
+```
+
+
+
+### enumerate()
+
+用于将一个可遍历的数据对象(如列表、元组或字符串)组合为一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。
+
+`enumerate(sequence, [start=0])`
+
+
+
+### map()
+
+map(function, iterable,…)
+
+iterable,…可以传入一个或多个序列
+
+python3返回迭代器
+
+
+
+### lambda
+
+匿名函数：lambda x: x*x 表示一下代码
+
+```python
+def f(x):
+    return x * x
+```
+
+
+
+### 列表生成器List Comprehensions
+
+生成[1x1, 2x2, 3x3, ..., 10x10], 把要生成的元素`x * x`放到前面，后面跟`for`循环，for循环后面还可以加上if判断，这样我们就可以筛选出仅偶数的平方：
+
+```python
+>>>[x * x for x in range(1, 11)]
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+>>> [x * x for x in range(1, 11) if x % 2 == 0]
+[4, 16, 36, 64, 100]
+```
+
+列表生成式也可以使用两个变量来生成list:
+
+```python
+>>> d = {'x': 'A', 'y': 'B', 'z': 'C' }
+>>> [k + '=' + v for k, v in d.items()]
+['y=B', 'x=A', 'z=C']
+```
+
+leetcode760:
+
+```python
+def numJewelsInStones(self, J: str, S: str) -> int:
+        import collections 
+        stones = collections.Counter(S)
+        return sum([stones[j] for j in J])
+```
+
+Ref: https://leetcode.com/problems/jewels-and-stones/discuss/327540/Python-hashmap-esay-solution
+
+
+
+### any()&all()
+
+`any()` function returns True if any item in an iterable are true, otherwise it returns False.
+
+`any(*iterable*)`
+
+`all()` returns true if all of the items are True (or if the iterable is empty). All can be thought of as a sequence of AND operations on the provided iterables. It also short circuit the execution i.e. stop the execution as soon as the result is known.
+
+
+
+
+
+### max()
+
+https://leetcode.com/problems/longest-word-in-dictionary/discuss/186128/O(1)-Space!-NlogN-Solution!-PythonC%2B%2B
+
+### zip()
+
+[https://leetcode.com/problems/sentence-similarity/discuss/109624/Simple-Python-Solution-32ms!](https://leetcode.com/problems/sentence-similarity/discuss/109624/Simple-Python-Solution-32ms!)
+
+**zip()** 函数用于将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的对象，这样做的好处是节约了不少的内存。
+
+我们可以使用 list() 转换来输出列表。
+
+如果各个迭代器的元素个数不一致，则返回列表长度与最短的对象相同，利用 ***** 号操作符，可以将元组解压为列表。
+
+```python
+>>>a = [1,2,3]
+>>> b = [4,5,6]
+>>> c = [4,5,6,7,8]
+>>> zipped = zip(a,b)     # 返回一个对象
+>>> zipped
+<zip object at 0x103abc288>
+>>> list(zipped)  # list() 转换为列表
+[(1, 4), (2, 5), (3, 6)]
+>>> list(zip(a,c))              # 元素个数与最短的列表一致
+[(1, 4), (2, 5), (3, 6)]
+
+>>> a1, a2 = zip(*zip(a,b))          # 与 zip 相反，zip(*) 可理解为解压，返回二维矩阵式
+>>> list(a1)
+[1, 2, 3]
+>>> list(a2)
+[4, 5, 6]
+```
+
+
+
+
+
+### Ascii-character
+
+```python
+# Get the ASCII number of a character
+number = ord(char)
+
+# Get the character given by an ASCII number
+char = chr(number)
+```
+
+
+
+### String
+
+#### string.find()
+
+```python
+str.find(sub[, start[, end]] )
+```
+
+- Parameter
+
+  * **sub** - It's the substring to be searched in the str string.
+
+  * **start** and **end** (optional) - substring is searched within `str[start:end]`
+
+- It returns value: 
+
+  * If substring exists inside the string, it returns the index of first occurence of the substring.
+  * If substring doesn't exist inside the string, it returns -1.
+
+#### string.count()
+
+```python
+# S.count(sub[, start[, end]]) -> int
+s = 'apple'
+s.count('p') 
+# Out[12]: 2
+```
+
+
+
+#### string.isalnum()
+
+Return True if the string is an alpha-numeric string, False otherwise.
+
+类似的还有string.isdigit()检测字符串是否只由数字组成 , string.isalpha(), 检测字符串是否只由字母组成
+
+```python
+In [16]: s='a'                                                                  
+In [17]: s.isalnum()                                                            
+Out[17]: True
+```
+
+
+
+
+
+#### isupper(), islower(), lower(), upper()
+
+```python
+In [133]: "9".lower()   # 不会报错                                                             
+Out[133]: '9'
+```
+
+
+
+
+
+
+
+### set()
+
+可以对字符串操作
+
+```python
+s = 'apple'
+set(s) 
+# Out[11]: {'a', 'e', 'l', 'p'}
+```
+
+
+
+### int()
+
+Convert base-2 binary number string to int](https://stackoverflow.com/questions/8928240/convert-base-2-binary-number-string-to-int)
+
+```python
+>>> int('11111111', 2)
+255
+```
+
+
+
+#### Covert int to binary number string-bin()
+
+
+
+
+
+
+
+## Module
+
+### Container
+
+#### list
+
+- 排序
+
+  * sorted()
+
+  It returns a new sorted list
+
+  ```python
+  >>> sorted([5, 2, 3, 1, 4])
+  [1, 2, 3, 4, 5]
+  ```
+
+  * [`list.sort()`](https://docs.python.org/3/library/stdtypes.html#list.sort)
+
+  It modifies the list in-place (and returns `None`).
+
+  Another difference is that the `list.sort()` method is only defined for lists. In contrast, the `sorted()`function accepts any iterable.
+
+- `numbers = list(range(1, 6, 2)) #[1, 3, 5]`
+
+- 复制列表
+
+  `list2 = list1[:]`
+
+- reverse()
+
+```python
+list.reverse()
+```
+
+
+
+#### tuple
+
+* 如果要定义一个空的tuple，可以写成`()`
+
+  ```pytho
+  >>> t = ()
+  >>> t
+  ()
+  ```
+
+* 只有1个元素的tuple定义时必须加一个逗号`,`，来消除歧义：
+
+  ```python
+  >>> t = (1,)
+  >>> t
+  (1,)
+  ```
+
+#### dict
+
+- dict的get()
+
+  如果key不存在，可以返回`None`，或者自己指定的value
+
+  ```python
+  >>> d.get('Thomas')
+  >>> d.get('Thomas', -1)
+  -1
+  ```
+
+#### set
+
+set和dict类似，也是一组key的集合，但不存储value。由于key不能重复，所以，在set中，没有重复的key。要创建一个set，需要提供一个list作为输入集合.
+
+* 将一个字符串变为单个字母的set
+
+```python
+s1 = set("QWERTYUIOPqwertyuiop")
+
+print(s1)
+#{'T', 'e', 't', 'P', 'O', 'r', 'u', 'Y', 'I', 'Q', 'q', 'y', 'p', 'W', 'R', 'w', 'i', 'E', 'o', 'U'}
+```
+
+* set可以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作：
+
+```python
+>>> s1 = set([1, 2, 3])
+>>> s2 = set([2, 3, 4])
+>>> s1 & s2
+{2, 3}
+>>> s1 | s2
+{1, 2, 3, 4}
+```
+
+ 
+
+### collection
+
+#### collections.Counter()
+
+Ref: https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter
+
+一个 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 是一个 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 的子类，用于计数可哈希对象。它是一个集合，元素像字典键(key)一样存储，它们的计数存储为值。计数可以是任何整数值，包括0和负数。
+
+```python
+s='apple'
+count = collections.Counter(s) 
+In [15]: count                                                                  
+Out[15]: Counter({'a': 1, 'p': 2, 'l': 1, 'e': 1})
+
+In [17]: c = collections.Counter({'red': 4, 'blue': 2})                         
+In [18]: c                                                                      
+Out[18]: Counter({'red': 4, 'blue': 2})
+  
+In [19]: c =collections.Counter(cats=4, dogs=8)                                 
+In [20]: c                                                                      
+Out[20]: Counter({'cats': 4, 'dogs': 8})
+```
+
+
+
+* Counter对象有一个字典接口，如果引用的键没有任何记录，就返回一个0，而不是弹出一个 [`KeyError`](https://docs.python.org/zh-cn/3/library/exceptions.html#KeyError)
+
+  ```python
+  >>> c = Counter(['eggs', 'ham'])
+  >>> c['bacon']# count of a missing element is zero
+  0
+  ```
+
+* 使用 `del` 来删除key
+
+* elements()
+
+  返回一个迭代器，每个元素重复计数的个数。元素顺序是任意的。如果一个元素的计数小于1， [`elements()`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter.elements) 就会忽略它。
+
+  ```python
+  >>> c = Counter(a=4, b=2, c=0, d=-2)
+  >>> sorted(c.elements())
+  ['a', 'a', 'a', 'a', 'b', 'b']
+  ```
+
+* 通常字典方法都可用于 [`Counter`](https://docs.python.org/zh-cn/3/library/collections.html#collections.Counter) 对象
+
+```python
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        count = collections.Counter(s)
+        l = count.values()#返回每个值个数的一个list
+        
+        for k, v in enumerate(s):
+            if count[v]==1:
+                return k
+        return -1
+```
+
+* 常用方法
+
+```python
+In [20]: c                                                                      
+Out[20]: Counter({'cats': 4, 'dogs': 8})
+  
+sum(c.values())                 # total of all counts
+c.clear()                       # reset all counts
+list(c)                         # list unique elements
+In [22]: list(c)                                                                  
+Out[22]: ['cats', 'dogs']
+  
+set(c)                          # convert to a set
+In [21]: set(c)                                                                   
+Out[21]: {'cats', 'dogs'}
+  
+dict(c)                         # convert to a regular dictionary
+c.items()                       # convert to a list of (elem, cnt) pairs
+In [23]: c.items()                                                                
+Out[23]: dict_items([('cats', 4), ('dogs', 8)])
+  
++c                              # remove zero and negative counts
+>>> c = Counter(a=2, b=-4)
+>>> +c
+Counter({'a': 2})
+```
+
+* 数学操作
+
+```python
+>>> c = Counter(a=3, b=1)
+>>> d = Counter(a=1, b=2)
+>>> c + d                       # add two counters together:  c[x] + d[x]
+Counter({'a': 4, 'b': 3})
+>>> c - d                       # subtract (keeping only positive counts)
+Counter({'a': 2})
+>>> c & d                       # intersection:  min(c[x], d[x]) 
+Counter({'a': 1, 'b': 1})
+>>> c | d                       # union:  max(c[x], d[x])
+Counter({'a': 3, 'b': 2})
+```
+
+
+
+#### collections.defaultdict()
+
+* *class* `collections.defaultdict`([*default_factory*[, *...*]])
+
+  返回一个新的类似字典的对象。 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 是内置 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 类的子类。它重载了一个方法并添加了一个可写的实例变量。其余的功能与 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 类相同，此处不再重复说明。
+
+  第一个参数 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 提供了一个初始值。它默认为 `None` 。所有的其他参数都等同与 [`dict`](https://docs.python.org/zh-cn/3/library/stdtypes.html#dict) 构建器中的参数对待，包括关键词参数。
+
+* 使用 [`list`](https://docs.python.org/zh-cn/3/library/stdtypes.html#list) 作为 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory)
+
+```python
+In [24]: s = [('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]    
+In [26]: d = collections.defaultdict(list)                                           
+In [27]: for k, v in s: 
+    ...:     d[k].append(v) 
+    ...:                                                                             
+In [28]: d                                                                           
+Out[28]: defaultdict(list, {'yellow': [1, 3], 'blue': [2, 4], 'red': [1]})
+# 当每个键第一次遇见时，它还没有在字典里面；所以条目自动创建，通过 default_factory 方法，并返回一个空的 list 。 list.append() 操作添加值到这个新的列表里。当键再次被存取时，就正常操作， list.append() 添加另一个值到列表中。这个计数比它的等价方法 dict.setdefault() 要快速和简单
+```
+
+* 设置 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 为 [`int`](https://docs.python.org/zh-cn/3/library/functions.html#int) ，使 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 在计数方面发挥好的作用（像其他语言中的bag或multiset）
+
+```python
+In [32]: d = collections.defaultdict(int)                                            
+In [33]: s = 'mississippi'                                                           
+In [34]: d = collections.defaultdict(int)                                            
+
+In [35]: for k in s: 
+    ...:     d[k] += 1 
+    ...:                                                                             
+In [36]: d                                                                           
+Out[36]: defaultdict(int, {'m': 1, 'i': 4, 's': 4, 'p': 2})
+# 当一个字母首次遇到时，它就查询失败，所以 default_factory 调用 int() 来提供一个整数0作为默认值。自增操作然后建立对每个字母的计数。
+```
+
+* 设置 [`default_factory`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict.default_factory) 为 [`set`](https://docs.python.org/zh-cn/3/library/stdtypes.html#set) 使 [`defaultdict`](https://docs.python.org/zh-cn/3/library/collections.html#collections.defaultdict) 用于构建字典集合
+
+```python
+>>> s = [('red', 1), ('blue', 2), ('red', 3), ('blue', 4), ('red', 1), ('blue', 4)]
+>>> d = defaultdict(set)
+>>> for k, v in s:
+...     d[k].add(v)
+...
+>>> sorted(d.items())
+[('blue', {2, 4}), ('red', {1, 3})]
+```
+
+
+
+#### collections.deque()
+
+https://docs.python.org/zh-cn/3/library/collections.html#collections.deque
+
+*class* `collections.deque([*iterable*[, *maxlen*]])`
+
+双向队列对象
+
+```python
+>>> from collections import deque
+>>> d = deque('ghi')                 # make a new deque with three items
+>>> d.append('j')                    # add a new entry to the right side
+>>> d.appendleft('f')                # add a new entry to the left side
+>>> d                                # show the representation of the deque
+deque(['f', 'g', 'h', 'i', 'j'])
+
+>>> d.pop()                          # return and remove the rightmost item
+'j'
+>>> d.popleft()                      # return and remove the leftmost item
+'f'
+>>> list(d)                          # list the contents of the deque
+['g', 'h', 'i']
+>>> d[0]                             # peek at leftmost item
+'g'
+>>> d[-1]                            # peek at rightmost item
+'i'
+
+>>> list(reversed(d))                # list the contents of a deque in reverse
+['i', 'h', 'g']
+>>> 'h' in d                         # search the deque
+True
+>>> d.extend('jkl')                  # add multiple elements at once
+>>> d
+deque(['g', 'h', 'i', 'j', 'k', 'l'])
+>>> d.rotate(1)                      # right rotation
+>>> d
+deque(['l', 'g', 'h', 'i', 'j', 'k'])
+>>> d.rotate(-1)                     # left rotation
+>>> d
+deque(['g', 'h', 'i', 'j', 'k', 'l'])
+
+>>> deque(reversed(d))               # make a new deque in reverse order
+deque(['l', 'k', 'j', 'i', 'h', 'g'])
+>>> d.clear()                        # empty the deque
+>>> d.pop()                          # cannot pop from an empty deque
+Traceback (most recent call last):
+    File "<pyshell#6>", line 1, in -toplevel-
+        d.pop()
+IndexError: pop from an empty deque
+
+>>> d.extendleft('abc')              # extendleft() reverses the input order
+>>> d
+deque(['c', 'b', 'a'])
+```
+
+
+
+
+
+### queue
+
+https://docs.python.org/3/library/queue.html
+
+* *class* `queue.Queue(*maxsize=0*)`
+
+Constructor for a **FIFO** queue. *maxsize* is an integer that sets the upperbound limit on the number of items that can be placed in the queue. Insertion will block once this size has been reached, until queue items are consumed. If *maxsize* is less than or equal to zero, the queue size is infinite.
+
+* *class* `queue.LifoQueue(maxsize=0)`
+
+Constructor for a **LIFO** queue. 
+
+* class `queue.PriorityQueue(maxsize=0)`
+
+Constructor for a priority queue. The lowest valued entries are retrieved first (the lowest valued entry is the one returned by `sorted(list(entries))[0]`).
+
+##### Public methods for [`Queue`](https://docs.python.org/3/library/queue.html#queue.Queue), [`LifoQueue`](https://docs.python.org/3/library/queue.html#queue.LifoQueue), or [`PriorityQueue`](https://docs.python.org/3/library/queue.html#queue.PriorityQueue)
+
+* `Queue.qsize()`
+
+  Return the approximate size of the queue. Note, qsize() > 0 doesn’t guarantee that a subsequent get() will not block, nor will qsize() < maxsize guarantee that put() will not block.
+
+* `Queue.empty()`
+
+  Return `True` if the queue is empty, `False` otherwise.
+
+* `Queue.full()`
+
+  Return `True` if the queue is full, `False` otherwise. 
+
+* `Queue.put(item, block=True, timeout=None)`
+
+  Put item into the queue. If optional args block is true and timeout is None (the default), block if necessary until a free slot is available. If timeout is a positive number, it blocks at most timeout seconds and raises the Full exception if no free slot was available within that time. Otherwise (block is false), put an item on the queue if a free slot is immediately available, else raise the Full exception (timeout is ignored in that case).
+
+* `Queue.get(*block=True*, *timeout=None*)`
+
+  Remove and return an item from the queue. 
+
+* `Queue.join()`
+
+  Blocks until all items in the queue have been gotten and processed.
+
+
+
+### heapq
+
+可以参照cs61b-priority queue
+
+***Priority queue in Python, 堆***
+
+> 堆是一种树形数据结构，其中子节点与父节点之间是一种有序关系。最大堆中父节点大于或等于两个子节点，最小堆父节点小于或等于两个子节点。Python的heapq模块实现了一个最小堆。
+
+* 创建堆
+
+  * 用[]初始化
+
+* 已有list转化为heap，[heapify()](https://docs.python.org/zh-cn/3/library/heapq.html#heapq.heapify)，heapq.heapify(*list*)
+
+* heapq模块可以接受元组对象，默认元组的第一个元素作为`priority`
+
+* heapq.heappush(*heap*, *item*)
+
+  将 *item* 的值加入 *heap* 中，保持堆的不变性。
+
+* heapq.heappop(*heap*)
+
+  弹出并返回 heap 的最小的元素，保持堆的不变性。如果堆为空，抛出 IndexError 。使用 heap[0] ，可以只访问最小的元素而不弹出它。
+
+* heapq.heappushpop(*heap*, *item*)
+
+  将 item 放入堆中，然后弹出并返回 heap 的最小元素。该组合操作比先调用  heappush() 再调用 heappop()运行起来更有效率。
+
+***Real Priority queue in Python***
+
+[`PriorityQueue`](https://docs.python.org/3/library/queue.html#queue.PriorityQueue)
+
+
+
+
+
+
+
+### bisect
+
+Ref: https://docs.python.org/zh-cn/3.6/library/bisect.html
+
+这个模块对有序列表提供了支持，使得他们可以在插入新数据仍然保持有序。
+
+* `bisect.bisect_left(*a*, *x*, *lo=0*, *hi=len(a)*)`
+
+  在 *a* 中找到 *x* 合适的插入点以维持有序。参数 *lo* 和 *hi* 可以被用于确定需要考虑的子集；默认情况下整个列表都会被使用。如果 *x* 已经在 *a* 里存在，那么插入点会在已存在元素之前（也就是左边）。
+
+* `bisect.bisect_right(*a*, *x*, *lo=0*, *hi=len(a)*)`
+
+  Similar to bisect_left(), but returns an insertion point which comes after (to the right of) any existing entries of item in list.
+
+* `bisect.bisect(*a*, *x*, *lo=0*, *hi=len(a)*)`
+
+  Alias for `bisect_right()`
+
+```python
+In [39]: import bisect
+In [42]: data = [2,4,6,8]                                                            
+
+In [43]: bisect.bisect(data,1)                                                       
+Out[43]: 0
+
+In [44]: bisect.bisect(data,4)                                                       
+Out[44]: 2
+
+In [45]: bisect.bisect_right(data,4)                                                 
+Out[45]: 2
+
+In [46]: bisect.bisect_left(data,4)                                                  
+Out[46]: 1
+```
+
+
+
+
+
+
+
+
+
+
+
+## 经典写法
+
+### GCD
+
+```python
+def gcd(self, x, y):
+  if y==0:
+    return x
+  else:
+    return self.gcd(y, x%y)
+```
+
+
+
+
+
+### Traversal
+
+ref: https://www.youtube.com/watch?v=A6iCX_5xiU4
+
+![image-20200103121202462](https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5wbuomj31c00u0n9b.jpg)
+
+* In a **_preorder_** traversal, you visit each node before recursively visiting its children, which are visited from left to right. The root is visited first.
+
+  A preorder traversal is a natural way to print a directory’s structure. Simply have the method visit() *print each node of the tree*.
+
+```java
+class SibTreeNode {
+  public void preorder() { 
+    this.visit(); if (firstChild != null) { 
+      firstChild.preorder(); 
+    } 
+    if (nextSibling != null) { 
+      nextSibling.preorder(); 
+    }
+  }
+}
+```
+
+* In a **_postorder_** traversal, you visit each node’s children (in left-to-right order) before the node itself.
+
+```java
+public void postorder() {
+  if (firstChild != null) { 
+    firstChild.postorder(); 
+  } 
+  this.visit(); 
+  if (nextSibling != null) {
+    nextSibling.postorder(); 
+  }
+}
+```
+
+​	A postorder traversal visits the nodes in this order.
+
+<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5x3gfzj308y06uaa3.jpg" alt="image-20200102202316343" style="zoom:40%;" />
+
+​	The postorder() code is trickier than it looks. The best way to understand it is to draw a depth-two tree on paper, then pretend you’re the computer and execute the algorithm carefully. Trust me on this. It’s worth your time.
+
+​	A postorder traversal is the *natural way to sum the total disk space used in the root directory and its descendants*. The method visit() sums "this" node’s disk space with the disk space of all its children. In the example above, a postorder traversal would first sum the sizes of the files in hw1/ and hw2/; then it would visit hw/ and sum its two children. The last thing it would compute is the total disk space at the root ˜jrs/61b/, which sums all the files in the tree.
+
+* Binary trees allow for an **_inorder_** traversal: recursively traverse the root’s left subtree (rooted at the left child), then the root itself, then the root’s right subtree.
+* In a **_level-order_** traversal, you visit the root, then all the depth-1 nodes (from left to right), then all the depth-2 nodes, et cetera. The level-order traversal of our expression tree is "+ * ^ 3 7 4 2" (which doesn’t mean much).Unlike the three previous traversals, a level-order traversal is not straightforward to define recursively. However, a level-order traversal can be done in O(n) time.***Use a queue, which initially contains only the root***. Then repeat the following steps:
+  - Dequeue a node.
+  - Visit it.
+  - Enqueue its children (in order from left to right). Continue until the queue is empty.
+
+**A final thought**: if you use a stack instead of a queue, and push each node’s children in reverse order--from right to left (so they pop off the stack in order from left to right)--you perform a preorder traversal. Think about why.
+
+
+
+
+
+## Trick
+
+### 防止0的出现
+
+```python
+size = (b-a)//(len(num)-1) or 1
+```
+
+
+
+### The use of *
+
+Ref: https://zhuanlan.zhihu.com/p/54738146
+
+* 解压(unpack)的功能。zip函数的基本用法如下:
+
+```python
+stuff = ['apple','banana','peach']
+money = [10, 5, 7]
+
+pair = list(zip(stuff,money))
+# pair = [('apple',10),('banana',5),('peach',7)]
+```
+
+但是如果我们现在已经有 pair 这个 list 了，希望能够还原成stuff 和 money 两个 list,我们就需要用到*符号:
+
+```python
+stuff,money = zip(*pair)
+```
+
+* \* 对于迭代对象的作用
+
+```python
+def do_something(x,y,z):
+    print('x is ', x)
+    print('y is ', y)
+    print('z is ', z)
+
+list1 = ['a','b','c']
+
+>>> do_something(list1)
+Trackback (most recent call last):
+   File "<stdin>", line1, in <module>
+TypeError: do() missing 2 required positional arguments: 'y' and 'z'
+
+>>> do_something(*list1)
+x is a
+y is b
+z is c
+```
+
+* **的用法
+
+对于字典(dict)来说，我们也可以使用`*`运算符，传入key值:
+
+```python
+dict1 = {'x':1, 'y':2, 'z':3}
+
+>>> do_something(*dict1)
+x is x
+y is y
+z is z
+```
+
+传入 value 值，我们需要使用`**`运算符:
+
+```python
+>>> do_somthing(**dict1)
+x is 1
+y is 2
+z is 3
+```
+
+**一定要注意的是，此处的用法必须要求函数形参（do_something(x,y,z)， 形参是x, y, z这三个）与字典 key 值一一对应**，请看下面的用法:
+
+```python
+dict2 = {'z':1, 'x':2, 'y':3}
+>>> do_something(**dict2)
+x is 2
+y is 3
+z is 1
+
+dict3 = {'a':1, 'b':2, 'c':3}
+>>> do_something(**dict3)
+# TypeError: do_something() missing 1 required positional argument: 'x'
+```
+
+* `*args` 和`**kwargs`
+
+`*args`和`**kwargs`是我们经常见到的两个参数，但这两个参数究竟是干什么的可能有些人仍有疑惑。其实它们的用法也很简单，对于一个函数而言，如果你不确定它还有什么待传入的参数，就不妨用一个`*args`(当然你不一定非得叫`args`，但一般都喜欢起这个名字)，它将输入的多余形参以元组形式保存在`args`中:
+
+```python
+#两个数的加法
+def adder_2(x,y):
+  return x+y
+
+#三个数的加法
+def adder_3(x,y,z):
+  return x+y+z
+
+# 无限个数的加法
+def adder_unlimited(*args):
+   result = 0
+   for num in args:
+       result += num
+   return result
+
+>>> adder_unlimited(1)
+1
+>>> adder_unlimited(1,2)
+3
+>>> adder_unlimited(1,2,3,4)
+10
+
+>>> list_num = [1,2,3,4]
+>>> adder_unlimited(*list_num)  #活学活用
+10
+```
+
+`**kwargs`效果则是将输入的未定义的形参及其对应的值存在`kwargs`字典里(例子来源Reference 4):
+
+```python
+def intro(**data):
+    print("\nData type of argument:",type(data))
+    for key, value in data.items():
+        print("{} is {}".format(key,value))
+
+>>> intro(Firstname="Sita", Lastname="Sharma", Age=22, Phone=1234567890)
+
+Data type of argument: <class 'dict'>
+Firstname is Sita
+Lastname is Sharma
+Age is 22
+Phone is 1234567890
+```
+
+因此，对于一个好的 API 来说，应该尽量使用`*args`和`**kwargs`以提高程序稳定性
+
+
+
+to be continued......
+
+
+
+### The use of comma
+
+Ref: https://leetcode.com/problems/summary-ranges/discuss/63193/6-lines-in-Python
+
+I have these two basic cases:
+
+```python
+ranges += [],
+r[1:] = n,
+```
+
+Why the trailing commas? Because it turns the right hand side into a tuple and I get the same effects as these more common alternatives:
+
+```python
+ranges += [[]]
+or
+ranges.append([])
+
+r[1:] = [n]
+```
+
+
+
+Without the comma, ...
+
+- `ranges += []` wouldn't add `[]` itself but only its elements, i.e., nothing.
+- `r[1:] = n` wouldn't work, because my `n` is not an iterable.
+
+Why do it this way instead of the more common alternatives I showed above? Because it's shorter and faster (according to tests I did a while back).
+
+
+
+
+
+###  "while ... else" clause
+
+Ref:  [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii)

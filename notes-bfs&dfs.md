@@ -35,7 +35,7 @@ def dfs(self, grid, i, j):
 
 
 
-### 286. Walls and Gates
+### 286. Walls and Gates-$
 
 https://leetcode.com/problems/walls-and-gates/description/
 
@@ -49,7 +49,7 @@ Ref: https://leetcode.com/problems/walls-and-gates/discuss/72746/My-short-java-s
 
 #### Solution-bfs-queue-worth
 
-Ref: https://leetcode.com/problems/walls-and-gates/
+Ref: https://leetcode.com/problems/walls-and-gates/discuss/72753/6-lines-O(mn)-Python-BFS
 
 ```python
 def wallsAndGates(self, rooms):
@@ -63,7 +63,7 @@ def wallsAndGates(self, rooms):
 
 
 
-### 130. Surrounded Regions
+### 130. Surrounded Regions-想想思路
 
 https://leetcode.com/problems/surrounded-regions/
 
@@ -79,7 +79,7 @@ class Solution:
         """
         if not board:
             return
-        
+        # 先找到边上的mark好，再把所有0翻过来
         rows = len(board)
         cols = len(board[0])
         
@@ -88,13 +88,13 @@ class Solution:
                 
         marked = [[0 for i in range(cols)] for j in range(rows)]
         
-        # start from top and bottom borader
+        # start from top and bottom boarder
         for i in [0, rows-1]:
             for j in range(cols):
                 if board[i][j]=='O':
                     self.dfs(i, j, board, marked)
                     
-        # start from left and right borader            
+        # start from left and right boarder            
         for i in range(1, rows-1):
             for j in [0, cols-1]:
                 if board[i][j]=='O':
@@ -153,7 +153,7 @@ def solve(self, board):
 
 
 
-### 339. Nested List Weight Sum
+### 339. Nested List Weight Sum-$
 
 https://leetcode.com/problems/nested-list-weight-sum/description/
 
@@ -183,7 +183,7 @@ public int depthSum(List<NestedInteger> list, int depth) {
 
 
 
-### 364. Nested List Weight Sum II
+### 364. Nested List Weight Sum II-$
 
 https://leetcode.com/problems/nested-list-weight-sum-ii/
 
@@ -222,7 +222,7 @@ Ref: https://leetcode.com/problems/nested-list-weight-sum-ii/discuss/114195/Java
 
 
 
-### 127. Word Ladder
+### 127. Word Ladder-$
 
 https://leetcode.com/problems/word-ladder/description/
 
@@ -252,11 +252,135 @@ class Solution:
 
 
 
+### 126. Word Ladder II-$
+
+https://leetcode.com/problems/word-ladder-ii/description/
+
+#### Solution-bfs
+
+https://leetcode.com/problems/word-ladder-ii/discuss/40434/C%2B%2B-solution-using-standard-BFS-method-no-DFS-or-backtracking
+
+> The line `wordList.insert(endWord);` should be deleted in latest problem, otherwise it will get wrong answer for test case
+
+```c++
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        //very interesting problem
+        //It can be solved with standard BFS. The tricky idea is doing BFS of paths instead of words!
+        //Then the queue becomes a queue of paths.
+        vector<vector<string>> ans;
+        queue<vector<string>> paths;
+        // wordList.insert(endWord);
+        paths.push({beginWord});
+        int level = 1;
+        int minLevel = INT_MAX;
+        
+        //"visited" records all the visited nodes on this level
+        //these words will never be visited again after this level 
+        //and should be removed from wordList. This is guaranteed
+        // by the shortest path.
+        unordered_set<string> visited; 
+        
+        while (!paths.empty()) {
+            vector<string> path = paths.front();
+            paths.pop();
+            if (path.size() > level) {
+                //reach a new level
+                for (string w : visited) wordList.erase(w);
+                visited.clear();
+                if (path.size() > minLevel)
+                    break;
+                else
+                    level = path.size();
+            }
+            string last = path.back();
+            //find next words in wordList by changing
+            //each element from 'a' to 'z'
+            for (int i = 0; i < last.size(); ++i) {
+                string news = last;
+                for (char c = 'a'; c <= 'z'; ++c) {
+                    news[i] = c;
+                    if (wordList.find(news) != wordList.end()) {
+                        //判断在不在里面， True就在
+                    //next word is in wordList
+                    //append this word to path
+                    //path will be reused in the loop
+                    //so copy a new path
+                        vector<string> newpath = path;
+                        newpath.push_back(news);
+                        visited.insert(news);
+                        if (news == endWord) {
+                            minLevel = level;
+                            ans.push_back(newpath);
+                        }
+                        else
+                            paths.push(newpath);
+                    }
+                }
+            }
+        }
+        return ans;
+        
+    }
+};
+```
 
 
-### 51. N-Queens
+
+By myself@1.27
+
+延续127的思路
+
+```python
+from collections import defaultdict, deque
+class Solution:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+        dic = defaultdict(set)
+        for word in wordList:
+            for i in range(len(word)):
+                key = word[:i]+"_"+word[i+1:]
+                dic[key].add(word)
+                
+        queue = deque()
+        queue.append([beginWord])
+        res=[]
+        wordSet = set(wordList)
+        
+        while queue:
+            length = len(queue)
+            toDelete = set()
+            
+            for _ in range(length):
+                first = queue.popleft()
+                if first[-1]==endWord:
+                    res.append(first)
+                if not res:
+                    for i in range(len(first[-1])):
+                        var = first[-1][:i]+"_"+first[-1][i+1:]
+
+                        if var in dic:
+                            for word in dic[var]:
+                                if word in wordSet:
+                                    queue.append(first+[word])
+                                    toDelete.add(word)
+            if res:
+                return res                        
+            for w in toDelete:
+                wordSet.remove(w)
+            
+        return res
+```
+
+
+
+
+
+### 51. N-Queens-$
 
 https://leetcode.com/problems/n-queens/
+
+queens can attack other queen in the same row, same column and the diagonal
 
 #### Solution-dfs-worth
 
@@ -291,6 +415,49 @@ def valid(self, nums, n):# n 是刚加进去的row no
 
 
 
+By myself@1.27
+
+```python
+from collections import deque
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        nums = [0]*n
+        lefts = deque(range(n))
+        res = []
+        self.dfs(nums, res, 0, lefts)
+        return res
+        
+    def dfs(self, nums, res, row, lefts):
+        if not lefts:
+            res.append(self.helper(nums))
+            return
+                      
+        length = len(lefts)
+        for _ in range(length):
+            num = lefts.popleft()
+            if self.isValid(nums, num, row):
+                nums[row] = num
+                self.dfs(nums, res, row+1, lefts)
+            nums[row] = 0
+            lefts.append(num)
+                     
+                      
+    def isValid(self, nums, num, row):
+        for i in range(row):
+            if abs(i-row)==abs(nums[i]-num):
+                return False
+        return True
+                      
+    def helper(self, nums):
+        res = []
+        string = "."*len(nums)
+        for i in nums:
+            res.append(string[:i]+"Q"+string[i+1:])
+        return res                      
+```
+
+
+
 
 
 ### 52. N-Queens II
@@ -302,14 +469,4 @@ https://leetcode.com/problems/n-queens-ii/
 
 
 
-
-### 126. Word Ladder II
-
-https://leetcode.com/problems/word-ladder-ii/description/
-
-#### Solution-bfs-真难啊
-
-https://leetcode.com/problems/word-ladder-ii/discuss/40434/C%2B%2B-solution-using-standard-BFS-method-no-DFS-or-backtracking
-
-> The line `wordList.insert(endWord);` should be deleted in latest problem, otherwise it will get wrong answer for test case
 

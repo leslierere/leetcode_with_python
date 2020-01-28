@@ -609,16 +609,3 @@ https://leetcode.com/problems/wildcard-matching/description/
 
 
 
-
-
-
-
-### Knowledge
-
-#### any()&all()
-
-`any()` function returns True if any item in an iterable are true, otherwise it returns False.
-
-`any(*iterable*)`
-
-`all()` returns true if all of the items are True (or if the iterable is empty). All can be thought of as a sequence of AND operations on the provided iterables. It also short circuit the execution i.e. stop the execution as soon as the result is known.

@@ -320,7 +320,7 @@ class Solution:
 
 
 
-### 377. Combination Sum IV-$
+### 377. Combination Sum IV-$$
 
 https://leetcode.com/problems/combination-sum-iv/description/
 
@@ -426,6 +426,33 @@ class Solution:
 
 
 
+@1.23 by myself
+
+```python
+class Solution:
+    def getFactors(self, n: int) -> List[List[int]]:
+        res = []
+        self.helper(res, [], n, 2)
+        return res
+        
+    # ensure we add the factors in the ascending order
+    # this is through the variable start and the first if
+    def helper(self, res, path, remain, start):
+        if path:
+            if remain<path[-1]:
+                return
+            else:
+                res.append(path+[remain])
+        
+        for i in range(start, int(remain**0.5)+1):
+            if remain%i==0:
+                self.helper(res, path+[i], remain//i, i)
+```
+
+
+
+
+
 ### 46. Permutations
 
 https://leetcode.com/problems/permutations/description/
@@ -488,13 +515,49 @@ class Solution:
 
 
 
-### 31. Next Permutation
+### 31. Next Permutation-看comment
 
 https://leetcode.com/problems/next-permutation/description/
 
 #### Solution-iterative
 
-我居然自己想出来大概了，厉害厉害！但还是可以优化
+注意等号
+
+```python
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        first = len(nums)-2
+        
+        while first>=0 and nums[first]>=nums[first+1]:
+            first-=1
+            
+        if first==-1:
+            self.reverse(nums, 0)
+            return
+        
+        larger = first+1 # the index of the number on the first right that is just larger than the one with first index
+        for i in range(first+2, len(nums)):
+            if nums[i]<=nums[first]:
+                larger = i-1
+                break
+            if i == len(nums)-1:
+                larger = i
+        nums[first], nums[larger] = nums[larger], nums[first]
+        self.reverse(nums, first+1)
+        
+    # reverse这个写法我觉得比较好            
+    def reverse(self, lis, start):
+        end = len(lis)-1
+        while start<end:
+            lis[start], lis[end] = lis[end], lis[start]
+            start+=1
+            end-=1
+```
+
+
 
 
 
@@ -526,21 +589,76 @@ class Solution:
 
 
 
-### 291. Word Pattern II
+### 291. Word Pattern II-$
 
 https://leetcode.com/problems/word-pattern-ii/description/
 
 #### Solution-backtraking-worth
 
+Ref: [https://leetcode.com/problems/word-pattern-ii/discuss/73675/*Java*-HashSet-%2B-backtracking-(2ms-beats-100)](https://leetcode.com/problems/word-pattern-ii/discuss/73675/*Java*-HashSet-%2B-backtracking-(2ms-beats-100))
+
+```python
+class Solution:
+    def wordPatternMatch(self, pattern: str, string: str) -> bool:
+        words = set()
+        dic = {}
+        return self.helper(0, 0, pattern, string, words, dic)
+        
+    def helper(self, p1, p2, pattern, string, words, dic):
+        if p1 == len(pattern) and p2==len(string):
+            return True
+        if (p1 == len(pattern) and p2<len(string)) or (p1 < len(pattern) and p2==len(string)):
+            return False
+        char = pattern[p1]
+        if char in dic:
+            word = dic[char]
+            return word == string[p2:p2+len(word)] and self.helper(p1+1, p2+len(word), pattern, string, words, dic)
+            
+        else:
+            for i in range(p2, len(string)):
+                word = string[p2:i+1]
+                if word in words: # different pattern cannot map to same substring
+                    continue
+                dic[char] = word
+                words.add(word)
+                
+                if self.helper(p1+1, i+1, pattern, string, words, dic):
+                    return True
+                else:
+                    dic.pop(char)
+                    words.remove(word)
+                    
+        return False
+```
 
 
 
-
-### 17. Letter Combinations of a Phone Number
+### 17. Letter Combinations of a Phone Number-c comments
 
 https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
 
 #### Solution-backtrack-常规
+
+```python
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        
+        res = []
+        if not digits:
+            return res
+        dic = {'2':list('abc'), '3':list('def'),'4':list('ghi'),'5':list('jkl'),'6':list('mno'), '7':list('pqrs'), '8':'tuv', '9':'wxyz'}
+        self.helper(0, digits, res, dic, "")
+        return res
+        
+    def helper(self, i, digits, res, dic, path):
+        if i==len(digits):
+            res.append(path)
+            return
+        for char in dic[digits[i]]: # you don't need write index here, which will slow down
+            self.helper(i+1, digits, res, dic, path+char)
+```
+
+
 
 
 
@@ -568,6 +686,28 @@ public List<String> generateAbbreviations(String word){
             backtrack(ret, word, pos+1, cur + (count>0 ? count : "") + word.charAt(pos), 0);
         }
     }
+```
+
+by myself@1.24
+
+```python
+class Solution:
+    def generateAbbreviations(self, word: str) -> List[str]:
+        res = []
+        self.helper(word, "", 0, res)
+        return res
+        
+        
+    def helper(self, word, path, index, res):
+        if index == len(word):
+            res.append(path)
+            return
+        
+        self.helper(word, path+word[index], index+1, res)
+        if path and path[-1].isdigit():
+            self.helper(word, path[:-1]+str(int(path[-1])+1), index+1, res)
+        else:
+            self.helper(word, path+"1", index+1, res)
 ```
 
 
@@ -605,7 +745,7 @@ public List<String> generateAbbreviations(String word) {
 
 
 
-### 282. Expression Add Operators
+### 282. Expression Add Operators-$
 
 https://leetcode.com/problems/expression-add-operators/description/
 
@@ -649,9 +789,50 @@ public class Solution {
 
 
 
-### 140. Word Break II
+### 140. Word Break II-$
 
 https://leetcode.com/problems/word-break-ii/description/
+
+#### Solution1-DP+DFS+Backtracking-别看solution2了
+
+Ref: https://leetcode.com/problems/word-break-ii/discuss/44368/Python-easy-to-understand-solution-(DP%2BDFS%2BBacktracking).
+
+```python
+def wordBreak(self, s, wordDict):
+    res = []
+    self.dfs(s, wordDict, '', res)
+    return res
+
+def dfs(self, s, dic, path, res):
+# Before we do dfs, we check whether the remaining string 
+# can be splitted by using the dictionary,
+# in this way we can decrease unnecessary computation greatly.
+    if self.check(s, dic): # prunning
+        if not s:
+            res.append(path[:-1])
+            return # backtracking
+        for i in xrange(1, len(s)+1):
+            if s[:i] in dic:
+                # dic.remove(s[:i])
+                self.dfs(s[i:], dic, path+s[:i]+" ", res)
+
+# DP code to check whether a string can be splitted by using the 
+# dic, this is the same as word break I.                
+def check(self, s, dic):
+    dp = [False for i in xrange(len(s)+1)]
+    dp[0] = True
+    for i in xrange(1, len(s)+1):
+        for j in xrange(i):
+            if dp[j] and s[j:i] in dic:
+                dp[i] = True
+    return dp[-1]
+```
+
+
+
+
+
+#### Solution2
 
 Ref: https://www.youtube.com/watch?v=JqOIRBC0_9c
 
@@ -665,13 +846,15 @@ Ref: https://www.youtube.com/watch?v=JqOIRBC0_9c
 
 
 
-### 351. Android Unlock Patterns
+### 351. Android Unlock Patterns-$
 
 https://leetcode.com/problems/android-unlock-patterns/
 
 #### Solution1
 
 Ref: https://www.cnblogs.com/grandyang/p/5541012.html
+
+像9到2是可以的
 
 > 那么我们先来看一下哪些是非法的，首先1不能直接到3，必须经过2，同理的有4到6，7到9，1到7，2到8，3到9，还有就是对角线必须经过5，例如1到9，3到7等。我们建立一个二维数组jumps，用来记录两个数字键之间是否有中间键，然后再用一个一位数组visited来记录某个键是否被访问过，然后我们用递归来解，我们先对1调用递归函数，在递归函数中，我们遍历1到9每个数字next，然后找他们之间是否有jump数字，如果next没被访问过，并且jump为0，或者jump被访问过，我们对next调用递归函数。数字1的模式个数算出来后，由于1,3,7,9是对称的，所以我们乘4即可，然后再对数字2调用递归函数，2,4,6,9也是对称的，再乘4，最后单独对5调用一次，然后把所有的加起来就是最终结果了
 >

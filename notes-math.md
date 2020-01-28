@@ -261,23 +261,3 @@ def findNsum(self, nums, target, N, result, results):
 ```
 
 
-
-
-
-
-
-### syntax
-
-#### [Convert base-2 binary number string to int](https://stackoverflow.com/questions/8928240/convert-base-2-binary-number-string-to-int)
-
-```python
->>> int('11111111', 2)
-255
-```
-
-
-
-#### Covert int to binary number string-bin()
-
-
-

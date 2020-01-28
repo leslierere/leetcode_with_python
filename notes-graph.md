@@ -406,51 +406,150 @@ class Solution:
 
 
 
+### 208. Implement Trie (Prefix Tree)
 
+#### Solution-trie
 
+https://leetcode.com/problems/implement-trie-prefix-tree/
 
-
-### Knowledge
-
-Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some-thoughts
-
-> (1) A tree is an undirected graph in which any two vertices are
-> connected by exactly one path.
->
-> (2) Any connected graph who has `n` nodes with `n-1` edges is a tree.
->
-> (3) The degree of a vertex of a graph is the number of
-> edges incident to the vertex.
->
-> (4) A leaf is a vertex of degree 1. An internal vertex is a vertex of
-> degree at least 2.
->
-> (5) A path graph is a tree with two or more vertices that is not
-> branched at all.
->
-> (6) A tree is called a rooted tree if one vertex has been designated
-> the root.
->
-> (7) The height of a rooted tree is the number of edges on the longest
-> downward path between root and a leaf.
-
-
-
-
-
-#### gcd经典写法
+Ref: coursera, https://leetcode.com/problems/implement-trie-prefix-tree/discuss/58989/My-python-solution
 
 ```python
-def gcd(self, x, y):
-  if y==0:
-    return x
-  else:
-    return self.gcd(y, x%y)
+from collections import defaultdict
+
+class TrieNode:
+    def __init__(self):
+        self.isWord = False
+        self.children = dict()
+
+class Trie:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+        
+        
+    def insert(self, word: str) -> None:
+        """
+        Inserts a word into the trie.
+        """
+        node = self.root
+        for letter in word:
+            if letter not in node.children:
+                node.children[letter] = TrieNode()
+            node = node.children[letter]
+        node.isWord = True
+            
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the trie.
+        """
+        node = self.root
+        for letter in word:
+            if letter not in node.children:
+                return False
+            node = node.children[letter]
+            
+        return node.isWord
+        
+
+    def startsWith(self, prefix: str) -> bool:
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        """
+        node = self.root
+        for letter in prefix:
+            if letter not in node.children:
+                return False
+            node = node.children[letter]
+        return True
+        
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
 ```
 
 
 
+### 211. Add and Search Word - Data structure design
+
+https://leetcode.com/problems/add-and-search-word-data-structure-design/description/
+
+#### Solution-trie
+
+Ref: https://leetcode.com/problems/add-and-search-word-data-structure-design/discuss/59725/Python-easy-to-follow-solution-using-Trie.
+
+用defaultdict可以变快
 
 
-#### Trie
+
+### 212. Word Search II
+
+https://leetcode.com/problems/word-search-ii/description/
+
+#### Solution-trie, backtrack
+
+Ref: https://leetcode.com/problems/word-search-ii/discuss/59780/Java-15ms-Easiest-Solution-(100.00)
+
+```python
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        root = self.buildTrie(words)
+        res = []
+        
+        self.rows = len(board)
+        self.cols = len(board[0])
+        for i in range(self.rows):
+            for j in range(self.cols):
+                self.dfs(i, j, root, board, res)
+        return res
+                
+    def dfs(self, i, j, node, board, res):
+        if i<0 or i>=self.rows or j<0 or j>=self.cols:
+            return
+        
+        cur = board[i][j]
+        
+        if cur =='#' or cur not in node.children:
+            return
+        
+        node = node.children[cur]
+        
+        if node.word: # 必须要当前就检查，不然跳到下一个可能超过边界了
+            res.append(node.word)
+            node.word = None # de-duplicate
+        
+        
+        board[i][j] = "#"
+        for x, y in [(i+1, j), (i-1,j), (i, j+1), (i, j-1)]:
+            self.dfs(x, y, node, board, res)
+        board[i][j] = cur
+        
+        
+    
+    def buildTrie(self, words):
+        root = TrieNode()
+        for w in words:
+            node = root
+            for letter in w:
+                if letter not in node.children:
+                    node.children[letter] = TrieNode()
+                node = node.children[letter]
+            node.word = w
+        return root
+        
+        
+class TrieNode:
+    def __init__(self):
+        self.word = None
+        self.children = dict()
+```
+
+
 
