@@ -53,7 +53,7 @@ The following values are considered false in Python:
 - `None`
 - `False`
 - Zero of any numeric type. For example, `0`, `0.0`, `0j`
-- Empty sequence. For example, `()`, `[]`, `''`.
+- Empty sequence. For example, `()`, `[]`, `''`. but `[[]]` would be evaluated to True
 - Empty mapping. For example, `{}`
 - objects of Classes which has `__bool__()` or `__len()__` method which returns `0` or `False`
 
