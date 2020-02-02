@@ -151,9 +151,25 @@ A priority queue is like a dictionary, it contains entries that each consists of
   * min()
   * removeMin()
 
+* another operation
+
+  * Bottom-up heap construction
+
+    make complete tree of entries, in any order. Work backward from last internal node to root. When visiting node, bubble its entry down as in removeMin().
+
+    O(n) operation. Reasoning:
+
+    > Ref: G & T, P383
+    >
+    > Bottom-up construction of a heap with n entries takes O(n) time, assuming two keys can be compared in O(1) time. The primary cost of the construction is due to the down-heap steps performed at each nonleaf position.
+    >
+    > Let πv denote the path of T from nonleaf node v to its “inorder successor” leaf, that is, the path that starts at v, goes to the right child of v, and then goes down leftward until it reaches a leaf. The total running time of the bottom-up heap construction algorithm is therefore bounded by the sum ∑ v * πv .
+    >
+    > We claim that the paths **πv for all nonleaf v are edge-disjoint**, and thus the sum of the path lengths is bounded by the number of total edges in the tree, hence O(n).
+
 * Implementation
 
-Binary heap(i.e. a complete binary tree whose entries satisfy keep-order property. For example, the key of a child always >= the key of its parent, and in this way, 这是一个最小堆)
+**Binary heap**(i.e. a complete binary tree whose entries satisfy keep-order property. For example, the key of a child always >= the key of its parent, and in this way, this is a min heap)
 
 To store as array, map treenodes to array indices with level-numbering: level-order traversal with root at index 1. In this way, node i's children are 2i and 2i+1, parent is i//2
 
