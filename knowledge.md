@@ -34,6 +34,20 @@ Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some
 
 
 
+
+
+### Binary search tree (BST)
+
+Given a binary tree, determine if it is a valid binary search tree (BST).
+
+Assume a BST is defined as follows:
+
+- The left subtree of a node contains only nodes with keys **less than** the node's key.
+- The right subtree of a node contains only nodes with keys **greater than** the node's key.
+- Both the left and right subtrees must also be binary search trees.
+
+
+
 ### Return
 
 函数体内部可以用`return`随时返回函数结果；
