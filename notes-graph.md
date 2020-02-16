@@ -2,7 +2,7 @@
 
 https://leetcode.com/problems/graph-valid-tree/
 
-#### Solution-dfs-worth
+#### Solution-dfs-$
 
 就是以一个为起点，每一个都只会恰好visit一遍
 
@@ -38,7 +38,7 @@ class Solution:
 
 
 
-#### Solution-bfs-worth
+#### Solution-bfs
 
 Ref: https://www.cnblogs.com/grandyang/p/5257919.html
 
@@ -69,7 +69,7 @@ class Solution:
 
 
 
-#### Solution-union find-worth
+#### Solution-union find-worth-$
 
 Ref: https://leetcode.com/problems/graph-valid-tree/discuss/69019/Simple-and-clean-c%2B%2B-solution-with-detailed-explanation.
 
@@ -115,15 +115,17 @@ class Solution:
 
 
 
-#### Solution-dfs, worth
+#### Solution-dfs, did@2.14, 但我的方法不够好，还是用set或者array存一下visited的部分比较好
 
-#### Solution-dfs, union find
+#### Solution-dfs, union find-$
+
+Ref: https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/discuss/77574/Easiest-2ms-Java-Solution
 
 
 
 
 
-### 305. Number of Islands II
+### 305. Number of Islands II-$
 
 https://leetcode.com/problems/number-of-islands-ii/description/
 
@@ -178,11 +180,13 @@ class Solution:
 
 
 
-### 133. Clone Graph
+### 133. Clone Graph-看看
 
 https://leetcode.com/problems/clone-graph/description/
 
 #### Solution-dfs-recursive, by myself
+
+@2.15我觉得我第二次做的好理解一些
 
 ```python
 """
@@ -203,12 +207,45 @@ class Solution:
         if node.val in valDic:
             return valDic[node.val]
         
-        value = node.val
-        newN = Node(value)
+        newN = Node(node.val)
         valDic[value] = newN
         for neighbor in node.neighbors:
             newN.neighbors.append(self.helper(neighbor, valDic))
         return newN
+```
+
+@2.15
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val = 0, neighbors = []):
+        self.val = val
+        self.neighbors = neighbors
+"""
+# for every node that we will then add all its neighbors, we marked as visited
+class Solution:
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if not node:
+            return node
+        copy = Node(val = node.val)
+        vertices = {}
+        self.dfs(copy, node, vertices)
+        return copy
+        
+        
+    def dfs(self, copy, node, vertices):
+        if node in vertices:
+            return
+        vertices[node] = copy
+        for neighbor in node.neighbors:
+            if neighbor not in vertices:
+                neighborCopy = Node(val = neighbor.val)
+                copy.neighbors.append(neighborCopy)
+                self.dfs(neighborCopy, neighbor, vertices)
+            else:
+                copy.neighbors.append(vertices[neighbor])
 ```
 
 
@@ -218,6 +255,78 @@ class Solution:
 
 
 #### Solution-bfs-iterative-worth
+
+by myself@2.15
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val = 0, neighbors = []):
+        self.val = val
+        self.neighbors = neighbors
+"""
+from collections import deque
+class Solution:
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if not node:
+            return node
+        
+        origins = deque()
+        copies = deque()
+        origins.append(node)
+        root = Node(val = node.val)
+        copies.append(root)
+        edges = set()# don't need this
+        vertices = {}
+        vertices[root.val] = root
+        
+        while origins:
+            origin = origins.popleft()
+            copy = copies.popleft()
+            
+            for neighbor in origin.neighbors:
+                if (origin.val, neighbor.val) not in edges:# don't need this
+                    edges.add((origin.val, neighbor.val))# don't need this
+
+                    if neighbor.val not in vertices:
+                        copyNeighbor = Node(val=neighbor.val)
+                        vertices[neighbor.val] = copyNeighbor
+                        copy.neighbors.append(copyNeighbor)
+
+                        origins.append(neighbor)
+                        copies.append(copyNeighbor)
+                    else:
+                        copy.neighbors.append(vertices[neighbor.val])
+                        
+        return root                
+```
+
+但其实没必要维护两个queue，用原始的node作为key就好, 而且并不需要对vertix是否visite过做判断，因为queue里面总是存的新建的node
+
+Ref: https://leetcode.com/problems/clone-graph/discuss/42314/Python-solutions-(BFS-DFS-iteratively-DFS-recursively).e
+
+```python
+def cloneGraph1(self, node):
+    if not node:
+        return 
+    nodeCopy = UndirectedGraphNode(node.label)
+    dic = {node: nodeCopy}
+    queue = collections.deque([node])
+    while queue:
+        node = queue.popleft()
+        for neighbor in node.neighbors:
+            if neighbor not in dic: # neighbor is not visited
+                neighborCopy = UndirectedGraphNode(neighbor.label)
+                dic[neighbor] = neighborCopy
+                dic[node].neighbors.append(neighborCopy)
+                queue.append(neighbor)
+            else:
+                dic[node].neighbors.append(dic[neighbor])
+    return nodeCopy
+```
+
+
 
 
 
@@ -315,7 +424,7 @@ class Solution(object):
 
 
 
-### 310. Minimum Height Trees
+### 310. Minimum Height Trees-$
 
 https://leetcode.com/problems/minimum-height-trees/description/
 
@@ -351,7 +460,7 @@ class Solution:
 
 
 
-### 149. Max Points on a Line
+### 149. Max Points on a Line-$
 
 https://leetcode.com/problems/max-points-on-a-line/
 
@@ -367,8 +476,8 @@ class Solution:
         
         
         for i in range(len(points)):
-            sameP = 1
-            otherP = 0
+            sameP = 1 # first add the point itself
+            otherP = 0 # 局部最优解
             dic = {}
             point1 = points[i]
             for j in range(i+1, len(points)):

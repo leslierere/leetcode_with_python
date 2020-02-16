@@ -10,6 +10,8 @@ Counter 对不存在的直接加？
 
 ### Tree
 
+“a tree is an undirected graph in which any two vertices are connected by *exactly* one path. In other words, any connected graph without simple cycles is a tree.”
+
 Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some-thoughts
 
 > (1) A tree is an undirected graph in which any two vertices are

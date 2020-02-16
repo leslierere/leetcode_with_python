@@ -81,13 +81,31 @@ class Solution:
 
 
 
-### 279. Perfect Squares
+### 279. Perfect Squares-$
 
 https://leetcode.com/problems/perfect-squares/description/
 
-#### Solution-dp-worth
+#### Solution-dp-worth-slow
 
 Ref: https://leetcode.com/articles/perfect-squares/
+
+```python
+class Solution:
+    def numSquares(self, n: int) -> int:
+        num_squares = [i**2 for i in range(1, int(n**0.5)+1)]
+        
+        dp = [0] + [float('inf')]*(n)
+        
+        for i in range(1, n+1):
+            for square in num_squares:
+                if square > i:
+                    break
+                dp[i] = min(dp[i], dp[i-square]+1)
+                
+        return dp[n]
+```
+
+
 
 #### Solution-Greedy Enumeration-worth
 
@@ -97,11 +115,39 @@ Ref: https://leetcode.com/articles/perfect-squares/
 
 Ref: https://leetcode.com/articles/perfect-squares/
 
+```python
+from collections import deque
+class Solution:
+    def numSquares(self, n: int) -> int:
+        if n**0.5==int(n**0.5):
+            return 1
+        
+        num_squares = [i**2 for i in range(1, int(n**0.5)+1)]
+        queue = deque()
+        queue.append(n)
+        layer = 1
+        
+        while queue:
+            length = len(queue)
+            for _ in range(length):
+                cur = queue.popleft()
+                for i in num_squares:
+                    if cur<i:
+                        break
+                    remain = cur-i
+                    
+                    if remain**0.5==int(remain**0.5):
+                        return layer+1
+                    else:
+                        queue.append(remain)
+            layer+=1
+```
 
 
 
 
-### 139. Word Break
+
+### 139. Word Break-$
 
 https://leetcode.com/problems/word-break/
 
@@ -155,7 +201,7 @@ class Solution:
 
 
 
-### 375. Guess Number Higher or Lower II
+### 375. Guess Number Higher or Lower II-$
 
 https://leetcode.com/problems/guess-number-higher-or-lower-ii/description/
 
@@ -163,31 +209,86 @@ https://leetcode.com/problems/guess-number-higher-or-lower-ii/description/
 
 [https://leetcode.com/problems/guess-number-higher-or-lower-ii/discuss/84766/Clarification-on-the-problem-description.-Problem-description-need-to-be-updated-!!!](https://leetcode.com/problems/guess-number-higher-or-lower-ii/discuss/84766/Clarification-on-the-problem-description.-Problem-description-need-to-be-updated-!!!)
 
+worst case is that you will take as many steps as it can to know the correct answer. But you should wisely(which means to minimize) pick a number thus make your spending as less as possible.
 
 
-### 312. Burst Balloons
+
+
+
+
+
+### 312. Burst Balloons-$
 
 https://leetcode.com/problems/burst-balloons/
 
-#### Solution-dp-worth
+#### Solution-recursive-worth
 
 https://leetcode.com/articles/burst-balloons/
 
+https://www.youtube.com/watch?v=z3hu2Be92UA
+
+关键没有想通边界的处理，亦即code这里`nums[left] * nums[i] * nums[right]`中`nums[left]`和`nums[left]`的部分，因为我一直想的是先爆哪个，其实应该烤炉的是先保留哪个
+
+ 要用这个functools才会变快
+
+```python
+from functools import lru_cache
+class Solution:
+    def maxCoins(self, nums: List[int]) -> int:
+        nums = [1] + nums + [1]
+        @lru_cache(None)
+        def dp(left, right):
+            if left + 1 == right: return 0
+            return max(nums[left]*nums[i]*nums[right] + dp(left,i) + dp(i,right) for i in range(left+1, right))
+        
+        return dp(0, len(nums)-1)
+```
 
 
-### 322. Coin Change
+
+#### Solution-dp-fast
+
+
+
+
+
+### 322. Coin Change-$
 
 https://leetcode.com/problems/coin-change/
+
+#### Solution-recursive
+
+```python
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        coins.sort(reverse = True)
+        lenc, self.res = len(coins), 2**31-1
+
+        def dfs(pt, rem, count):
+            if not rem:
+                self.res = min(self.res, count)
+            for i in range(pt, lenc):
+                if coins[i] <= rem < coins[i] * (self.res-count): # if hope still exists
+                    dfs(i, rem-coins[i], count+1)
+
+        for i in range(lenc):
+            dfs(i, amount, 0)
+        return self.res if self.res < 2**31-1 else -1
+```
+
+
 
 #### Solution-dp-worth
 
 既然都已经想到了递推关系，就从小到大一直算下去就好了呀，也就是bottom up！也就是link里面的approach3。 或者使用递归(link里面的approach2)，top down,但要使用记忆。
 
+@2.8，我开始陷入了一个误区，那就是先尽量用大的数填进去，但实际上这可能会造成后面的余数要用更多的coin来相加。
+
 Ref: https://leetcode.com/articles/coin-change/
 
 > First, let's define:
 >
-> > F(S)*F*(*S*) - minimum number of coins needed to make change for amount S*S* using coin denominations \[c0…cn−1\]
+> > F(S) - minimum number of coins needed to make change for amount S using coin denominations \[c0…cn−1\]
 >
 > We note that this problem has an optimal substructure property, which is the key piece in solving any Dynamic Programming problems. In other words, the optimal solution can be constructed from optimal solutions of its subproblems. 
 
@@ -195,7 +296,7 @@ Ref: https://leetcode.com/articles/coin-change/
 
 1.15
 
-### 256. Paint House
+### 256. Paint House-$
 
 https://leetcode.com/problems/paint-house/discuss/?currentPage=1&orderBy=most_votes&query=
 
@@ -235,11 +336,11 @@ https://leetcode.com/problems/paint-house-ii/description/
 
 secondmin的使用, Ref: https://leetcode.com/problems/paint-house-ii/discuss/69495/Fast-DP-Java-solution-Runtime-O(nk)-space-O(1)
 
-> Explanation: dp[i][j] represents the min paint cost from house 0 to house i when house i use color j; The formula will be dp[i][j] = Math.min(any k!= j| dp[i-1][k]) + costs[i][j].
+> Explanation: dp\[i][j] represents the min paint cost from house 0 to house i when house i use color j; The formula will be dp\[i][j] = Math.min(any k!= j| dp\[i-1][k]) + costs\[i][j].
 >
 > 
 >
-> Take a closer look at the formula, we don't need an array to represent dp[i][j], we only need to know the min cost to the previous house of any color and if the color j is used on previous house to get prev min cost, use the second min cost that are not using color j on the previous house. So I have three variable to record: prevMin, prevMinColor, prevSecondMin. and the above formula will be translated into: dp\[currentHouse\] = (currentColor == prevMinColor? prevSecondMin: prevMin) + costs\[currentHouse]
+> Take a closer look at the formula, we don't need an array to represent dp\[i][j], we only need to know the min cost to the previous house of any color and if the color j is used on previous house to get prev min cost, use the second min cost that are not using color j on the previous house. So I have three variable to record: prevMin, prevMinColor, prevSecondMin. and the above formula will be translated into: dp\[currentHouse\] = (currentColor == prevMinColor? prevSecondMin: prevMin) + costs\[currentHouse]
 
 
 
@@ -253,7 +354,7 @@ https://leetcode.com/problems/minimum-path-sum/
 
 
 
-### 72. Edit Distance
+### 72. Edit Distance-$
 
 https://leetcode.com/problems/edit-distance/description/
 
@@ -269,7 +370,7 @@ https://leetcode.wang/leetCode-72-Edit-Distance.html
 
 
 
-### 97. Interleaving String-important
+### 97. Interleaving String-$
 
 https://leetcode.com/problems/interleaving-string/description/
 
@@ -323,7 +424,7 @@ Ref: https://leetcode.com/problems/interleaving-string/discuss/31948/8ms-C%2B%2B
 
 1.16
 
-### 174. Dungeon Game
+### 174. Dungeon Game-$
 
 https://leetcode.com/problems/dungeon-game/description/
 
@@ -331,19 +432,48 @@ https://leetcode.com/problems/dungeon-game/description/
 
 Ref: https://leetcode.com/problems/dungeon-game/discuss/52774/C%2B%2B-DP-solution
 
+A natural way to understand why we could only solve the problem from bottom right to top left is just remember dp is a bottom-up solution, and in this case, top left is where our final state(the maximum subproblem) is located because our result should be the minimum hp at top left. Rather than other dp problems our final state would always end at the bottom right.
+
+```python
+class Solution:
+    def calculateMinimumHP(self, dungeon: List[List[int]]) -> int:
+        
+        rows = len(dungeon)
+        cols = len(dungeon[0])
+        
+        dp = [[float('inf') for i in range(cols+1)] for j in range(rows+1)] # set maximum float here
+        # if we don't set these 2, we would need deal with the bottom right seperately
+        dp[rows][cols-1]=1
+        dp[rows-1][cols]=1
+        
+        for i in range(rows-1, -1, -1):
+            for j in range(cols-1, -1, -1):
+                need = min(dp[i+1][j], dp[i][j+1]) -dungeon[i][j]
+                if need>0:
+                    dp[i][j] = need
+                else:
+                    dp[i][j] = 1
+                
+        return dp[0][0]
+```
 
 
 
 
-### 221. Maximal Square
+
+### 221. Maximal Square-下次想一想就好了
 
 https://leetcode.com/problems/maximal-square/description/
 
 #### Solution-worth
 
-太厉害了
-
 Ref：https://leetcode.com/articles/maximal-square/
+
+注意one-dimension array就够，所以可以优化
+
+Optimal solution是某个位置作为右下角的最大square area， 因为每一个正方形一定会被它的右下角唯一确定且不会遗漏。
+
+
 
 
 
@@ -357,9 +487,39 @@ Ref: https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28917/
 
 This can ensure every bar(in other words, at different heights) would be calculated given the two boundaries that are just smaller than it.
 
+细节还蛮容易出错的
+
+```python
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        res = 0
+        
+        stack = [-1]
+        
+        for i in range(len(heights)):
+            item = heights[i]
+            if len(stack)==1 or item>=heights[stack[-1]]:
+                stack.append(i)
+                continue
+                
+            while len(stack)>1 and item<heights[stack[-1]]:
+                top = stack.pop()
+                area = (i-stack[-1]-1)*heights[top]
+                res = max(res, area)
+            stack.append(i)
+        
+        
+        while len(stack)>1:
+            top = stack.pop()
+            area = (i-stack[-1])*heights[top]
+            res = max(res, area)
+                
+        return res
+```
 
 
-### 85. Maximal Rectangle!!
+
+### 85. Maximal Rectangle-$
 
 https://leetcode.com/problems/maximal-rectangle/description/
 
@@ -369,11 +529,51 @@ https://leetcode.com/problems/maximal-rectangle/description/
 
 https://leetcode.com/problems/maximal-rectangle/discuss/29054/Share-my-DP-solution
 
+It would be easier to understand how to calculate the right and left if you rotate the matrix 90 degrees, clockwise and counter clockwise.
+
+Why this is an exhausted solution is that it actually calculates the maximum area with a given bar, i.e. the given height at each row.
+
+```python
+class Solution:
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+        if not matrix or not matrix[0]:
+            return 0
+        res = 0
+        height = [0]*len(matrix[0])
+        right = [len(matrix[0])-1]*len(matrix[0])
+        left = [-1]*len(matrix[0])
+        
+        
+        for i in range(len(matrix)):
+            curLeft = -1
+            curRight = len(matrix[0])-1
+            
+            for j in range(len(matrix[0])-1, -1, -1):
+                if matrix[i][j] =='1':
+                    right[j] = min(curRight, right[j])
+                else:
+                    curRight = j-1
+                    right[j] = len(matrix[0])-1 # This should be changed to this value, rather than (j-1), think of why
+                    
+            for j in range(len(matrix[0])):
+                if matrix[i][j] =='1':
+                    height[j] = height[j]+1
+                    left[j] = max(curLeft, left[j])
+                else:
+                    height[j] = 0
+                    curLeft = j
+                    left[j] = -1
+            
+                res = max((right[j]-left[j])*height[j], res)
+            
+        return res
+```
 
 
-1.17
 
-### 363. Max Sum of Rectangle No Larger Than K
+
+
+### 363. Max Sum of Rectangle No Larger Than K-$
 
 https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/description/
 
@@ -413,6 +613,7 @@ public int maxSumSubmatrix(int[][] matrix, int k) {
                 currSum += sum; 
                 //we use sum subtraction (curSum - sum) to get the subarray with sum <= k
                 //therefore we need to look for the smallest sum >= currSum - k
+                // we need (curSum - sum) to be as closed as k, but it cannot be larger than k
                 Integer num = set.ceiling(currSum - k);//这个想法很赞
               // ceiling()返回在这个集合中大于或者等于给定元素的最小元素，如果不存在这样的元素,返回null.
                 if(num != null) result = Math.max( result, currSum - num );
@@ -423,6 +624,42 @@ public int maxSumSubmatrix(int[][] matrix, int k) {
     
     return result;
 }
+```
+
+但在python里面没有set.ceiling()这个方法，所以直接把每一列的可能结果搞出来后, 求一个max_sum_no_larger_than_k
+
+```python
+class Solution:
+    def maxSumSubmatrix(self, matrix: List[List[int]], k: int) -> int:
+        if not matrix:
+            return 0
+        
+        rows, cols = len(matrix), len(matrix[0])
+        
+        def max_sum_no_larger_than_k(arr): #[2, 1, 5, 2, 1, 3] k = 4
+            sub_s_max = float('-inf')
+            s_curr = 0
+            prefix_sums = [float('inf')]
+            for x in arr:
+                bisect.insort(prefix_sums, s_curr)
+                s_curr += x
+                i = bisect.bisect_left(prefix_sums, s_curr - k)
+                sub_s_max = max(sub_s_max, s_curr - prefix_sums[i])
+            return sub_s_max
+        
+        for row in range(rows):
+            for col in range(cols):
+                matrix[row][col] += matrix[row][col - 1] if col > 0 else 0
+                
+        max_sum = - float('inf')
+        for col in range(cols):
+            for col_right in range(col, cols):
+                one_dim_list_for_tow_cols = [matrix[row][col_right] - (matrix[row][col - 1] if col > 0 else 0) for row in range(rows)]
+                
+                guess = max_sum_no_larger_than_k(one_dim_list_for_tow_cols)
+                max_sum = max(max_sum, guess)
+                
+        return max_sum
 ```
 
 
@@ -439,7 +676,7 @@ https://leetcode.com/problems/house-robber/
 
 
 
-### 213. House Robber II
+### 213. House Robber II-实现很容易，但要想想
 
 https://leetcode.com/problems/house-robber-ii/
 
@@ -447,9 +684,13 @@ https://leetcode.com/problems/house-robber-ii/
 
 A little change on the solution of 212, **1. not rob the 1st house; 2. not rob the last house**
 
-> Ref: https://leetcode.com/problems/house-robber-ii/discuss/59934/Simple-AC-solution-in-Java-in-O(n)-with-explanation
->
-> Great solution. It took me a while to figure out why this is logically correct. At the first glance, I think the perfect way to split the problem is 1. not rob the 1st house; 2. rob 1st house, because 1 and 2 won't have any intersection (code below follows this idea and beats 100%). However, the way this solution splits this problem is 1. not rob the 1st house; 2. not rob the last house. As you can see, the second statement of these two split strategies are different and they are not logically equal because ***"not rob the last house" means you can choose to rob the 1st house or not***. Then why it is still correct? It is because the 2nd statement from the 2nd strategy contains the 2nd statement from the 1st strategy. In other words, the 2nd set has some overlap with the 1st set in the 2nd strategy. Since our goal is only to find the max, it is okay to include some overlap.
+A natural way is to split into 3 cases: 1. rub the first without robbing the last, 2. rub the last without rubbing the first, 3. neither rub the first nor the last.
+
+In **not rob the 1st house**, two cases are included, 2. rub the last without rubbing the first, 3. neither rub the first nor the last.
+
+In  **not rob the last house**, two cases are included, 1. rub the first without robbing the last, 3. neither rub the first nor the last.
+
+Since we want the maximum value, we can have overlaps
 
 
 
@@ -492,6 +733,8 @@ class Solution:
 Ref: https://leetcode.com/problems/paint-fence/discuss/178010/The-only-solution-you-need-to-read
 
 其实还是可以根据recursive的推导出来，只是确实没想到
+
+要想我们只有两个case，一个是和前面画一样的颜色，另一个是不画
 
 ```java
 class Solution {
@@ -575,9 +818,11 @@ class Solution:
 
 1.18
 
-### 10. Regular Expression Matching
+### 10. Regular Expression Matching-$
 
 https://leetcode.com/problems/regular-expression-matching/description/
+
+Here we don't consider the circumstances where * would be the first char in p.
 
 #### Solution-dp-worth!!!
 
@@ -601,11 +846,37 @@ state equation: 在这里我们相当于只有当前匹配上了我们才看之�
 
 
 
-### 44. Wildcard Matching
+### 44. Wildcard Matching-$
 
 https://leetcode.com/problems/wildcard-matching/description/
 
 #### Solution-dp
 
+Ref:https://leetcode.com/problems/wildcard-matching/discuss/17812/My-java-DP-solution-using-2D-table
 
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        dp = [[False for i in range(len(s)+1)] for j in range(len(p)+1)]
+        
+        dp[0][0] = True
+        
+        for i in range(1, len(dp)):
+            for j in range(len(dp[0])):
+                if j==0:
+                    dp[i][j] = p[i-1]=='*' and dp[i-1][j]
+                    continue
+                if p[i-1]=='*':
+                    dp[i][j]=dp[i-1][j] or dp[i][j-1]
+                    # dp[i-1][j] suggests that * represents ""
+                    # dp[i][j-1], the difference between dp[i][j-1] and dp[i][j] is that we consider one more, that is s[j-1], so here we suggests that we use * to match s[j-1]
+                elif p[i-1]==s[j-1] or p[i-1]=='?':
+                    dp[i][j] = dp[i-1][j-1]
+                    
+        return dp[len(p)][len(s)]
+```
+
+
+
+#### Solution-two pointers, backtrack
 
