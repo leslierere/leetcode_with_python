@@ -1,44 +1,69 @@
-### 207. Course Schedule
+### 207. Course Schedule-$
 
 https://leetcode.com/problems/course-schedule/
 
-#### Solution-dfs-need refine
+#### Solution-dfs
 
 Ref: https://www.coursera.org/learn/algorithms-graphs-data-structures/home/welcome
 
 ```python
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        graph = [[] for _ in range(numCourses)]
-        visited = [False for _ in range(numCourses)]
         
-        for start, end in prerequisites:
-            graph[start].append(end)
+        edges = [list() for i in range(numCourses)]
+        visited = [False]*numCourses
+        
+        for i, j in prerequisites:
+            edges[i].append(j)
+        
+        for i in range(numCourses):
+            if not visited[i] and not self.dfs(i, visited, edges):
+                return False
             
-        return self.dfs(list(range(numCourses)), visited, graph)
-                
-                
-    def dfs(self, nums, visited, graph):
-        while nums:
-            i = nums.pop()
-            if not visited[i]:# we only need do dfs on those not visited
-                if graph[i]:
-                    if self.dfs(graph[i], visited, graph):
-                        if visited[i]:
-                            return False
-                        else:
-                            visited[i] = True
-                    else:
-                        return False
-                else: # the sink vertix
-                    visited[i] = True
-                
         return True
-    
-    # every time we meet a vertix, we delete it, but it will finally be marked as visited, if it doesn't have next vertix(it may be passed so deleted or it is a sink vertix), then we just mark this visited. If it has next vertix, we do dfs, if in the dfs, it is marked as True, it means there is a circle or the dfs find circle itself, we can immediately return True, else we just mark this visited
+                
+    def dfs(self, vertix, visited, edges):
+        if not visited[vertix]: # we only need do dfs on those not visited
+            
+            while edges[vertix]:
+                neighbor = edges[vertix].pop()
+                if not self.dfs(neighbor, visited, edges):
+                    return False
+
+                if visited[vertix]: 
+                    return False
+
+            visited[vertix] = True
+            
+        return True
+                
+# Every time we meet a vertix it will finally be marked as visited. If it doesn't have next vertix(it may be that all its neighbors are visited or it is a sink vertix), then it comes to the time to mark this visited.
+# However, if it has next vertix, we do dfs. If in the dfs, this vertix is marked as visited, it means there is a circle or the dfs find circle itself, we can immediately return False, else we just mark this visited
 ```
 
 
+
+#### Solution-bfs-worth
+
+```c++
+bool canFinish(int n, vector<pair<int, int>>& pre) {
+    vector<vector<int>> adj(n, vector<int>());
+    vector<int> degree(n, 0);
+    for (auto &p: pre) {
+        adj[p.second].push_back(p.first);
+        degree[p.first]++;
+    }
+    queue<int> q;
+    for (int i = 0; i < n; i++)
+        if (degree[i] == 0) q.push(i);
+    while (!q.empty()) {
+        int curr = q.front(); q.pop(); n--;
+        for (auto next: adj[curr])
+            if (--degree[next] == 0) q.push(next);
+    }
+    return n == 0;
+}
+```
 
 
 
@@ -46,7 +71,43 @@ class Solution:
 
 https://leetcode.com/problems/course-schedule-ii/description/
 
-#### Solution-based on the above one-need refine
+#### Solution@2.18, based on the above idea
+
+```python
+from collections import defaultdict
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        res = []
+        edges = defaultdict(list)
+        visited = [False for i in range(numCourses)]
+        
+        for i, j in prerequisites:
+            edges[i].append(j)
+            
+        for i in range(numCourses):
+            if not self.dfs(i, edges, res, visited):
+                return []
+            
+        return res
+            
+            
+    def dfs(self, vertix, edges, res, visited):
+        if not visited[vertix]:
+            while edges[vertix]:
+                neighbor = edges[vertix].pop()
+                if not self.dfs(neighbor, edges, res, visited):
+                    return False
+                if visited[vertix]:
+                    return False
+            visited[vertix] = True
+            res.append(vertix)
+            
+        return True
+```
+
+
+
+#### Solution-@2.8-太烂了
 
 ```python
 class Solution:
@@ -90,13 +151,84 @@ class Solution:
 
 
 
-### 269. Alien Dictionary
+### 269. Alien Dictionary-c comments
 
 https://leetcode.com/problems/alien-dictionary/description/
 
 Ref: https://leetcode.com/problems/alien-dictionary/discuss/70115/3ms-Clean-Java-Solution-(DFS)
 
-Borrow the idea on how to build graph
+需要注意的几个点：
+
+* if only one word is given
+* take care of letters that don't exist, this can be combined with a visited array, use different number to mark visited and existed, modify on top of solution@2.18
+* some letters may not have order
+
+@2.18
+
+```python
+from collections import defaultdict
+class Solution:
+    def alienOrder(self, words: List[str]) -> str:
+        if len(words)==1:
+            return words[0]
+        
+        edges, letters = self.buildGraph(words)
+        res = [""]
+        visited = set()
+        
+        for letter in letters:
+            if not self.dfs(letter, edges, res, visited):
+                return ""
+            
+        return res[0]+"".join([letter for letter in letters if letter not in visited])             
+                
+        
+    def dfs(self, letter, edges, res, visited):
+        if letter not in visited:
+            while edges[letter]:
+                neighbor = edges[letter].pop()
+                if not self.dfs(neighbor, edges, res, visited):
+                    return False
+                if letter in visited:
+                    return False
+                
+            visited.add(letter)
+            res[0]+=letter
+            
+        return True
+            
+            
+        
+    def buildGraph(self, words):
+        edges = defaultdict(list)
+        letters = set()
+        for i in range(len(words)-1):
+            word1 = words[i]
+            word2 = words[i+1]
+            
+            length = min(len(word1), len(word2))
+            j = 0
+            while j<length:
+                if word1[j]==word2[j]:
+                    letters.add(word1[j])
+                    j+=1
+                else:
+                    edges[word2[j]].append(word1[j])
+                    break
+            for letter in word1[j:]:
+                letters.add(letter)
+            for letter in word2[j:]:
+                letters.add(letter)
+                
+                
+        return edges, letters
+```
+
+
+
+
+
+Borrow the idea on how to build graph@2.8
 
 ```python
 class Solution:
@@ -145,8 +277,6 @@ class Solution:
         return True
             
             
-        
-        
     def buildGraph(self, words, letters, edges):
         for i in range(1, len(words)):
             word1 = words[i-1]

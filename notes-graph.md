@@ -596,13 +596,137 @@ Ref: https://leetcode.com/problems/add-and-search-word-data-structure-design/dis
 
 用defaultdict可以变快
 
+```python
+class TrieNode:
+    def __init__(self):
+        self.isWord = False
+        self.children = {}
+
+class WordDictionary:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+        
+
+    def addWord(self, word: str) -> None:
+        """
+        Adds a word into the data structure.
+        """
+        node = self.root
+        for letter in word:
+            if letter not in node.children:
+                node.children[letter] = TrieNode()
+            node = node.children[letter]
+        node.isWord = True
+        
+
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        """
+        
+        def dfs(node, word):
+            
+            for i in range(len(word)):
+                letter = word[i]
+                if letter!=".":
+                    if letter not in node.children:
+                        return False
+                    node = node.children[letter]
+                else:
+                    for child in node.children.values():
+                        if dfs(child, word[i+1:]):
+                            return True
+                    return False
+            return node.isWord
+        
+        
+        return dfs(self.root, word)
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
+```
 
 
-### 212. Word Search II
+
+
+
+### 212. Word Search II-$
 
 https://leetcode.com/problems/word-search-ii/description/
 
 #### Solution-trie, backtrack
+
+@2.16按照自己的思路, 但是就按照下面那个解法，其实并不需要一个visited表，直接在原表上面改后面复原即可
+
+```python
+from collections import defaultdict
+
+class TrieNode:
+    def __init__(self):
+        self.word = None
+        self.children = defaultdict(TrieNode)
+        
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+        
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            node = node.children[char]
+        node.word = word
+
+class Solution:
+        
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        trie = Trie()
+        for word in words:
+            trie.insert(word)
+        
+        rows = len(board)
+        cols = len(board[0])
+        res = set()
+        visited = [[False for i in range(cols)] for j in range(rows)]
+        
+        
+        def helper(node, x, y):
+            # if not node:
+            #     return
+            if board[x][y] not in node.children:
+                return
+            else:
+                child = node.children[board[x][y]]
+                if child.word:
+                    res.add(child.word)
+                for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                    x1 = x+dx
+                    y1 = y+dy
+                    if x1>=0 and x1<rows and y1>=0 and y1<cols and not visited[x1][y1]:
+                        visited[x1][y1] = True
+                        helper(child, x1, y1)
+                        visited[x1][y1] = False
+        
+        
+        for i in range(rows):
+            for j in range(cols):
+                visited[i][j] = True
+                helper(trie.root, i, j)
+                visited[i][j] = False
+                    
+        return list(res)
+```
+
+
+
+
+
+
 
 Ref: https://leetcode.com/problems/word-search-ii/discuss/59780/Java-15ms-Easiest-Solution-(100.00)
 
