@@ -239,7 +239,7 @@ https://www.liaoxuefeng.com/wiki/1016959663602400/1017496679217440
 
 ### split()
 
-不管中间空格有几个都可以分组
+不管中间空格有几个都可以分组, 而且空格就自动没有了
 
 
 
@@ -284,6 +284,29 @@ str.count(sub, start= 0,end=len(string))
 
 
 
+### setdefault()
+
+> https://www.tutorialspoint.com/python/dictionary_setdefault.htm
+>
+> Python dictionary method **setdefault()** is similar to get(), but will set *dict[key]=default* if key is not already in dict.
+>
+> Following is the syntax for **setdefault()** method −
+>
+> ```python
+> dict.setdefault(key, default=None)
+> ```
+>
+> Parameters
+>
+> - **key** − This is the key to be searched.
+> - **default** − This is the Value to be returned in case key is not found.
+>
+> Return Value
+>
+> This method returns the key value available in the dictionary and if given key is not available then it will return provided default value.
+
+
+
 ### map()
 
 map(function, iterable,…)
@@ -296,12 +319,46 @@ python3返回迭代器
 
 ### lambda
 
-匿名函数：lambda x: x*x 表示一下代码
+```python
+lambda arguments: expression
+```
+
+lambda x: x*x 表示以下代码
 
 ```python
 def f(x):
     return x * x
 ```
+
+应用场景：sort， [examples from here]([https://www.polarxiong.com/archives/Python-%E4%BD%BF%E7%94%A8lambda%E5%BA%94%E5%AF%B9%E5%90%84%E7%A7%8D%E5%A4%8D%E6%9D%82%E6%83%85%E5%86%B5%E7%9A%84%E6%8E%92%E5%BA%8F-%E5%8C%85%E6%8B%AClist%E5%B5%8C%E5%A5%97dict.html](https://www.polarxiong.com/archives/Python-使用lambda应对各种复杂情况的排序-包括list嵌套dict.html))
+
+* dict的value排序
+
+```python
+dic = {'c': 1, 'b': 2, 'a': 3}
+print(sorted(dic, key=lambda k: dic[k]))
+# ['c', 'b', 'a']
+print(sorted(dic, key=lambda k: dic[k], reverse=True))
+# ['a', 'b', 'c']
+```
+
+* list内嵌套list排序
+
+```python
+lis = [[4, 2, 9], [1, 5, 6], [7, 8, 3]]
+print(sorted(lis, key=lambda k: k[0]))
+# [[1, 5, 6], [4, 2, 9], [7, 8, 3]]
+print(sorted(lis, key=lambda k: k[1]))
+# [[4, 2, 9], [1, 5, 6], [7, 8, 3]]
+print(sorted(lis, key=lambda k: k[2]))
+# [[7, 8, 3], [1, 5, 6], [4, 2, 9]]
+print(sorted(lis, key=lambda k: k[0], reverse=True))
+# [[7, 8, 3], [4, 2, 9], [1, 5, 6]]
+```
+
+
+
+
 
 
 
@@ -1174,3 +1231,8 @@ Why do it this way instead of the more common alternatives I showed above? Becau
 ###  "while ... else" clause
 
 Ref:  [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii)
+
+
+
+
+

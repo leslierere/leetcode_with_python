@@ -1,40 +1,57 @@
 ##basics
 
-8.5
-
-#### 28. Implement strStr()
+### 28. Implement strStr()-cc
 
 https://leetcode.com/problems/implement-strstr/
 
+#### Solution
+
+加特殊情况判断可speed up
 
 
 
-
-#### 14. Longest Common Prefix
+### 14. Longest Common Prefix
 
 https://leetcode.com/problems/longest-common-prefix/
 
+#### Solution
+
+用最小的作为参考来比较更快
 
 
-#### 58. Length of Last Word
+
+### 58. Length of Last Word
 
 https://leetcode.com/problems/length-of-last-word/
 
 
 
+### 387. First Unique Character in a String
+
+https://leetcode.com/problems/first-unique-character-in-a-string/
+
+用collections.Counter计数较快
 
 
-#### 8.8
 
-#### 383. Ransom Note
+### 383. Ransom Note
 
 https://leetcode.com/problems/ransom-note/
 
+#### Solution
+
+用Counter的减法，Ref: https://leetcode.com/problems/ransom-note/discuss/85837/O(m%2Bn)-one-liner-Python
+
+```python
+def canConstruct(self, ransomNote, magazine):
+    return not collections.Counter(ransomNote) - collections.Counter(magazine)
+```
 
 
 
 
-#### 344. Reverse String
+
+### 344. Reverse String
 
 https://leetcode.com/problems/reverse-string/
 
@@ -42,41 +59,99 @@ https://leetcode.com/problems/reverse-string/
 
 
 
-#### 151. Reverse Words in a String
+### 151. Reverse Words in a String
 
 https://leetcode.com/problems/reverse-words-in-a-string/
 
-- solution
+#### solution
 
-  尝试O(1) space-not done
-  
-  
+Ref: https://leetcode.com/problems/reverse-words-in-a-string/discuss/47720/Clean-Java-two-pointers-solution-(no-trim(-)-no-split(-)-no-StringBuilder)
 
-#### 186. Reverse Words in a String II
+尝试O(1) space-not done
+
+
+
+### 186. Reverse Words in a String II
 
 https://leetcode.com/problems/reverse-words-in-a-string-ii/
 
 
 
-#### 345. Reverse Vowels of a String
+### 345. Reverse Vowels of a String
 
 https://leetcode.com/problems/reverse-vowels-of-a-string/
 
+#### Solution
+
+Ref: https://leetcode.com/problems/isomorphic-strings/discuss/57838/1-line-in-Python
+
+This is amazing
+
+```python
+def isIsomorphic3(self, s, t):
+    return len(set(zip(s, t))) == len(set(s)) == len(set(t))
+```
 
 
-#### 293. Flip Game-easy
+
+### 293. Flip Game-easy
 
 https://leetcode.com/problems/flip-game/
 
 8.13
 
-####  294. Flip Game II
+###  294. Flip Game II-$
 
 https://leetcode.com/problems/flip-game-ii/
 
-* Solution-minimax&backtracking
+#### Solution-minimax&backtracking
 
-  ***worth thinking and doing***
+Ref: https://leetcode.com/problems/flip-game-ii/discuss/73958/Memoization%3A-3150ms-greater-130ms-greater-44ms-(Python)
+
+第一步有一种机会可以赢就能赢，因为反过来对方的情况是所有的走法都会输
+
+#### Solution-game theory
+
+Ref: https://leetcode.com/problems/flip-game-ii/discuss/73954/Theory-matters-from-Backtracking(128ms)-to-DP-(0ms)
+
+
+
+### 290. Word Pattern-解法可以看看
+
+https://leetcode.com/problems/word-pattern/
+
+#### solution
+
+使用了map()，dict.setdefault(), 列表的等于会逐项比较判断
+
+Python dictionary method **setdefault()** is similar to get(), but will set *dict[key]=default* if key is not already in dict.
+
+Ref: https://leetcode.com/problems/word-pattern/discuss/73433/Short-in-Python
+
+```python
+def wordPattern(self, pattern, str):
+    f = lambda s: map({}.setdefault, s, range(len(s)))
+    return f(pattern) == f(str.split())
+```
+
+Here, f is:
+
+```python
+def f(sequence):
+    first_occurrence = {}
+    normalized = []
+    for i, item in enumerate(sequence):
+        if item not in first_occurrence:
+            first_occurrence[item] = i
+        normalized.append(first_occurrence[item])
+    return normalized
+```
+
+
+
+### 242.Valid Anagram
+
+#### Solution-Counter()
 
 
 
@@ -91,6 +166,20 @@ https://leetcode.com/problems/group-anagrams/
 ### 249. Group Shifted Strings
 
 https://leetcode.com/problems/group-shifted-strings/
+
+#### Solution
+
+[Ref](https://leetcode.com/problems/group-shifted-strings/discuss/67466/1-4-lines-Ruby-and-Python): 巧妙解决了只有一个字母的时候的情况
+
+```python
+def groupStrings(self, strings):
+    groups = collections.defaultdict(list)
+    for s in strings:
+        groups[tuple((ord(c) - ord(s[0])) % 26 for c in s)] += s,
+    return groups.values()
+```
+
+
 
 
 
