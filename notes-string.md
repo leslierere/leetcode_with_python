@@ -185,27 +185,73 @@ def groupStrings(self, strings):
 
 8.22
 
-### 87. Scramble String
+### 87. Scramble String-$
+
+注意其实是可以任意分的
 
 https://leetcode.com/problems/scramble-string/
 
-* Solution-recursion
+#### Solution-recursion
 
-* Solution-DP
+Ref: https://leetcode.com/problems/scramble-string/discuss/29387/Accepted-Java-solution
 
-  ***worth doing and thinking***
+```python
+class Solution:
+    def isScramble(self, s1: str, s2: str) -> bool:
+        if len(s1)!=len(s2):
+            return False
+        
+        if s1 ==s2:
+            return True
+        elif sorted(s1)!=sorted(s2):
+            return False
+        else:
+            for i in range(len(s1)-1):  
+                if self.isScramble(s1[:i+1], s2[:i+1]) and self.isScramble(s1[i+1:], s2[i+1:]):
+                    return True
+                if self.isScramble(s1[:i+1], s2[-i-1:]) and self.isScramble(s1[i+1:], s2[:-i-1]):
+                    return True
+        return False
+```
+
+
+
+
+
+#### Solution-DP
+
+Ref: https://leetcode.wang/leetCode-87-Scramble-String.html
+
+
 
 
 
 8.26
 
-#### 161. One Edit Distance
+### 161. One Edit Distance-看看想想
 
 https://leetcode.com/problems/one-edit-distance/
 
+#### Solution
+
+感觉这个更好吧，切分较少
+
+Ref: https://leetcode.com/problems/one-edit-distance/discuss/50108/C%2B%2B-DP
+
+```c++
+bool isOneEditDistance(string s, string t) {
+    for(int i = 0; i < s.size() && i < t.size(); ++i)
+        if(s[i] != t[i])
+            return s.substr(i) == t.substr(i+1) || s.substr(i+1) == t.substr(i) || s.substr(i+1) == t.substr(i+1);
+    return abs(int(s.size()) - int(t.size())) == 1;
+}
+```
 
 
-#### 38. Count and Say
+
+
+
+### 38. Count and Say
 
 https://leetcode.com/problems/count-and-say/
 
@@ -213,72 +259,130 @@ https://leetcode.com/problems/count-and-say/
 
 8.29
 
-#### 358. Rearrange String k Distance Apart
+### 358. Rearrange String k Distance Apart-$
 
 https://leetcode.com/problems/rearrange-string-k-distance-apart/
 
-* solution-Priority queue
+#### solution-Priority queue
+
+这个比我的要好一点
+
+```python
+from heapq import *
+from collections import deque
+from collections import Counter
+class Solution:
+    def rearrangeString(self, s: str, k: int) -> str:
+        if k == 0:
+            return s
+        counter = Counter(s)
+        queue = [[-counter[char], char] for char in counter]
+        heapify(queue)
+        mem = deque()
+        res = ''
+        while len(queue) or len(mem):
+            if len(mem) == k:
+                curr = mem.popleft()
+                if curr[0] < 0:
+                    heappush(queue, curr)
+            if len(queue):
+                curr = heappop(queue)
+                res += curr[1]
+                curr[0] += 1
+                mem.append(curr)
+            else:
+                if sum([item[0] for item in mem]) == 0:
+                    return res
+                else:
+                    return ''
+```
 
 
 
-#### 316. Remove Duplicate Letters
+
+
+
+
+### 316. Remove Duplicate Letters-$
 
 https://leetcode.com/problems/remove-duplicate-letters/
 
 * solution-Stack, greedy
 
+Ref: https://leetcode.com/problems/remove-duplicate-letters/discuss/76769/Java-solution-using-Stack-with-comments
 
 
-#### 271. Encode and Decode Strings
+
+### 271. Encode and Decode Strings-$
 
 https://leetcode.com/problems/encode-and-decode-strings/
 
 * Solution-good thoughts
 
+https://leetcode.com/problems/encode-and-decode-strings/discuss/70448/1%2B7-lines-Python-(length-prefixes)
+
+[https://leetcode.com/problems/encode-and-decode-strings/discuss/70402/Java-with-%22escaping%22](https://leetcode.com/problems/encode-and-decode-strings/discuss/70402/Java-with-"escaping")
+
 
 
 8.30
 
-#### 168. Excel Sheet Column Title
+### 168. Excel Sheet Column Title
 
 https://leetcode.com/problems/excel-sheet-column-title/
 
+可以做一下
 
 
 
-
-#### 171. Excel Sheet Column Number
+### 171. Excel Sheet Column Number
 
 https://leetcode.com/problems/excel-sheet-column-number/
 
-* Easy
 
 
 
-#### 13. Roman to Integer
+
+### 13. Roman to Integer
 
 https://leetcode.com/problems/roman-to-integer/
 
+#### Solution
 
+Ref: https://leetcode.com/problems/roman-to-integer/discuss/6547/Clean-O(n)-c%2B%2B-solution
 
 
 
 9.14
 
-#### 12. Integer to Roman
+### 12. Integer to Roman
 
 https://leetcode.com/problems/integer-to-roman/
 
+#### Solution
+
+Ref: https://leetcode.com/problems/integer-to-roman/discuss/6274/Simple-Solution
 
 
-#### 273. Integer to English Words
+
+### 246. Strobogrammatic Number
+
+https://leetcode.com/problems/strobogrammatic-number/
+
+Easy
+
+
+
+### 273. Integer to English Words-$
 
 https://leetcode.com/problems/integer-to-english-words/
 
-* solution
+* Solution-recursive 
+
+  Ref: https://leetcode.com/problems/integer-to-english-words/discuss/70632/Recursive-Python
 
   感觉如下分组更好
-
+  
   ```python
   def words(n):
           if n < 20:
@@ -287,7 +391,7 @@ https://leetcode.com/problems/integer-to-english-words/
               return [tens[n/10-2]] + words(n%10)
           if n < 1000:
               return [to19[n/100-1]] + ['Hundred'] + words(n%100)
-          for p, w in enumerate(('Thousand', 'Million', 'Billion'), 1):
+          for p, w in enumerate(('Thousand', 'Million', 'Billion'), 1): # 第二个参数1是让index从1开始
               if n < 1000**(p+1):
                   return words(n/1000**p) + [w] + words(n%1000**p)
       return ' '.join(words(num)) or 'Zero'
@@ -299,11 +403,11 @@ https://leetcode.com/problems/integer-to-english-words/
 
 9.21
 
-#### 247. Strobogrammatic Number II
+### 247. Strobogrammatic Number II
 
 https://leetcode.com/problems/strobogrammatic-number-ii/
 
-* solution-recursive
+* solution-recursive-试着写写就好
 
   https://leetcode.com/problems/strobogrammatic-number-ii/discuss/67275/Python-recursive-solution-need-some-observation-so-far-97
 
@@ -334,13 +438,13 @@ https://leetcode.com/problems/strobogrammatic-number-ii/
 
   
 
-#### 248. Strobogrammatic Number III
+### 248. Strobogrammatic Number III
 
 https://leetcode.com/problems/strobogrammatic-number-iii/
 
 
 
-#### 157. Read N Characters Given Read4
+### 157. Read N Characters Given Read4
 
 https://leetcode.com/problems/read-n-characters-given-read4/
 
@@ -348,7 +452,7 @@ https://leetcode.com/problems/read-n-characters-given-read4/
 
 9.28
 
-#### 158. Read N Characters Given Read4 II - Call multiple times
+### 158. Read N Characters Given Read4 II - Call multiple times
 
 https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-times/
 
@@ -356,7 +460,7 @@ https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-tim
 
 
 
-#### 68. Text Justification
+### 68. Text Justification
 
 https://leetcode.com/problems/text-justification/
 
@@ -372,7 +476,7 @@ https://leetcode.com/problems/text-justification/
 
 12.13
 
-#### 65. Valid Number
+### 65. Valid Number
 
 https://leetcode.com/problems/valid-number/
 
@@ -464,7 +568,7 @@ class Solution(object):
 
 ## Substring
 
-#### 76. Minimum Window Substring
+### 76. Minimum Window Substring
 
 https://leetcode.com/problems/minimum-window-substring/
 
@@ -532,7 +636,7 @@ class Solution:
 
 
 
-#### 30. Substring with Concatenation of All Words
+### 30. Substring with Concatenation of All Words
 
 https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
@@ -540,7 +644,7 @@ https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
 
 
-#### 3. Longest Substring Without Repeating Characters
+### 3. Longest Substring Without Repeating Characters
 
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
@@ -550,7 +654,7 @@ https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
 12.14
 
-#### 340. Longest Substring with At Most K Distinct Characters
+### 340. Longest Substring with At Most K Distinct Characters
 
 https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
 
@@ -558,7 +662,7 @@ https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characte
 
 
 
-#### 395. Longest Substring with At Least K Repeating Characters
+### 395. Longest Substring with At Least K Repeating Characters
 
 https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
 
@@ -574,7 +678,7 @@ def longestSubstring(self, s, k):
 
 
 
-#### 159. Longest Substring with At Most Two Distinct Characters
+### 159. Longest Substring with At Most Two Distinct Characters
 
 https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
 
@@ -584,7 +688,7 @@ https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-charac
 
 ## Palindrome
 
-#### 125. Valid Palindrome
+### 125. Valid Palindrome
 
 https://leetcode.com/problems/valid-palindrome/
 
@@ -596,7 +700,7 @@ https://leetcode.com/problems/valid-palindrome/
 
 
 
-#### 5. Longest Palindromic Substring
+### 5. Longest Palindromic Substring
 
 https://leetcode.com/problems/longest-palindromic-substring/
 
@@ -722,7 +826,7 @@ def helper(self, s, l, r):
 
 12.15
 
-#### 9. Palindrome Number
+### 9. Palindrome Number
 
 https://leetcode.com/problems/palindrome-number/
 
@@ -731,7 +835,7 @@ https://leetcode.com/problems/palindrome-number/
 
 
 
-#### 214. Shortest Palindrome
+### 214. Shortest Palindrome
 
 https://leetcode.com/problems/shortest-palindrome/
 
@@ -769,7 +873,7 @@ Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursiv
 
 
 
-#### 336. Palindrome Pairs
+### 336. Palindrome Pairs
 
 https://leetcode.com/problems/palindrome-pairs/
 
@@ -804,7 +908,7 @@ class Solution:
 
 
 
-#### 131. Palindrome Partitioning
+### 131. Palindrome Partitioning
 
 https://leetcode.com/problems/palindrome-partitioning/
 
@@ -891,7 +995,7 @@ class Solution:
 
 12.16
 
-#### 132. Palindrome Partitioning II
+### 132. Palindrome Partitioning II
 
 https://leetcode.com/problems/palindrome-partitioning-ii/
 
@@ -972,7 +1076,7 @@ by huahua, 这种长度未知的，一般使用dp而不用backtrack？？
 
 
 
-#### 267. Palindrome Permutation II
+### 267. Palindrome Permutation II
 
 https://leetcode.com/problems/palindrome-permutation-ii/
 
@@ -984,7 +1088,7 @@ https://leetcode.com/problems/palindrome-permutation-ii/discuss/120631/Short-Pyt
 
 ## Parentheses
 
-#### 20. Valid Parentheses
+### 20. Valid Parentheses
 
 https://leetcode.com/problems/valid-parentheses/
 
@@ -992,7 +1096,7 @@ https://leetcode.com/problems/valid-parentheses/
 
 
 
-#### 22. Generate Parentheses
+### 22. Generate Parentheses
 
 https://leetcode.com/problems/generate-parentheses/
 
@@ -1002,7 +1106,7 @@ https://leetcode.com/problems/generate-parentheses/
 
 12.17
 
-#### 32. Longest Valid Parentheses
+### 32. Longest Valid Parentheses
 
 https://leetcode.com/problems/longest-valid-parentheses/
 
@@ -1018,7 +1122,7 @@ Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
 
 
-#### 241. Different Ways to Add Parentheses
+### 241. Different Ways to Add Parentheses
 
 https://leetcode.com/problems/different-ways-to-add-parentheses/
 
@@ -1056,7 +1160,7 @@ class Solution:
 
 
 
-#### 301. Remove Invalid Parentheses
+### 301. Remove Invalid Parentheses
 
 https://leetcode.com/problems/remove-invalid-parentheses/
 
@@ -1127,13 +1231,13 @@ class Solution:
 
 ## Subsequence
 
-#### 392. Is Subsequence
+### 392. Is Subsequence
 
 https://leetcode.com/problems/is-subsequence/
 
 
 
-#### 115. Distinct Subsequences
+### 115. Distinct Subsequences
 
 https://leetcode.com/problems/distinct-subsequences/
 
@@ -1167,7 +1271,7 @@ class Solution:
 
 
 
-#### 187. Repeated DNA Sequences
+### 187. Repeated DNA Sequences
 
 https://leetcode.com/problems/repeated-dna-sequences/
 
