@@ -448,6 +448,46 @@ https://leetcode.com/problems/strobogrammatic-number-iii/
 
 https://leetcode.com/problems/read-n-characters-given-read4/
 
+奇怪的题。。。
+
+#### Solution
+
+```python
+"""
+The read4 API is already defined for you.
+
+    @param buf, a list of characters
+    @return an integer
+    def read4(buf):
+
+# Below is an example of how the read4 API can be called.
+file = File("abcdefghijk") # File is "abcdefghijk", initially file pointer (fp) points to 'a'
+buf = [' '] * 4 # Create buffer with enough space to store characters
+read4(buf) # read4 returns 4. Now buf = ['a','b','c','d'], fp points to 'e'
+read4(buf) # read4 returns 4. Now buf = ['e','f','g','h'], fp points to 'i'
+read4(buf) # read4 returns 3. Now buf = ['i','j','k',...], fp points to end of file
+"""
+class Solution:
+    def read(self, buf, n):
+        """
+        :type buf: Destination buffer (List[str])
+        :type n: Number of characters to read (int)
+        :rtype: The number of actual characters read (int)
+        """
+        readNumber = 0
+        
+        while n>0:
+            buf4 = ['']*4
+            curRead = read4(buf4)
+            
+            for i in range(0, min(n, 4)):
+                buf[i+readNumber] = buf4[i]
+            readNumber+=min(curRead, n)
+            n-=4
+            
+        return readNumber
+```
+
 
 
 9.28
@@ -472,11 +512,53 @@ https://leetcode.com/problems/text-justification/
   >
   > https://leetcode.wang/leetCode-68-Text-Justification.html
 
+Ref: https://leetcode.com/problems/text-justification/discuss/24891/Concise-python-solution-10-lines.
+
+```python
+class Solution:
+    def fullJustify(self, words: List[str], maxWidth: int) -> List[str]:
+        remain = maxWidth
+        line = []
+        res = []
+        i = 0
+        
+        def helper(line, res):
+            if len(line)==1:
+                res.append(line[0]+" "*(maxWidth-len(line[0])))
+                return
+            spaces = len(line)+remain
+            basicSpaces = spaces//(len(line)-1)
+            extraNo = spaces%(len(line)-1)
+            space = " "*basicSpaces
+            
+            for i in range(extraNo):#这个处理不错
+                line[i]+=" "
+            res.append(space.join(line))
+            
+        
+        for word in words:
+            if remain-len(word)>=0:
+                remain-=len(word)+1
+                line.append(word)
+                i+=1
+            else:
+                helper(line, res)
+                remain = maxWidth-len(word)-1
+                line = [word]
+                
+        lastLine = " ".join(line)
+        res.append(lastLine+" "*(maxWidth-len(lastLine)))
+        
+        return res
+```
+
+
+
 
 
 12.13
 
-### 65. Valid Number
+### 65. Valid Number-$
 
 https://leetcode.com/problems/valid-number/
 
@@ -568,7 +650,7 @@ class Solution(object):
 
 ## Substring
 
-### 76. Minimum Window Substring
+### 76. Minimum Window Substring-$
 
 https://leetcode.com/problems/minimum-window-substring/
 
@@ -636,11 +718,88 @@ class Solution:
 
 
 
-### 30. Substring with Concatenation of All Words
+@3.11
+
+```python
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if not s or not t:
+            return ""
+        
+        counterT = collections.Counter(t)
+        res = [float("inf"),0,0]
+        uniques = len(counterT)
+        
+        start = end = 0
+        while end<len(s):
+            while end<len(s) and uniques!=0:
+                character = s[end]
+                if character in t:
+                    counterT[character]-=1
+                    if counterT[character]==0:
+                        uniques-=1
+                end+=1
+            while uniques==0:
+                if end-start<res[0]:
+                    res = [end-start, start, end]
+                
+                character = s[start]
+                if character in t:
+                    counterT[character]+=1
+                    if counterT[character]==1:
+                        uniques+=1
+                start+=1
+            
+            
+        return s[res[1]:res[2]]
+```
+
+
+
+
+
+### 30. Substring with Concatenation of All Words-$
 
 https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
-* Solution-sliding window, two pointer
+#### Solution
+
+Ref: https://leetcode.com/problems/substring-with-concatenation-of-all-words/discuss/13658/Easy-Two-Map-Solution-(C%2B%2BJava), time complexity: O((sLength-wordsL)* noOfWords)
+
+```python
+from collections import Counter, defaultdict
+
+class Solution(object):
+    def findSubstring(self, s, words):
+        """
+        :type s: str
+        :type words: List[str]
+        :rtype: List[int]
+        """
+        wordBag = Counter(words)   # count the freq of each word
+        wordLen, numWords = len(words[0]), len(words)
+        totalLen, res = wordLen*numWords, []
+        for i in range(len(s)-totalLen+1):   # scan through s
+            # For each i, determine if s[i:i+totalLen] is valid
+            seen = defaultdict(int)   # reset for each i
+            for j in range(i, i+totalLen, wordLen):
+                currWord = s[j:j+wordLen]
+                if currWord in wordBag:
+                    seen[currWord] += 1
+                    if seen[currWord] > wordBag[currWord]:
+                        break
+                else:   # if not in wordBag
+                    break    
+            if seen == wordBag:
+                res.append(i)   # store result
+        return res
+```
+
+
+
+#### Solution-sliding window
+
+Ref: https://leetcode.com/problems/substring-with-concatenation-of-all-words/discuss/13699/92-JAVA-O(N)-with-explaination
 
 
 
@@ -654,7 +813,7 @@ https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
 12.14
 
-### 340. Longest Substring with At Most K Distinct Characters
+### 340. Longest Substring with At Most K Distinct Characters-$
 
 https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
 
@@ -662,18 +821,30 @@ https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characte
 
 
 
-### 395. Longest Substring with At Least K Repeating Characters
+### 395. Longest Substring with At Least K Repeating Characters-$
 
 https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
 
 * Solution-Divide and Conquer- worth doing and thinking-12.23还是不会
 
+3.12终于想出来了
+
 ```python
-def longestSubstring(self, s, k):
-    for c in set(s): 
-        if s.count(c) < k:
-            return max(self.longestSubstring(t, k) for t in s.split(c))
-    return len(s)
+import re
+class Solution:
+    def longestSubstring(self, s: str, k: int) -> int:
+        if len(s)<k:
+            return 0
+        
+        charSet = set(s)
+        
+        for char in charSet:
+            if s.count(char)<k:
+                substrings = s.split(char)
+                return max([self.longestSubstring(substring, k) for substring in substrings])
+            
+        return len(s)
+                
 ```
 
 
@@ -683,6 +854,28 @@ def longestSubstring(self, s, k):
 https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
 
 * Solution-这就是340的降级版
+
+```python
+class Solution:
+    def lengthOfLongestSubstringKDistinct(self, s: str, k: int) -> int:
+        l = r = 0
+        charDict = collections.defaultdict(int)
+        
+        res = []
+        
+        while r<len(s):
+            charDict[s[r]]+=1
+            while len(charDict)>k:
+                res.append(r-l)
+                charDict[s[l]]-=1
+                if charDict[s[l]]==0:
+                    charDict.pop(s[l])
+                l+=1
+            r+=1
+        res.append(r-l)
+        
+        return max(res)
+```
 
 
 
