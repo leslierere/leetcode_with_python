@@ -893,11 +893,13 @@ https://leetcode.com/problems/valid-palindrome/
 
 
 
-### 5. Longest Palindromic Substring
+### 5. Longest Palindromic Substring-$
 
 https://leetcode.com/problems/longest-palindromic-substring/
 
 * Solution-dynamic programming- **worth doing and thinking**
+
+@3.13关键是要倒着遍历才能转为一维数组
 
 > Ref：https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html
 >
@@ -913,12 +915,10 @@ https://leetcode.com/problems/longest-palindromic-substring/
 >
 > （当求第 i 行的时候我们只需要第 i + 1 行的信息，并且 j 的话需要 j - 1 的信息，所以倒着遍历这样我们可以把二维数组转为用一维数组）
 >
-> <img src="/Users/leslieren/Desktop/Screen Shot 2019-12-23 at 9.49.52 PM.png" alt="Screen Shot 2019-12-23 at 9.49.52 PM" style="zoom:33%;" />
->
 > ```python
-> public String longestPalindrome7(String s) {
->         int n = s.length();
->         String res = "";
+>public String longestPalindrome7(String s) {
+>      int n = s.length();
+>      String res = "";
 >         boolean[] P = new boolean[n];
 >         for (int i = n - 1; i >= 0; i--) {
 >             for (int j = n - 1; j >= i; j--) {
@@ -932,8 +932,8 @@ https://leetcode.com/problems/longest-palindromic-substring/
 >         }
 >         return res;
 >     }
-> ```
->
+>    ```
+>    
 > 
 
 
@@ -971,21 +971,56 @@ mx: the most right position of already known palindromes
 
 id: the center of the palindrome with the most right position in above
 
-**main problem**: How to update Mp[i]?(here we make use of the already known palindromes in the min part: min(p[2 * id - i], mx - i))
+**main problem**: How to update Mp[i]?(here we make use of the already known palindromes in the min part: min(mp[2 * id - i], mx - i))
 
 ```
-mp[i] = mx > i ? min(p[2 * id - i], mx - i) : 1;
+mp[i] = mx > i ? min(mp[2 * id - i], mx - i) : 1;
 ```
 
-If mx<=i, we can only use mp[i]=1, and then we would compare the characters beside it step by step
+If mx<=i, we can only use mp[i]=0, and then we would compare the characters beside it step by step
 
 If mx>i, we would try to make use of the index that is symmatric to i with the center of id.
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4wyed1j31c00u0nce.jpg" alt="image-20191216205337687" style="zoom:55%;" />
+<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200314192944674.png" alt="image-20200314192944674" style="zoom:20%;" />
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        modifiedS = "$#"
+        for i in s:
+            modifiedS += i+"#"
+        
+        mp = [0 for i in range(len(modifiedS))]    
+        rightBoarder = 0
+        rightCenter = 0
+        maxRadius = 0
+        res = ""
+        
+        for i in range(len(modifiedS)):
+            if rightBoarder>i:
+                mp[i] = min(mp[2*rightCenter-i], rightBoarder-i)
+            else:
+                mp[i] = 0
+            
+            while i+1+mp[i]<len(modifiedS) and i-1-mp[i]>=0 and modifiedS[i+1+mp[i]]==modifiedS[i-1-mp[i]]:
+                mp[i]+=1
+            
+            if i+mp[i]>rightBoarder:
+                rightBoarder = i+mp[i]
+                rightCenter = i
+            if mp[i]>maxRadius:
+                maxRadius = mp[i]
+                beginIndex = (i-mp[i])//2
+                res = s[beginIndex:beginIndex+maxRadius]
+                    
+        return res
+```
 
 
 
-* solution-扩展中心, 应该会快一些-you can try@12.23
+
+
+* solution-扩展中心, 比普通动态规划快那么多？@3.14
 
 Ref: https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html 解法4
 
@@ -1019,20 +1054,30 @@ def helper(self, s, l, r):
 
 12.15
 
-### 9. Palindrome Number
+### 9. Palindrome Number-一个解法$
 
 https://leetcode.com/problems/palindrome-number/
 
 * Solution-翻转字符串, 通过取整和取余来获得想要的数字
-* Solution-只要翻转后半部分，和前面相等则True
+* Solution-只要翻转后半部分，和前面相等则True-$
 
 
 
-### 214. Shortest Palindrome
+### 214. Shortest Palindrome-$
 
 https://leetcode.com/problems/shortest-palindrome/
 
 * Solution-Brute force-O(N2)-可以想想
+
+另一种暴力破解, ref: https://leetcode.wang/leetcode-214-Shortest-Palindrome.html
+
+> 先判断整个字符串是不是回文串，如果是的话，就直接将当前字符串返回。不是的话，进行下一步。
+>
+> 判断去掉末尾 `1` 个字符的字符串是不是回文串，如果是的话，就将末尾的 `1` 个字符加到原字符串的头部返回。不是的话，进行下一步。
+>
+> 判断去掉末尾 `2` 个字符的字符串是不是回文串，如果是的话，就将末尾的 `2` 个字符倒置后加到原字符串的头部返回。不是的话，进行下一步。
+>
+> 判断去掉末尾 `3` 个字符的字符串是不是回文串，如果是的话，就将末尾的 `3` 个字符倒置后加到原字符串的头部返回。不是的话，进行下一步。
 
 Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60099/AC-in-288-ms-simple-brute-force
 
@@ -1044,9 +1089,15 @@ def shortestPalindrome(self, s):
             return r[:i] + s
 ```
 
+* Solution-Manacher Algorithm-worth doing and thinking
+
+https://leetcode.wang/leetcode-214-Shortest-Palindrome.html
+
 * Solution-recursive-***worth thinking and doing*** @12.23
 
 Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursive-Python-solution
+
+https://leetcode.wang/leetcode-214-Shortest-Palindrome.html.  解法2
 
 ```python
 	  if not s or len(s) == 1:
@@ -1058,7 +1109,7 @@ Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursiv
     return s[::-1][:len(s)-j] + self.shortestPalindrome(s[:j-len(s)]) + s[j-len(s):]
 ```
 
-
+j一定可以走出最长回文串
 
 * Solution-KMP, Knuth–Morris–Pratt, **worth doing and thinking**
 
@@ -1066,7 +1117,7 @@ Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursiv
 
 
 
-### 336. Palindrome Pairs
+### 336. Palindrome Pairs-$
 
 https://leetcode.com/problems/palindrome-pairs/
 
@@ -1099,9 +1150,15 @@ class Solution:
 
 
 
+* Solution-trie
+
+Ref: http://www.allenlipeng47.com/blog/index.php/2016/03/15/palindrome-pairs/
 
 
-### 131. Palindrome Partitioning
+
+
+
+### 131. Palindrome Partitioning-$
 
 https://leetcode.com/problems/palindrome-partitioning/
 
@@ -1109,34 +1166,31 @@ by huahua: 优化的问题通常用dp或dfs
 
 * Solution- divide and conquer-**worth doing and thinking**@12.24
 
-设置递归出口
-
-ref：https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
+@3.16不需要helper函数啦
 
 ```python
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
-        return self.helper(s, 0)
-           
-    def helper(self, s, start):
-        if start==len(s):
-            return [[]]
+        if len(s)==1:
+            return [[s]]
+        res = []
         
-        ans = []
-        
-        for i in range(start, len(s)):
-            if self.isPali(s[start:i+1]):
-                left = s[start:i+1]
-                for l in self.helper(s, i+1):
-                    ans.append([left]+l)
-        return ans
+        if s==s[::-1]:
+            res.append([s])
+      
+        for i in range(1, len(s)):
+            left = s[:i]
+            if left==left[::-1]:
             
-    def isPali(self, s):
-        # identify if a given string is a palindrome
-        return s==s[::-1]
+                for right in self.partition(s[i:]):
+                    res.append([left]+right)
+                    
+        return res
 ```
 
-加强版，引入动态规划
+加强版，引入动态规划，太强了！
+
+ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 
 ```python
 class Solution:
@@ -1161,7 +1215,7 @@ class Solution:
 
 
 
-* solution-dfs, backtrack-**worth doing and thinking**@12.24
+* solution-dfs, backtrack-**worth doing and thinking**@12.24@3.16
 
 ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 
@@ -1188,7 +1242,7 @@ class Solution:
 
 12.16
 
-### 132. Palindrome Partitioning II
+### 132. Palindrome Partitioning II-$
 
 https://leetcode.com/problems/palindrome-partitioning-ii/
 
@@ -1196,35 +1250,13 @@ https://leetcode.com/problems/palindrome-partitioning-ii/
 
 https://www.cnblogs.com/grandyang/p/4271456.html
 
-感觉关键是找递推方程
-
 > 一维的dp数组，其中dp[i]表示子串 [0, i] 范围内的最小分割数，那么我们最终要返回的就是 dp[n-1] 了.
 >
 > 并且加个corner case的判断，若s串为空，直接返回0。
 >
 > 而如何更新dp[i], 这个区间的每个位置都可以尝试分割开来，所以就用一个变量j来从0遍历到i，这样就可以把区间 [0, i] 分为两部分，[0, j-1] 和 [j, i]。而因为我们从前往后更新，所以我们已经知道区间 [0, j-1] 的最小分割数 dp[j-1]， 这样我们就只需要判断区间 [j, i] 内的子串是否为回文串了。
 
-如下图，先判断 `start` 到 `i` 是否是回文串，如果是的话，就用 `1 + d` 和之前的 `min` 比较。
 
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4t6f0gj30t410c0uq.jpg" alt="image-20191216162740834" style="zoom:30%;" />
-
-如下图，`i` 后移，继续判断 `start` 到 `i` 是否是回文串，如果是的话，就用 `1 + c` 和之前的 `min`比较。
-
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4yhto8j30p4114q4w.jpg" alt="image-20191216162832270" style="zoom:30%;" />
-
-然后 `i` 继续后移重复上边的过程。每次选一个较小的切割次数，最后问号处就求出来了。
-
-接着 `start` 继续前移，重复上边的过程，直到求出 `start` 等于 `0` 的最小切割次数就是我们要找的了。
-
-仔细考虑下上边的状态，其实状态转移方程也就出来了。
-
-用 `dp[i]` 表示字符串 `s[i,s.lenght-1]`，也就是从 `i` 开始到末尾的字符串的最小切割次数。
-
-求 `dp[i]` 的话，假设 `s[i,j]` 是回文串。
-
-那么 `dp[i] = Min(min,dp[j + 1])`.
-
-然后考虑所有的 `j`，其中 `j > i` ，找出最小的即可。
 
 ```python
 # by myself, slow, time: O(N^3)
@@ -1254,10 +1286,6 @@ class Solution:
 可以dp存储一下回文字符串优化，降到O(N^2), 其他的问题，不是palindrome其他的一个function可以做类似处理，在判断valid这里使用dp存储
 
 <img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4w8fmfj31c00u0gyj.jpg" alt="image-20191225091012152" style="zoom:50%;" />
-
-
-
-
 
 
 
@@ -1293,17 +1321,44 @@ https://leetcode.com/problems/valid-parentheses/
 
 https://leetcode.com/problems/generate-parentheses/
 
-* Solution-backtrack, 我想出来了！突然不会@12.28
+* Solution-backtrack
 
 
 
 12.17
 
-### 32. Longest Valid Parentheses
+### 32. Longest Valid Parentheses-$
 
 https://leetcode.com/problems/longest-valid-parentheses/
 
 * Solution-dynamic programming
+
+@3.18做出来了，但我也还没想特别清楚
+
+```python
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        if not s:
+            return 0
+        
+        res = 0
+        stack = []
+        dp = [0]*len(s)
+        i = 0
+        
+        for i in range(len(s)):
+            if s[i]=='(':
+                stack.append(i)
+                continue
+            
+            if stack:
+                leftIndex = stack.pop()
+                dp[i] = i-leftIndex+1+dp[leftIndex-1]
+                
+        return max(dp)
+```
+
+
 
 Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
@@ -1319,7 +1374,7 @@ Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
 https://leetcode.com/problems/different-ways-to-add-parentheses/
 
-* Solution-divide and conquer- **worth thinking and doing**@1.2!!!循环找分割点
+* Solution-divide and conquer- **worth thinking and doing**@1.2!!!循环找分割点,@3.19会做了
 
 Ref: https://www.youtube.com/watch?v=gxYV8eZY0eQ&t=280s
 
@@ -1353,17 +1408,13 @@ class Solution:
 
 
 
-### 301. Remove Invalid Parentheses
+### 301. Remove Invalid Parentheses-$
 
 https://leetcode.com/problems/remove-invalid-parentheses/
 
 * solution-DFS- **worth thinking and doing**
 
 Ref: https://www.youtube.com/watch?v=2k_rS_u6EBk
-
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4trb7kj30t410c0uq.jpg" alt="image-20200102154813925" style="zoom:50%;" />
-
-
 
 ```python
 # based on huahua's code
@@ -1424,17 +1475,68 @@ class Solution:
 
 ## Subsequence
 
-### 392. Is Subsequence
+### 392. Is Subsequence-followup-$
 
 https://leetcode.com/problems/is-subsequence/
 
+Follow-up:
+
+```python
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        charDic = collections.defaultdict(list)
+        for i in range(len(t)):
+            charDic[t[i]].append(i)
+        
+        
+        sDic = collections.defaultdict(int)
+        
+        prev = [-1]
+        for char in s:
+            if char not in charDic:
+                return False
+            
+            while sDic[char]<len(charDic[char]) and charDic[char][sDic[char]]<=prev[-1]:
+                sDic[char]+=1
+            if sDic[char]>=len(charDic[char]):
+                return False
+            else:
+                prev.append(charDic[char][sDic[char]])
+                sDic[char]+=1
+                
+                
+        return True
+```
 
 
-### 115. Distinct Subsequences
+
+### 115. Distinct Subsequences-$
 
 https://leetcode.com/problems/distinct-subsequences/
 
 * solution-dynamic programming-**worth thinking and doing**
+
+@3.19做出来啦
+
+Space: O(n)
+
+```python
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        lastRow = [1 for i in range(len(s)+1)]
+        
+        
+        for i in range(1, len(t)+1):
+            curRow = [0 for i in range(len(s)+1)]
+            for j in range(1, len(s)+1):
+                if t[i-1]==s[j-1]:
+                    curRow[j] = lastRow[j-1] + curRow[j-1]
+                else:
+                    curRow[j] = curRow[j-1]
+            lastRow = curRow
+                    
+        return lastRow[-1]
+```
 
 https://www.youtube.com/watch?v=mPqqXh8XvWY
 
@@ -1464,7 +1566,7 @@ class Solution:
 
 
 
-### 187. Repeated DNA Sequences
+### 187. Repeated DNA Sequences-$bit看一下
 
 https://leetcode.com/problems/repeated-dna-sequences/
 
