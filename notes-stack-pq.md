@@ -1,4 +1,4 @@
-### 155. Min Stack
+### 	155. Min Stack-$
 
 https://leetcode.com/problems/min-stack/description/
 
@@ -52,11 +52,41 @@ https://leetcode.com/problems/implement-stack-using-queues/description/
 
 
 
-### 150. Evaluate Reverse Polish Notation
+### 150. Evaluate Reverse Polish Notation-$
 
 https://leetcode.com/problems/evaluate-reverse-polish-notation/description/
 
 #### Solution-stack
+
+主要是要注意减法除法的顺序，和除法towards 0的要求
+
+```python
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        operators = set(["+", "-", "*", "/"])
+        
+        for i in tokens:
+            if i not in operators:
+                stack.append(int(i))
+            else:
+                second = stack.pop()
+                first = stack.pop()
+                if i=="*":
+                    stack.append(first* second)
+                elif i=="+":
+                    stack.append(first+ second)
+                elif i=="-":
+                    stack.append(first- second)
+                else:
+                    res = abs(first)//abs(second)
+                    if first*second<0:
+                        res = -res
+                    stack.append(res)
+        return stack[-1]
+```
+
+
 
 
 
@@ -70,7 +100,7 @@ Using two pointer is slow, use split would be alright
 
 
 
-### 388. Longest Absolute File Path
+### 388. Longest Absolute File Path-$
 
 https://leetcode.com/problems/longest-absolute-file-path/description/
 
@@ -96,13 +126,36 @@ with split()
 
 
 
-### 394. Decode String
+### 394. Decode String-$
 
 https://leetcode.com/problems/decode-string/
 
 #### Solution-stack-worth
 
 Ref: https://leetcode.com/problems/decode-string/discuss/87662/Python-solution-using-stack
+
+```python
+class Solution(object):
+    def decodeString(self, s):
+        stack = []; curNum = 0; curString = ''
+        for c in s:
+            if c == '[':
+                stack.append(curString)
+                stack.append(curNum)
+                curString = ''
+                curNum = 0
+            elif c == ']':
+                num = stack.pop()
+                prevString = stack.pop()
+                curString = prevString + num*curString
+            elif c.isdigit():
+                curNum = curNum*10 + int(c)#对数字这个处理太好了
+            else:
+                curString += c
+        return curString
+```
+
+
 
 #### Solution-recursive-worth
 
@@ -139,56 +192,43 @@ class Solution:
 
 
 
-### 224. Basic Calculator
+### 224. Basic Calculator-$
 
 https://leetcode.com/problems/basic-calculator/description/
 
 #### Solution-stack
 
+这里对+-符号的处理特别好，思想还是跟上一题stack一样
+
 ```python
 class Solution:
     def calculate(self, s: str) -> int:
         
+#本题用stack来做。设三个变量: sums, num, sign。在创建一个stack。总共会有4种情况。 1.是数字，2.字符("+" or "-"), 3."(" 4.")"
+
+#做法是每当遇见 "("的时候把sum清零，然后把之前加的数字还有括号之前的哪一个字符放到stack里面。而当遇到 ")"的时候把stack里面的数字和字符在pop出来
+
+        sums, num, sign = 0, 0, 1
         stack = []
-        digits = 0
-        for pos in range(len(s)):
-            i = s[pos]
-            
-            if i==" ":
-                continue
-            elif i=="(":
-                stack += 0,"+",
-                
-            elif i==')':
-                if len(stack)>1:
-                    rightNo = stack.pop()
-                    sign = stack.pop()
-                    leftNo = stack.pop()
-                    if sign =='+':
-                        stack.append(leftNo+rightNo)
-                    else:
-                        stack.append(leftNo-rightNo)
-            elif i.isdigit():
-                if pos>0 and not s[pos-1].isdigit():
-                    digits = 0
-                if pos<len(s)-1 and s[pos+1].isdigit():
-                    digits = digits*10+int(i)
-                    continue
-                elif not stack:
-                    digits = digits*10+int(i)
-                    stack.append(digits)
-                else:
-                    digits = digits*10+int(i)
-                    sign = stack.pop()
-                    number = stack.pop()
-                    if sign =='+':
-                        stack.append(number+digits)
-                    else:
-                        stack.append(number-digits)
-            else: # i is '+' or '-'
-                stack.append(i)
-                
-        return stack[0]
+        for i in s:
+            if i.isdigit():
+                num = 10 * num + int(i)
+            elif i == "+" or i == "-":
+                sums += num * sign
+                num = 0
+                sign = 1 if i =="+" else -1
+            elif i == "(":
+                stack.append(sums)
+                stack.append(sign)
+                sums = 0 
+                sign = 1 
+            elif i == ")":
+                sums += num * sign
+                num = 0
+                sums *= stack.pop()
+                sums += stack.pop()
+        sums += num * sign
+        return sums 
 ```
 
 
@@ -203,11 +243,36 @@ Ref: https://leetcode.com/problems/basic-calculator-ii/discuss/63003/Share-my-ja
 
 我做复杂了，比如+-其实可以通过往stack加数字时一起处理
 
+```python
+class Solution:
+    def calculate(self, s: str) -> int:
+        stack = []
+        num = 0
+        sign = '+'
+        
+        for idx, curr in enumerate(s):
+            if curr.isdigit():
+                num = num * 10 + int(curr)  # to handle integers > 9 e.g. 13
+
+            if curr in '+-*/' or idx == len(s) - 1:
+                if sign == '+':
+                    stack.append(num)
+                if sign == '-':
+                    stack.append(-num)
+                if sign == '*':
+                    stack.append(stack.pop() * num)
+                if sign == '/':
+                    stack.append(int(stack.pop() / num))
+                sign = curr
+                num = 0
+        return sum(stack)
+```
 
 
 
 
-### 385. Mini Parser
+
+### 385. Mini Parser-$  
 
 https://leetcode.com/problems/mini-parser/description/
 
@@ -294,11 +359,30 @@ class Solution:
 
 
 
-### 84. Largest Rectangle in Histogram
+### 84. Largest Rectangle in Histogram-$
 
 Ref: https://leetcode.com/problems/largest-rectangle-in-histogram/
 
 可以根据[这个思路](https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28917/AC-Python-clean-solution-using-stack-76ms)修改下面代码
+
+上面思路：
+
+```python
+def largestRectangleArea(self, height):
+    height.append(0)#这个太聪明了，解决了stack会有剩余的问题
+    stack = [-1]
+    ans = 0
+    for i in xrange(len(height)):
+        while height[i] < height[stack[-1]]:
+            h = height[stack.pop()]
+            w = i - stack[-1] - 1
+            ans = max(ans, h * w)
+        stack.append(i)
+    height.pop()
+    return ans
+```
+
+
 
 ```python
 class Solution:
@@ -370,21 +454,19 @@ so total time complexity should be O(klogN)
 
 
 
-### 347. Top K Frequent Elements
+### 347. Top K Frequent Elements-$
 
 Ref: https://leetcode.com/problems/top-k-frequent-elements/
 
 #### Solution-bucket sort
 
-Ref: https://leetcode.com/problems/top-k-frequent-elements/discuss/81697/Python-O(n)-solution-without-sort-without-heap-without-quickselect
-
-嗯比较简单，下次实现一下就好了
+Heap or Counter+sort
 
 
 
 
 
-### 218. The Skyline Problem
+### 218. The Skyline Problem-$$
 
 https://leetcode.com/problems/the-skyline-problem/description/
 
@@ -393,6 +475,8 @@ https://leetcode.com/problems/the-skyline-problem/description/
 Ref: https://leetcode.com/problems/the-skyline-problem/discuss/61261/10-line-Python-solution-104-ms
 
 https://www.youtube.com/watch?v=8Kd-Tn_Rz7s
+
+关于思路的话，因为我们需要的总是最高大楼，所以比较自然的思路就是priority queue 
 
 ```python
 from heapq import heappush, heappop
@@ -440,7 +524,7 @@ class Solution(object):
 
 
 
-### 332. Reconstruct Itinerary
+### 332. Reconstruct Itinerary-$$
 
 https://leetcode.com/problems/reconstruct-itinerary/description/
 
@@ -452,13 +536,44 @@ https://www.cnblogs.com/grandyang/p/5183210.html
 
 Eulerian Path: [Eulerian Path ](http://en.wikipedia.org/wiki/Eulerian_path)is a path in graph that visits every edge exactly once. Eulerian Circuit is an Eulerian Path which starts and ends on the same vertex.
 
+@3.28其实我觉得和topological sort的dfs很像
 
-
-### 341. Flatten Nested List Iterator
+### 341. Flatten Nested List Iterator- $$
 
 https://leetcode.com/problems/flatten-nested-list-iterator/
 
 #### Solution-stack-worth
+
+这个比较好理解：https://leetcode.com/articles/flatten-nested-iterator/
+
+```python
+class NestedIterator:
+    
+    def __init__(self, nestedList: [NestedInteger]):
+        self.stack = list(reversed(nestedList))
+        
+        
+    def next(self) -> int:
+        self.make_stack_top_an_integer()
+        return self.stack.pop().getInteger()
+    
+        
+    def hasNext(self) -> bool:
+        self.make_stack_top_an_integer()
+        return len(self.stack) > 0
+        
+        
+    def make_stack_top_an_integer(self):
+        # While the stack contains a nested list at the top...
+        while self.stack and not self.stack[-1].isInteger():
+            # Unpack the list at the top by putting its items onto
+            # the stack in reverse order.
+            self.stack.extend(reversed(self.stack.pop().getList()))
+```
+
+
+
+
 
 Ref: https://leetcode.com/problems/flatten-nested-list-iterator/discuss/80146/Real-iterator-in-Python-Java-C%2B%2B
 
