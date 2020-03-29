@@ -1,8 +1,10 @@
-### 207. Course Schedule-$
+### 207. Course Schedule
 
 https://leetcode.com/problems/course-schedule/
 
 #### Solution-dfs
+
+我感觉第一次写得更好，考虑在dfs完了以后当前course有没有被visit过
 
 Ref: https://www.coursera.org/learn/algorithms-graphs-data-structures/home/welcome
 
@@ -17,6 +19,7 @@ class Solution:
             edges[i].append(j)
         
         for i in range(numCourses):
+          # we only need do dfs on those not visited， to speed it up
             if not visited[i] and not self.dfs(i, visited, edges):
                 return False
             
@@ -39,6 +42,39 @@ class Solution:
                 
 # Every time we meet a vertix it will finally be marked as visited. If it doesn't have next vertix(it may be that all its neighbors are visited or it is a sink vertix), then it comes to the time to mark this visited.
 # However, if it has next vertix, we do dfs. If in the dfs, this vertix is marked as visited, it means there is a circle or the dfs find circle itself, we can immediately return False, else we just mark this visited
+```
+
+@3.29
+
+```python
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        courses = collections.defaultdict(list)
+        visited = [0]*numCourses
+    
+        
+        for pre, post in prerequisites:
+            courses[pre].append(post)
+            
+         
+        return all([self.helper(i, visited, courses) for i in range(numCourses) if not visited[i]])# we only need do dfs on those not visited，ans this helpes to speed it up
+    
+    def helper(self, course, visited, courses):
+        if course not in courses:
+            return True
+        if visited[course]:
+            return False
+        
+        visited[course] = 1
+        
+        while courses[course]:
+            if not self.helper(courses[course].pop(), visited, courses):
+                return False
+        
+        courses.pop(course)
+            
+        
+        return True
 ```
 
 
@@ -67,7 +103,7 @@ bool canFinish(int n, vector<pair<int, int>>& pre) {
 
 
 
-### 210. Course Schedule II
+### 210. Course Schedule II-$
 
 https://leetcode.com/problems/course-schedule-ii/description/
 
@@ -99,7 +135,7 @@ class Solution:
                     return False
                 if visited[vertix]:
                     return False
-            visited[vertix] = True
+            visited[vertix] = True # @3.29考虑在dfs时当前course有没有被visit过
             res.append(vertix)
             
         return True
