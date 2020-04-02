@@ -6,6 +6,40 @@ https://leetcode.com/problems/logger-rate-limiter/
 
 #### Solution-queue, set
 
+@ 3.30 我觉得这个好，保留最近的就可以了
+
+```python
+class Logger:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.dic = {}
+        
+        
+
+    def shouldPrintMessage(self, timestamp: int, message: str) -> bool:
+        """
+        Returns true if the message should be printed in the given timestamp, otherwise returns false.
+        If this method returns false, the message will not be printed.
+        The timestamp is in seconds granularity.
+        """
+        if not message in self.dic:
+            self.dic[message] = timestamp
+            return True
+        else:
+            
+            if timestamp-self.dic[message]>=10:
+                self.dic[message] = timestamp
+                return True
+            else:
+                # self.dic[message] = timestamp
+                return False
+```
+
+
+
 Ref: https://leetcode.com/articles/logger-rate-limiter/
 
 ```python
@@ -55,25 +89,34 @@ https://leetcode.com/problems/moving-average-from-data-stream/description/
 可以给deque限制size，Ref: https://leetcode.com/problems/moving-average-from-data-stream/discuss/81495/4-line-Python-Solution-using-deque
 
 ```python
-class MovingAverage(object):
+class MovingAverage:
 
-    def __init__(self, size):
+    def __init__(self, size: int):
         """
         Initialize your data structure here.
-        :type size: int
         """
-        self.queue = collections.deque(maxlen=size)
+        self.numbers = collections.deque(maxlen=size)
+        self.agg = 0
+        self.size = size
         
 
-    def next(self, val):
-        """
-        :type val: int
-        :rtype: float
-        """
-        queue = self.queue
-        queue.append(val)
-        return float(sum(queue))/len(queue)
+    def next(self, val: int) -> float:
+        
+        if len(self.numbers)<self.size:
+            self.agg+=val
+        else:
+            self.agg+=(-self.numbers[0]+val)
+        self.numbers.append(val)
+        return self.agg/len(self.numbers)
+        
+
+
+# Your MovingAverage object will be instantiated and called as such:
+# obj = MovingAverage(size)
+# param_1 = obj.next(val)
 ```
+
+
 
 
 
@@ -89,7 +132,7 @@ https://leetcode.com/problems/design-hit-counter/description/
 
 What if the number of hits per second could be very large? Does your design scale?
 
-
+[https://leetcode.com/problems/design-hit-counter/discuss/83483/Super-easy-design-O(1)-hit()-O(s)-getHits()-no-fancy-data-structure-is-needed!](https://leetcode.com/problems/design-hit-counter/discuss/83483/Super-easy-design-O(1)-hit()-O(s)-getHits()-no-fancy-data-structure-is-needed!)
 
 
 

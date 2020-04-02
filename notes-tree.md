@@ -1,10 +1,12 @@
 1.02
 
-### 144.Binary Tree Preorder Traversal
+@4.2，感觉tree的部分还比较薄弱
+
+### 144.Binary Tree Preorder Traversal-$
 
 https://leetcode.com/problems/binary-tree-preorder-traversal/description/
 
-#### Solution-stack, iterative，solution3模版
+#### Solution1-stack, iterative
 
 ```python
 # 这个思路，将左右子树分别压栈，然后每次从栈里取元素。需要注意的是，因为我们应该先访问左子树，而栈的话是先进后出，所以我们压栈先压右子树
@@ -22,7 +24,7 @@ class Solution:
                 stack.append(last.left)
         return res
       
-# 上下两个写法没有啥差别，但比第三个写法慢。。。
+# 上下两个写法没有啥差别，但比solution2慢。。。
 class Solution:
     def preorderTraversal(self, root: TreeNode) -> List[int]:
         if not root:
@@ -41,6 +43,12 @@ class Solution:
                 
         return res
       
+
+```
+
+#### Solution2-iterative-模拟递归
+
+```python
 # 时间10.63%, 模拟递归，一直入栈（入栈时打印），没有了就出栈
 # 这个通过改value append的位置可以改为inorder
 class Solution:
@@ -56,7 +64,9 @@ class Solution:
         return result
 ```
 
-#### Solution-recursive
+
+
+#### Solution3-recursive
 
 ```python
 def preorderTraversal1(self, root):
@@ -152,11 +162,11 @@ class Solution:
 
 1.03
 
-### 145. Binary Tree Postorder Traversal-用这道作为所有的tree的iterative模版, 改到前面的基础里面去
+### 145. Binary Tree Postorder Traversal-$
 
 https://leetcode.com/problems/binary-tree-postorder-traversal/description/
 
-#### Solution-iterative
+#### Solution1-iterative，对应144-solution1
 
 https://www.youtube.com/watch?v=A6iCX_5xiU4
 
@@ -166,7 +176,7 @@ https://www.youtube.com/watch?v=A6iCX_5xiU4
 # 上面的核心思想
 # 后序遍历的顺序是 左 -> 右 -> 根。
 # 前序遍历的顺序是 根 -> 左 -> 右，左右其实是等价的，所以我们也可以轻松的写出 根 -> 右 -> 左 的代码。
-# 然后把 根 -> 右 -> 左 逆序，就是 左 -> 右 -> 根，也就是后序遍历了
+# 然后把 根 -> 右 -> 左 逆序，就是 左 -> 右 -> 根，也就是后序遍历了, 而这里res使用deque，这样最后我们就不需要倒叙一遍了
 # my solution based on huahua's
 # 这一面很重要
 from collections import deque
@@ -180,18 +190,59 @@ class Solution:
         
         while stack:
             top = stack.pop()
-            res.appendleft(top.val)
-            if top.left:
+            if top:
+              res.appendleft(top.val)
                 stack.append(top.left)
-            if top.right:
                 stack.append(top.right)
         
+        return res
+```
+
+#### Solution2-iterative-模拟递归
+
+```python
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        stack = []
+        node = root
+        res = collections.deque()
+        
+        while node or stack:
+            while node:
+                res.appendleft(node.val)
+                stack.append(node)
+                node = node.right
+            node = stack.pop().left
+            
         return res
 ```
 
 
 
 #### Solution-recursive-worth doing
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+        self.helper(root, res)
+        return res
+        
+        
+    def helper(self, node, res):
+        if not node:
+            return
+        self.helper(node.left, res)
+        self.helper(node.right, res)
+        res.append(node.val)
+```
 
 
 
@@ -200,9 +251,9 @@ class Solution:
 基本上preorder，inorder， postorder traversal就是用recursive或者iterative(模拟递归)来做
 
 * Dfs
-  * preorder traversal (self-left-right): stack(模拟递归，**左右子节点同时入栈**)
+  * preorder traversal (self-left-right): stack(a. 模拟递归，b.**左右子节点同时入栈**)
   * inorder traversal (left-self-right): stack
-  * Postorder traversal (left-right-self): stack(模拟递归，**左右子节点同时入栈**)
+  * Postorder traversal (left-right-self): stack(a. 模拟递归，b.**左右子节点同时入栈**)
 
 * bfs
   * level-order traversal
@@ -1025,7 +1076,7 @@ Ref: https://leetcode.wang/leetcode-108-Convert-Sorted-Array-to-Binary-Search-Tr
 
 
 
-### 109. Convert Sorted List to Binary Search Tree
+### 109. Convert Sorted List to Binary Search Tree-$
 
 https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/description/
 
@@ -1037,7 +1088,7 @@ Ref: https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/dis
 
 #### Solution-厉害！！**worth doing and thinking**
 
-@1.13还是想不到, 其实是inorder traversal的思想
+@1.13, 4.2还是想不到, 其实是inorder traversal的思想
 
 Ref: https://leetcode.wang/leetcode-109-Convert-Sorted-List-to-Binary-Search-Tree.html
 

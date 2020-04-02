@@ -199,42 +199,57 @@ Ref: https://leetcode.com/problems/alien-dictionary/discuss/70115/3ms-Clean-Java
 * take care of letters that don't exist, this can be combined with a visited array, use different number to mark visited and existed, modify on top of solution@2.18
 * some letters may not have order
 
-@2.18
+* first word is "abc", next is "ab"
 
 ```python
-from collections import defaultdict
 class Solution:
     def alienOrder(self, words: List[str]) -> str:
-        if len(words)==1:
+        if not words:
+            return ""
+        if len(words)<2:
             return words[0]
-        
-        edges, letters = self.buildGraph(words)
-        res = [""]
-        visited = set()
-        
-        for letter in letters:
-            if not self.dfs(letter, edges, res, visited):
+        chars = collections.defaultdict(list)
+        charSet = set()
+        for i in range(len(words)-1):
+            word1 = words[i]
+            word2 = words[i+1]
+            
+            j = 0
+            while j<len(word1) and j<len(word2) and word1[j]==word2[j]:
+                charSet.add(word1[j])
+                j+=1
+            if j==len(word2) and j<len(word1):
                 return ""
-            
-        return res[0]+"".join([letter for letter in letters if letter not in visited])             
+            if j<len(word1) and j<len(word2):
+                chars[word2[j]].append(word1[j])
+            for k in range(j, len(word1)):
+                charSet.add(word1[k])
                 
-        
-    def dfs(self, letter, edges, res, visited):
-        if letter not in visited:
-            while edges[letter]:
-                neighbor = edges[letter].pop()
-                if not self.dfs(neighbor, edges, res, visited):
-                    return False
-                if letter in visited:
-                    return False
+            for k in range(j, len(word2)):
+                charSet.add(word2[k])
                 
-            visited.add(letter)
-            res[0]+=letter
+        order=['']
+        visited = set()
+        for char in charSet:
+            if char not in visited and not self.dfs(char, chars, visited, order):
+                return ""
+        return order[0]
             
+            
+    def dfs(self, char, chars, visited, order):
+        if char not in visited:
+            while chars[char]:
+                neighbor = chars[char].pop()
+                if not self.dfs(neighbor, chars, visited, order):
+                    return False
+                if char in visited:
+                    return False
+            visited.add(char)
+            order[0]+=char
         return True
-            
-            
         
+         
+# @2.18, 这里buildgraph比较好
     def buildGraph(self, words):
         edges = defaultdict(list)
         letters = set()
