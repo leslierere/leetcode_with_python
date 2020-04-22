@@ -4,23 +4,25 @@
 
 Ref: https://leetcode.com/problems/rotate-image/discuss/18872/A-common-method-to-rotate-the-image
 
+@可以利用它本身有的reverse先上下翻，而且线上下翻再对角线翻坐标更容易写
 
 
-#### Solution
+
+#### Solution-$
 
 Ref: https://leetcode.com/problems/rotate-image/discuss/18884/Seven-Short-Solutions-(1-to-7-lines)
 
-> we can instead do each four-cycle of elements by using three swaps of just two elements.
-
 ```python
 class Solution:
-    def rotate(self, A):
-        n = len(A)
-        for i in range(n/2):
-            for j in range(n-n/2):
-                for _ in '123':
-                    A[i][j], A[~j][i], i, j = A[~j][i], A[i][j], ~j, ~i
-                i = ~j
+    def rotate(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        n = len(matrix)
+        for i in range(n//2):
+            for j in range(i, n-i-1): #constraining the left and right boundaries after each outer loop
+                matrix[i][j], matrix[j][~i], matrix[~i][~j], matrix[~j][i] = \
+                matrix[~j][i], matrix[i][j], matrix[j][~i], matrix[~i][~j]
 ```
 
 
@@ -109,7 +111,7 @@ class Solution:
 
 
 
-#### Solution
+#### Solution-$
 
 我惊呆了
 
@@ -131,7 +133,7 @@ just like 54, Solution1
 
 
 
-### 73. Set Matrix Zeroes
+### 73. Set Matrix Zeroes-$
 
 https://leetcode.com/problems/set-matrix-zeroes/description/
 
@@ -169,7 +171,7 @@ class Solution:
 
 
 
-### 311. Sparse Matrix Multiplication
+### 311. Sparse Matrix Multiplication-$
 
 https://leetcode.com/problems/sparse-matrix-multiplication/description/
 
@@ -223,7 +225,7 @@ Ref: https://leetcode.com/problems/longest-increasing-path-in-a-matrix/discuss/7
 
 
 
-### 378. Kth Smallest Element in a Sorted Matrix
+### 378. Kth Smallest Element in a Sorted Matrix-$
 
 #### Solution-heap-worth
 
@@ -264,6 +266,44 @@ Ref: https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/discu
 
 >  We cannot get a middle index here, an alternate could be to apply the **Binary Search** on the “number range” instead of the “index range”. As we know that the smallest number of our matrix is at the top left corner and the biggest number is at the bottom lower corner. These two number can represent the “range” i.e., the `start` and the `end` for the **Binary Search**. The middle would be the middle value of the start number and the end number, this `middle` number is NOT necessarily an element in the matrix.
 
+可下面这种我总觉得会弄出一个不存在的数字。。。可能就是一定要刚好等于matrix中的那个数，才满足有多少个小于等于他
+
+```python
+class Solution:
+    def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
+        """
+        Use binary search solution.
+        """
+        if not matrix or not matrix[0]:
+            return None
+
+        start, end = matrix[0][0], matrix[-1][-1]
+        while start < end:
+            m = start + ((end - start) >> 1)
+            total = 0
+            for row in matrix:
+                # bisect_right is to find how many numbers in the current
+                # row that is <= m.
+                total += bisect_right(row, m)
+
+            if total < k:
+                # This means m is too small and we need to find our
+                # target value in [m + 1, end]
+                start = m + 1
+            else:
+                # This means m is big enough for searching the target value.
+                # In other words, the target value must exist in [start, m].
+                # If total == k, we cannot say if m is our target value as
+                # it could be possible that m does not exist in the matrix.
+                # But again, our target value must exist in [start, m], so
+                # we set end to m again to narrow the search in the next round.
+                end = m
+
+        # In the end start must be the same as the end, which means we have
+        # found the target value.
+        return start
+```
+
 
 
 
@@ -279,36 +319,43 @@ class Solution:
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
         if not matrix or not matrix[0]:
             return False
-        
         rows = len(matrix)
         cols = len(matrix[0])
-        x1, y1 = 0,0
-        x2, y2 = rows-1, cols-1
         
-        while x1*cols+y1 < x2*cols+y2:
-            x, y = self.getMid(x1,y1,x2,y2,cols)
-            if matrix[x][y]==target:
+        
+        order1 = 0
+        order2 = rows*cols-1
+
+        while order1<order2:
+            midOrder = (order1+order2)//2
+            midi, midj = self.getCodi(midOrder, cols)
+            if matrix[midi][midj]<target:
+                order1 = midOrder+1
+            elif matrix[midi][midj]==target:
                 return True
-            elif matrix[x][y]<target:
-                if y<cols-1:
-                    x1, y1 = x, y+1
-                else:
-                    x1, y1 = x+1, 0
             else:
-                x2, y2 = x, y
-                
-        return matrix[x1][y1]==target
+                order2 = midOrder-1
+            
+            
+        if order1==order2:
+            i, j = self.getCodi(order1, cols)
+            return matrix[i][j]==target
+        return False
             
         
+    def getOrder(self, i , j, cols):
+        return i*cols+j
+    
+    def getCodi(self, order, cols):
+        i = order//cols
+        j = order%cols
         
-    def getMid(self, x1,y1,x2,y2, cols):
-        mid = ((x1*cols+y1) + (x2*cols+y2))//2
-        return mid//cols, mid%cols
+        return i,j
 ```
 
 
 
-### 240. Search a 2D Matrix II
+### 240. Search a 2D Matrix II-$solution2
 
 https://leetcode.com/problems/search-a-2d-matrix-ii/description/
 
@@ -326,7 +373,7 @@ Ref: https://leetcode.com/articles/search-a-2d-matrix-ii/
 
 
 
-### 370. Range Addition
+### 370. Range Addition-$
 
 https://leetcode.com/problems/range-addition/description/
 
@@ -334,7 +381,7 @@ https://leetcode.com/problems/range-addition/description/
 
 Ref: [https://leetcode.com/problems/range-addition/discuss/84225/Detailed-explanation-if-you-don't-understand-especially-%22put-negative-inc-at-endIndex%2B1%22](https://leetcode.com/problems/range-addition/discuss/84225/Detailed-explanation-if-you-don't-understand-especially-%22put-negative-inc-at-endIndex%2B1%22)
 
-
+Further reading: https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 
 
 
@@ -384,7 +431,7 @@ class Solution:
 
 
 
-### 296. Best Meeting Point
+### 296. Best Meeting Point-$
 
 https://leetcode.com/problems/best-meeting-point/description/
 
@@ -427,6 +474,8 @@ private int minDistance1D(List<Integer> points, int origin) {
 
 #### Solution-two pointers to calculate the distance without knowing the median-worth
 
+本质上是一样的，只是算distance时不同
+
 ```java
 public int minTotalDistance(int[][] grid) {
     List<Integer> rows = collectRows(grid);
@@ -445,13 +494,37 @@ private int minDistance1D(List<Integer> points) {
     }
     return distance;
 }
+
+private List<Integer> collectRows(int[][] grid) {
+    List<Integer> rows = new ArrayList<>();
+    for (int row = 0; row < grid.length; row++) {
+        for (int col = 0; col < grid[0].length; col++) {
+            if (grid[row][col] == 1) {
+                rows.add(row);
+            }
+        }
+    }
+    return rows;
+}
+
+private List<Integer> collectCols(int[][] grid) {
+    List<Integer> cols = new ArrayList<>();
+    for (int col = 0; col < grid[0].length; col++) {
+        for (int row = 0; row < grid.length; row++) {
+            if (grid[row][col] == 1) {
+                cols.add(col);
+            }
+        }
+    }
+    return cols;
+}
 ```
 
 
 
 
 
-### 361. Bomb Enemy
+### 361. Bomb Enemy-$
 
 https://leetcode.com/problems/bomb-enemy/description/
 
@@ -465,7 +538,7 @@ https://www.cnblogs.com/grandyang/p/5599289.html
 
 
 
-### 317. Shortest Distance from All Buildings
+### 317. Shortest Distance from All Buildings-$
 
 https://leetcode.com/problems/shortest-distance-from-all-buildings/description/
 
@@ -524,7 +597,7 @@ https://leetcode.com/problems/smallest-rectangle-enclosing-black-pixels/descript
 
 #### Solution-dfs-slow
 
-#### Solution-binary search
+#### Solution-binary search，就是brute force加快的感觉
 
 Ref: https://leetcode.com/problems/smallest-rectangle-enclosing-black-pixels/discuss/75127/C%2B%2BJavaPython-Binary-Search-solution-with-explanation
 
@@ -532,7 +605,7 @@ Ref: https://leetcode.com/problems/smallest-rectangle-enclosing-black-pixels/dis
 
 
 
-### 36. Valid Sudoku
+### 36. Valid Sudoku-$想一下，我第二次做复杂了
 
 https://leetcode.com/problems/valid-sudoku/description/
 
@@ -563,13 +636,72 @@ class Solution:
 
 
 
-### 37. Sudoku Solver
+### 37. Sudoku Solver-$
 
 https://leetcode.com/problems/sudoku-solver/
 
-#### Solution-backtrack
+#### Solution-backtrack, did@4.22
 
 Ref: https://leetcode.com/problems/sudoku-solver/discuss/15752/Straight-Forward-Java-Solution-Using-Backtracking
 
 
+
+36ms by others, heapq这个想法特别好，就从剩余最少的地方开始看，set的加减法
+
+```python
+import heapq
+
+class Solution:
+    # Does a DFS using a priority queue
+    def solve(self, board, heap):
+        if len(heap)==0:
+            return True
+        size1, idy1, idx1, remaining1 = heap[0]
+        if size1 == 0:
+            #No options, so must be invalid
+            return False
+        for value in remaining1:
+            board[idy1][idx1] = value
+            newheap = []
+            for size, idy, idx, remaining in heap[1:]:
+                matchedrow = idy1==idy
+                matchedcol = idx1==idx
+                matchedbox = (idy1//3*3+idx1//3)==(idy//3*3+idx//3)
+                if (matchedrow or matchedcol or matchedbox) and value in remaining:
+                    heapq.heappush(newheap,(size-1,idy, idx, remaining - {value}))
+                else:
+                    heapq.heappush(newheap, (size, idy, idx, remaining))
+            if self.solve(board, newheap):
+                return True
+        return False
+    
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        allnums = {'1','2','3','4','5','6','7','8','9'}
+        rows = [set() for i in range(9)]
+        cols = [set() for i in range(9)]
+        boxes = [set() for i in range(9)]
+        todo = []
+        for idy, row in enumerate(board):
+            for idx, val in enumerate(row):
+                if val == '.':
+                    todo.append((idy,idx))
+                else:
+                    rows[idy].add(val)
+                    cols[idx].add(val)
+                    idbox = idy//3*3+idx//3
+                    boxes[idbox].add(val)
+        heap = []
+        # the following is the key part
+        for idy, idx in todo:
+            row = rows[idy]
+            col = cols[idx]
+            box = boxes[idy//3*3+idx//3]
+            remaining = allnums - row - col - box
+            heapq.heappush(heap, (len(remaining), idy, idx, remaining))
+
+        self.solve(board, heap)
+```
 

@@ -514,15 +514,51 @@ Out[133]: '9'
 
 
 
-### set()
+### set
 
-可以对字符串操作
+set()可以对字符串操作
 
 ```python
 s = 'apple'
 set(s) 
 # Out[11]: {'a', 'e', 'l', 'p'}
 ```
+
+数学意义上的交集、并集等操作
+
+```python
+# union
+In [17]: people = {"Jay", "Idrish", "Archil"}  
+
+In [18]: people|vampires                                                        
+Out[18]: {'Archil', 'Arjun', 'Idrish', 'Jay', 'Karan'}
+  
+# intersection
+In [26]: s1                                                                 
+Out[26]: {0, 1, 2, 3, 4}
+
+In [27]: s2                                                                 
+Out[27]: {3, 4, 5, 6}
+
+In [28]: s1&s2                                                               
+Out[28]: {3, 4}
+
+# Difference
+In [31]: s1-s2                                                               
+Out[31]: {0, 1, 2}
+  
+# the set of elements in precisely one of s1 or s2  
+In [32]: s1^s2                                                               
+Out[32]: {0, 1, 2, 5, 6}
+  
+# s1 is subset of s2, return boolean
+s1 <= s2
+
+# s1 is proper subset of s2
+s1 < s2
+```
+
+
 
 
 
@@ -922,6 +958,35 @@ Constructor for a priority queue. The lowest valued entries are retrieved first 
 
   将 item 放入堆中，然后弹出并返回 heap 的最小元素。该组合操作比先调用  heappush() 再调用 heappop()运行起来更有效率。
 
+LC378
+
+```python
+from heapq import *
+
+def find_Kth_smallest(matrix, k):
+    minHeap = []
+
+    # put the 1st element of each row in the min heap
+    # we don't need to push more than 'k' elements in the heap
+    for i in range(min(k, len(matrix))):
+        heappush(minHeap, (matrix[i][0], 0, matrix[i]))
+        # the 0 in the middle represents the index in the row
+
+    # take the smallest(top) element form the min heap, if the running count is equal to k' return the number
+    # if the row of the top element has more elements, add the next element to the heap
+    numberCount, number = 0, 0
+    while minHeap:
+        number, i, row = heappop(minHeap)
+        numberCount += 1
+        if numberCount == k:
+            break
+        if len(row) > i+1:
+            heappush(minHeap, (row[i+1], i+1, row))
+    return number
+```
+
+
+
 ***Real Priority queue in Python***
 
 [`PriorityQueue`](https://docs.python.org/3/library/queue.html#queue.PriorityQueue)
@@ -1236,3 +1301,18 @@ Ref:  [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycl
 
 
 
+## Math more
+
+mean minimizes total distance for euclidian distance
+median minimzes total distance for absolute deviation
+mode minimizes distance for indicator function
+
+#### euclidian distance
+
+In [Cartesian coordinates](https://en.wikipedia.org/wiki/Cartesian_coordinates), if **p** = (*p*1, *p*2,..., *p**n*) and **q** = (*q*1, *q*2,..., *q**n*) are two points in [Euclidean *n*-space](https://en.wikipedia.org/wiki/Euclidean_space), then the distance (d) from **p** to **q**, or from **q** to **p** is given by the [Pythagorean formula](https://en.wikipedia.org/wiki/Pythagorean_theorem):[[1\]](https://en.wikipedia.org/wiki/Euclidean_distance#cite_note-Anton-1)
+
+![image-20200421101855162](https://tva1.sinaimg.cn/large/007S8ZIlgy1ge1ssp1mvyj3108086gmi.jpg)
+
+#### indicator function
+
+In [mathematics](https://en.wikipedia.org/wiki/Mathematics), an **indicator function** or a **characteristic function** is a [function](https://en.wikipedia.org/wiki/Function_(mathematics)) defined on a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) *X* that indicates membership of an [element](https://en.wikipedia.org/wiki/Element_(mathematics)) in a [subset](https://en.wikipedia.org/wiki/Subset) *A* of *X*, having the value 1 for all elements of *A* and the value 0 for all elements of *X* not in *A*. It is usually denoted by a symbol 1 or *I*, sometimes in boldface or [blackboard boldface](https://en.wikipedia.org/wiki/Blackboard_bold), with a subscript specifying the subset.
