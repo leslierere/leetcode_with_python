@@ -98,6 +98,10 @@ The following values are considered false in Python:
 * \>\> Binary Right Shift
 
   Bitwise right shift, it shifts the bits to the right by the specified number of places.
+  
+  左移一位乘以2
+  
+  右移一位除以2
 
 ```python
 a = 60            # 60 = 0011 1100 

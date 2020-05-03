@@ -2,13 +2,13 @@
 
 <img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaq7kqsca6j32ji0u0kjn.jpg" alt="image-20200108224221734" style="zoom:13%;" />
 
-1.7
 
-### 78. Subsets-经典题-$
+
+### 78. Subsets-$bit solution
 
 https://leetcode.com/problems/subsets/description/
 
-#### solution-recursive-$
+#### solution-recursive
 
 Ref: https://www.cnblogs.com/grandyang/p/4309345.html
 
@@ -41,25 +41,26 @@ Ref: https://www.cnblogs.com/grandyang/p/4309345.html
 > [3]                 
 
 ```java
-public List<List<Integer>> subsets(int[] nums) {
-    List<List<Integer>> ans = new ArrayList<>();
-    getAns(nums, 0, new ArrayList<>(), ans);
-    return ans;
-}
-
-private void getAns(int[] nums, int start, ArrayList<Integer> temp, List<List<Integer>> ans) { 
-    ans.add(new ArrayList<>(temp));
-    for (int i = start; i < nums.length; i++) {
-        temp.add(nums[i]);
-        getAns(nums, i + 1, temp, ans);
-        temp.remove(temp.size() - 1);
-    }
-}
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        self.dfs(res, 0, nums, [])
+        return res
+        
+        
+        
+    def dfs(self, res, i, nums, path):
+        if i==len(nums):
+            res.append(path)
+            return
+            
+        self.dfs(res, i+1, nums, path+[nums[i]])
+        self.dfs(res, i+1, nums, path)
 ```
 
 
 
-#### solution-iterative-$
+#### solution-did@4.22, 相当于bfs了
 
 Ref: https://leetcode.com/problems/subsets/discuss/27278/C%2B%2B-RecursiveIterativeBit-Manipulation
 
@@ -71,20 +72,17 @@ Ref: https://leetcode.com/problems/subsets/discuss/27278/C%2B%2B-RecursiveIterat
 > 4. Adding `3` to `[]`, `[1]`, `[2]` and `[1, 2]`: `[[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]]`
 
 ```c++
-class Solution {
-public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> subs = {{}};
-        for (int num : nums) {
-            int n = subs.size();
-            for (int i = 0; i < n; i++) {
-                subs.push_back(subs[i]); 
-                subs.back().push_back(num);
-            }
-        }
-        return subs;
-    }
-}; 
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        res = [[]]
+        
+        for num in nums:
+            length = len(res)
+            for i in range(length):
+                copySub = res[i][::]
+                res.append(copySub+[num])
+                
+        return res
 ```
 
 
@@ -160,7 +158,7 @@ class Solution:
 
 
 
-### 77. Combinations-经典
+### 77. Combinations-$$
 
 https://leetcode.com/problems/combinations/description/
 
@@ -210,6 +208,35 @@ class Solution:
 
 
 
+did@4.22, 这不好,
+
+一看就有重复的结构，combine和backtrack里面都有同样的循环，所以其实只要backtrack里面有就好
+
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        
+        res = []
+        for i in range(1, n-k+2):
+            self.backtrack(i, n, k, [i], res)
+        return res
+            
+    def backtrack(self, i, n, k, path, res):
+        if len(path)==k:
+            res.append(path)
+            return
+        
+        if len(path)+n-i+1<k:
+            return
+        # length is not enough
+        
+        for j in range(i+1, n+1):
+            self.backtrack(j, n, k, path+[j], res)
+            
+```
+
+
+
 
 
 #### Solution3-recursive
@@ -224,7 +251,7 @@ Ref: https://leetcode.wang/leetCode-77-Combinations.html
 
 #### Solution4-dynamic programming
 
-根据solution4来写
+根据solution3来写
 
 
 
@@ -234,23 +261,28 @@ Ref: https://leetcode.wang/leetCode-77-Combinations.html
 
 https://leetcode.com/problems/combination-sum/description/
 
-#### Solution-backtrack-worth 
+#### Solution-backtrack
 
 ```python
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
         res = []
-        self.helper(candidates, target, 0, [], res)
+        candidates.sort()
+        self.backtrack(candidates, 0, target, [], res)
         return res
-    
-    def helper(self, candidates, remains, start, temp, res):
-        if remains<0:
+        
+        
+    def backtrack(self, candidates, start, target, path, res):
+        if target==0:
+            res.append(path)
             return
-        elif remains==0:
-            res.append(temp)
-        else:   
-            for i in range(start, len(candidates)):
-                self.helper(candidates, remains-candidates[i], i, temp+[candidates[i]], res)
+        elif target<0 or candidates[start]>target: # candidates[start]>target 这个可以加快108ms->44ms
+            return
+        
+        for i in range(start, len(candidates)):
+            
+            number = candidates[i]
+            self.backtrack(candidates, i, target-candidates[i],path+[number], res)
 ```
 
 
@@ -268,29 +300,31 @@ https://leetcode.com/problems/combination-sum-ii/
 ```python
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
-        res = []
         candidates.sort()
-        self.helper(res, candidates, 0, [], target)
+        res = []
+        self.backtrack(candidates, target, res, [], 0)
         return res
         
-    def helper(self, res, candidates, start, temp, remain):
-        if remain<0:
+        
+        
+    def backtrack(self, candidates, target, res, path, start):
+        
+        if target==0:
+            res.append(path)
             return
-        elif remain==0:
-            res.append(temp)
+        elif target<0 or start>=len(candidates) or candidates[start]>target:# candidates[start]>target 这个很重要，避免不可能的继续操作，speed up!
             return
+            
         for i in range(start, len(candidates)):
             if i>start and candidates[i]==candidates[i-1]:
                 continue
-            # 加下面两行可以大幅提速，因为如果你当前值都大于remain，往后走肯定也不行，所以break
-            if candidates[i]>remain:
-                break
-            self.helper(res, candidates, i+1, temp+[candidates[i]], remain-candidates[i])
+            number = candidates[i]
+            self.backtrack(candidates, target-number, res, path+[number], i+1)
 ```
 
 
 
-### 216. Combination Sum III-看一下comment
+### 216. Combination Sum III
 
 https://leetcode.com/problems/combination-sum-iii/description/
 
@@ -300,27 +334,25 @@ https://leetcode.com/problems/combination-sum-iii/description/
 class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
         res = []
-        self.helper(k, n, res, 1, [])
+        self.backtrack(k, n, 1, res, [])
         return res
         
-        
-    def helper(self, k, remain, res, start, temp):
-        if k<0 or remain<0:
+    
+    def backtrack(self, k, n, start, res, path):
+        if k==0:
+            if n==0:
+                res.append(path)
+            return
+        elif start>n:
             return
         
-        if k==0 and remain==0:#同时改变k就不用使用len(temp)来判断
-            res.append(temp)
-           
-        for i in range(start,10):
-          	# 加下面两行进行判断
-        		if i>remain:
-                break  
-            self.helper(k-1, remain-i, res, i+1, temp+[i])
+        for i in range(start, 10):
+            self.backtrack(k-1, n-i, i+1, res, path+[i])
 ```
 
 
 
-### 377. Combination Sum IV-$$
+### 377. Combination Sum IV-$
 
 https://leetcode.com/problems/combination-sum-iv/description/
 
@@ -373,6 +405,34 @@ class Solution:
         return ans
 ```
 
+did@4.23
+
+```python
+class Solution:
+    def combinationSum4(self, nums: List[int], target: int) -> int:
+        nums.sort()
+        dic = {}
+        return self.backtrack(nums, target, dic)
+        
+    def backtrack(self, nums, target, dic):
+        if target<0:
+            return 0
+        elif target==0:
+            return 1
+        elif target in dic:
+            return dic[target]
+        
+        paths = 0
+        for num in nums:
+            if num>target:
+                break
+            paths+= self.backtrack(nums, target-num, dic)
+            
+        dic[target] = paths        
+                
+        return paths
+```
+
 
 
 #### Solution-followup
@@ -381,7 +441,7 @@ https://leetcode.com/problems/combination-sum-iv/discuss/85041/7-liner-in-Python
 
 
 
-### 254. Factor Combinations
+### 254. Factor Combinations-$
 
 https://leetcode.com/problems/factor-combinations/
 
@@ -563,11 +623,11 @@ class Solution:
 
 
 
-### 60. Permutation Sequence
+### 60. Permutation Sequence-$c comments
 
 https://leetcode.com/problems/permutation-sequence/description/
 
-#### Solution-不难，主要是细节
+#### Solution-不难，主要是细节, 不用一遍遍地算groupsize，每次除以一下就好了
 
 ```python
 import math
@@ -688,26 +748,30 @@ public List<String> generateAbbreviations(String word){
     }
 ```
 
-by myself@1.24
+did@5.2
 
 ```python
 class Solution:
     def generateAbbreviations(self, word: str) -> List[str]:
         res = []
-        self.helper(word, "", 0, res)
+        self.helper(word, 0, "", res)
         return res
         
-        
-    def helper(self, word, path, index, res):
-        if index == len(word):
-            res.append(path)
+    def helper(self, word, number, path, res):
+        if not word:
+            if number!=0:
+                res.append(path+str(number))
+            else:
+                res.append(path)
             return
         
-        self.helper(word, path+word[index], index+1, res)
-        if path and path[-1].isdigit():
-            self.helper(word, path[:-1]+str(int(path[-1])+1), index+1, res)
+        
+        
+        self.helper(word[1:], number+1, path, res)
+        if number==0:
+            self.helper(word[1:], 0, path+word[0], res)
         else:
-            self.helper(word, path+"1", index+1, res)
+            self.helper(word[1:], 0, path+str(number)+word[0], res)
 ```
 
 
@@ -787,45 +851,79 @@ public class Solution {
 
 
 
+did@5.3
+
+```python
+class Solution:
+    def addOperators(self, num: str, target: int) -> List[str]:
+        res = []
+        for i in range(len(num)):
+            if i!=0 and num[0]=='0':
+                break
+            self.helper(num[i+1:], target, num[:i+1], 0, int(num[:i+1]), res)
+            
+        return res
+        
+        
+        
+    def helper(self, num, target, path, temp, last, res):
+        if not num:
+            if temp+last==target:
+                res.append(path)
+            return
+        
+        for i in range(len(num)):
+            if i!=0 and num[0]=='0':
+                break
+            number = num[:i+1]
+            self.helper(num[i+1:], target, path+"*"+number, temp, last*int(number), res)
+            self.helper(num[i+1:], target, path+"+"+number, temp+last, int(number), res)
+            self.helper(num[i+1:], target, path+"-"+number, temp+last, -int(number), res)
+```
 
 
-### 140. Word Break II-$
+
+### 140. Word Break II-$$
 
 https://leetcode.com/problems/word-break-ii/description/
 
-#### Solution1-DP+DFS+Backtracking-别看solution2了
+#### Solution1-dfs+memory
 
-Ref: https://leetcode.com/problems/word-break-ii/discuss/44368/Python-easy-to-understand-solution-(DP%2BDFS%2BBacktracking).
+想清楚为啥要根据start momorize, 因为切的时候，就是到后面有的地方就是之前已经切过了
+
+Ref: https://leetcode.com/problems/word-break-ii/discuss/44169/9-lines-Python-10-lines-C%2B%2B
 
 ```python
-def wordBreak(self, s, wordDict):
-    res = []
-    self.dfs(s, wordDict, '', res)
-    return res
-
-def dfs(self, s, dic, path, res):
-# Before we do dfs, we check whether the remaining string 
-# can be splitted by using the dictionary,
-# in this way we can decrease unnecessary computation greatly.
-    if self.check(s, dic): # prunning
-        if not s:
-            res.append(path[:-1])
-            return # backtracking
-        for i in xrange(1, len(s)+1):
-            if s[:i] in dic:
-                # dic.remove(s[:i])
-                self.dfs(s[i:], dic, path+s[:i]+" ", res)
-
-# DP code to check whether a string can be splitted by using the 
-# dic, this is the same as word break I.                
-def check(self, s, dic):
-    dp = [False for i in xrange(len(s)+1)]
-    dp[0] = True
-    for i in xrange(1, len(s)+1):
-        for j in xrange(i):
-            if dp[j] and s[j:i] in dic:
-                dp[i] = True
-    return dp[-1]
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        if not wordDict:
+            return []
+        # res = []
+        wordSet = set(wordDict)
+        temp ={}
+        
+        return self.helper(0, s, wordSet, temp)
+        
+            
+        
+    def helper(self, start, s, wordSet, temp):
+        
+        if start==len(s):
+            return ['']
+        elif start in temp:
+            return temp[start]
+        
+        subRes = []
+        for i in range(start, len(s)):
+            word = s[start:i+1]
+            if word in wordSet:
+                postRes = self.helper(i+1, s, wordSet, temp)      
+                if postRes:
+                    for post in postRes:
+                        subRes.append((word+' '+post).strip())
+        
+        temp[start] = subRes
+        return temp[start]
 ```
 
 
@@ -846,7 +944,7 @@ Ref: https://www.youtube.com/watch?v=JqOIRBC0_9c
 
 
 
-### 351. Android Unlock Patterns-$
+### 351. Android Unlock Patterns-$$
 
 https://leetcode.com/problems/android-unlock-patterns/
 
