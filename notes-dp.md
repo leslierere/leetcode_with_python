@@ -81,7 +81,7 @@ class Solution:
 
 
 
-### 279. Perfect Squares-$
+### 279. Perfect Squares-$$
 
 https://leetcode.com/problems/perfect-squares/description/
 
@@ -107,7 +107,7 @@ class Solution:
 
 
 
-#### Solution-Greedy Enumeration-worth
+#### Solution-Greedy Enumeration-worth-$
 
 Ref: https://leetcode.com/articles/perfect-squares/
 
@@ -147,7 +147,7 @@ class Solution:
 
 
 
-### 139. Word Break-$
+### 139. Word Break-$dp
 
 https://leetcode.com/problems/word-break/
 
@@ -201,7 +201,7 @@ class Solution:
 
 
 
-### 375. Guess Number Higher or Lower II-$
+### 375. Guess Number Higher or Lower II-$$
 
 https://leetcode.com/problems/guess-number-higher-or-lower-ii/description/
 
@@ -211,13 +211,25 @@ https://leetcode.com/problems/guess-number-higher-or-lower-ii/description/
 
 worst case is that you will take as many steps as it can to know the correct answer. But you should wisely(which means to minimize) pick a number thus make your spending as less as possible.
 
+Bottom-up
+
+```python
+def getMoneyAmount(self, n):
+    need = [[0] * (n+1) for _ in range(n+1)]
+    for lo in range(n, 0, -1):#从后往前，这很关键！想想！
+        for hi in range(lo+1, n+1):
+            need[lo][hi] = min(x + max(need[lo][x-1], need[x+1][hi])
+                               for x in range(lo, hi))
+    return need[1][n]
+```
 
 
 
 
 
 
-### 312. Burst Balloons-$
+
+### 312. Burst Balloons-$$
 
 https://leetcode.com/problems/burst-balloons/
 
@@ -227,7 +239,7 @@ https://leetcode.com/articles/burst-balloons/
 
 https://www.youtube.com/watch?v=z3hu2Be92UA
 
-关键没有想通边界的处理，亦即code这里`nums[left] * nums[i] * nums[right]`中`nums[left]`和`nums[left]`的部分，因为我一直想的是先爆哪个，其实应该烤炉的是先保留哪个
+关键没有想通边界的处理，亦即code这里`nums[left] * nums[i] * nums[right]`中`nums[left]`和`nums[left]`的部分，因为我一直想的是先爆哪个，其实应该考虑的是先保留哪个
 
  要用这个functools才会变快
 
@@ -278,7 +290,7 @@ class Solution:
 
 
 
-#### Solution-dp-worth
+#### Solution-dp-$
 
 既然都已经想到了递推关系，就从小到大一直算下去就好了呀，也就是bottom up！也就是link里面的approach3。 或者使用递归(link里面的approach2)，top down,但要使用记忆。
 
@@ -292,11 +304,31 @@ Ref: https://leetcode.com/articles/coin-change/
 >
 > We note that this problem has an optimal substructure property, which is the key piece in solving any Dynamic Programming problems. In other words, the optimal solution can be constructed from optimal solutions of its subproblems. 
 
+https://leetcode.com/articles/coin-change/
+
+#### Approach #3 (Dynamic programming - Bottom up) [Accepted]
+
+还没想太明白由coin循环的
+
+![image-20200509202750965](https://tva1.sinaimg.cn/large/007S8ZIlgy1gen3jnynxnj31gg08smys.jpg)
+
+```python
+class Solution:
+    def coinChange(self, coins: List[int], amount: int) -> int:
+        dp = [float('inf')] * (amount + 1)
+        dp[0] = 0
+        
+        for coin in coins:
+            for x in range(coin, amount + 1):
+                dp[x] = min(dp[x], dp[x - coin] + 1)
+        return dp[amount] if dp[amount] != float('inf') else -1 
+```
+
 
 
 1.15
 
-### 256. Paint House-$
+### 256. Paint House-$$
 
 https://leetcode.com/problems/paint-house/discuss/?currentPage=1&orderBy=most_votes&query=
 
@@ -360,6 +392,34 @@ https://leetcode.com/problems/edit-distance/description/
 
 #### Solution-dp
 
+@5.10思路：首先假设已经有一个recursion的function可以求出edit(i, j), 写出recursion的做法，然后再bottom up写出来, 参照dp的章节
+
+```python
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        if not word1:
+            return len(word2)
+        elif not word2:
+            return len(word1)
+        
+        
+        dp = [i for i in range(len(word1)+1)]
+        
+            
+        for i in range(len(word2)):
+            newRow = [i+1]+[0]*len(word1)
+            for j in range(1, len(word1)+1):
+                if word1[j-1]==word2[i]:
+                    newRow[j] = dp[j-1]
+                else:
+                    newRow[j] = min(dp[j-1], dp[j], newRow[j-1])+1
+            dp = newRow
+        
+        return dp[-1]
+```
+
+
+
 最基本的操作是，对一个字母进行insert/remove/replace的操作，从中间选取最小的
 
 [worth reading](https://leetcode.com/problems/edit-distance/discuss/159295/Python-solutions-and-intuition)，understand how to use recursive method to solve problem(memorize subresult to reduce stack), and how to convert recursive method to dp to prevent overflows of stack 
@@ -400,6 +460,34 @@ class Solution:
 
 #### Solution-dp-bottom up
 
+did@5.10
+
+```python
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        if len(s1)+len(s2)!=len(s3):
+            return False
+        
+        dp = [[False]*(len(s1)+1) for _ in range(len(s2)+1)]
+        # dp[i][j] represents isInterleave(s1[:i], s[:j], s3[:i+j])
+        dp[0][0] = True
+        
+        for j in range(1, len(dp[0])):
+            dp[0][j] = s1[j-1]== s3[j-1]
+            if not dp[0][j]:
+                break
+            
+        for i in range(1, len(dp)):
+            dp[i][0] = s2[:i]==s3[:i]
+            for j in range(1, len(dp[0])):
+                
+                dp[i][j] = (dp[i-1][j] and s2[i-1]==s3[i+j-1]) or (dp[i][j-1] and s1[j-1]==s3[i+j-1])
+                
+        return dp[-1][-1]
+```
+
+
+
 Ref: https://leetcode.wang/leetCode-97-Interleaving-String.html
 
 >  我们定义一个 boolean 二维数组 dp [ i ] [ j ] 来表示 s1[ 0, i ) 和 s2 [ 0, j ） 组合后能否构成 s3 [ 0, i + j )，注意不包括右边界，主要是为了考虑开始的时候如果只取 s1，那么 s2 就是空串，这样的话 dp [ i ] [ 0 ] 就能表示 s2 取空串。
@@ -424,7 +512,7 @@ Ref: https://leetcode.com/problems/interleaving-string/discuss/31948/8ms-C%2B%2B
 
 1.16
 
-### 174. Dungeon Game-$
+### 174. Dungeon Game-$$
 
 https://leetcode.com/problems/dungeon-game/description/
 
@@ -477,7 +565,7 @@ Optimal solution是某个位置作为右下角的最大square area， 因为每�
 
 
 
-### 84. Largest Rectangle in Histogram-!
+### 84. Largest Rectangle in Histogram-$
 
 https://leetcode.com/problems/largest-rectangle-in-histogram/
 
@@ -519,7 +607,7 @@ class Solution:
 
 
 
-### 85. Maximal Rectangle-$
+### 85. Maximal Rectangle-$$
 
 https://leetcode.com/problems/maximal-rectangle/description/
 
@@ -573,9 +661,23 @@ class Solution:
 
 
 
-### 363. Max Sum of Rectangle No Larger Than K-$
+### 363. Max Sum of Rectangle No Larger Than K-$$
 
 https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/description/
+
+@5.12
+
+*Max Sum of subarray* which can be solved using [Kadane’s Algorithm](https://hackernoon.com/kadanes-algorithm-explained-50316f4fd8a6)
+
+recursion mindset :
+
+For an array, for each index at i, we need to find out the maximum subarray that ends at i, so the formula is:
+
+maxSumSubarray(i) = max(maxSumSubarray(i-1), 0) + array[i]
+
+and the base case is maxSumSubmatrix(0)=array[0]
+
+So for the 2-dimensional one, we should imagine to compress the rows into just one row which are the sum of different subrow, and in this way, we can consider it like a one-dimensional array.
 
 #### Solution-dp-worth
 
@@ -676,7 +778,7 @@ https://leetcode.com/problems/house-robber/
 
 
 
-### 213. House Robber II-实现很容易，但要想想
+### 213. House Robber II-$实现很容易，但要想想
 
 https://leetcode.com/problems/house-robber-ii/
 
@@ -694,7 +796,7 @@ Since we want the maximum value, we can have overlaps
 
 
 
-### 276. Paint Fence
+### 276. Paint Fence-$
 
 https://leetcode.com/problems/paint-fence/description/
 
@@ -729,6 +831,27 @@ class Solution:
 
 
 #### Solution-dp
+
+did@5.13-need improvement
+
+```python
+class Solution:
+    def numWays(self, n: int, k: int) -> int:
+        if n==0 or k==0:
+            return 0
+        
+        dp = [k, k*k]
+        if n<3:
+            return dp[n-1]
+        
+        for i in range(2, n):
+            dp.append(dp[i-2]*(k-1)+dp[i-1]*(k-1))
+            # different from the last one
+            
+        return dp[-1]
+```
+
+
 
 Ref: https://leetcode.com/problems/paint-fence/discuss/178010/The-only-solution-you-need-to-read
 
@@ -765,9 +888,32 @@ class Solution {
 
 
 
+
+
 ### 91. Decode Ways
 
 https://leetcode.com/problems/decode-ways/description/
+
+@by others, 感觉还是初始化为0的比较能一般化
+
+```python
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        # return reduce(lambda t,d : (t[1], (d>'0')*t[1]+(9<int(t[2]+d)<27)*t[0], d), s, (0, s>'', ''))[1]*1
+    
+        if not s:
+            return 0
+        dp = [0 for _ in range(len(s) + 1)]
+        dp[0] = 1
+        for i in range(1, len(s)+1):
+            if s[i-1:i] != '0': # s[i-1]
+                dp[i] += dp[i-1]
+            if i != 1 and s[i-2] != '0' and s[i-2:i] < '27':
+                dp[i] += dp[i-2]
+        return dp[len(s)]
+```
+
+
 
 #### Solution-dp-by myself
 
@@ -818,7 +964,7 @@ class Solution:
 
 1.18
 
-### 10. Regular Expression Matching-$
+### 10. Regular Expression Matching-$$
 
 https://leetcode.com/problems/regular-expression-matching/description/
 
@@ -846,7 +992,7 @@ state equation: 在这里我们相当于只有当前匹配上了我们才看之�
 
 
 
-### 44. Wildcard Matching-$
+### 44. Wildcard Matching-$$
 
 https://leetcode.com/problems/wildcard-matching/description/
 
@@ -868,6 +1014,7 @@ class Solution:
                     continue
                 if p[i-1]=='*':
                     dp[i][j]=dp[i-1][j] or dp[i][j-1]
+                    # 我总是想不清要匹配的情况
                     # dp[i-1][j] suggests that * represents ""
                     # dp[i][j-1], the difference between dp[i][j-1] and dp[i][j] is that we consider one more, that is s[j-1], so here we suggests that we use * to match s[j-1]
                 elif p[i-1]==s[j-1] or p[i-1]=='?':
@@ -880,3 +1027,10 @@ class Solution:
 
 #### Solution-two pointers, backtrack
 
+
+
+### 1048. Longest String Chain-$
+
+https://leetcode.com/problems/longest-string-chain/
+
+像这道题我就还是用数组做的，但其实用hash就会快很多
