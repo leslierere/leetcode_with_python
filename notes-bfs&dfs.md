@@ -35,7 +35,7 @@ def dfs(self, grid, i, j):
 
 
 
-### 286. Walls and Gates-$
+### 286. Walls and Gates-$queue
 
 https://leetcode.com/problems/walls-and-gates/description/
 
@@ -45,9 +45,30 @@ https://leetcode.com/problems/walls-and-gates/description/
 
 Ref: https://leetcode.com/problems/walls-and-gates/discuss/72746/My-short-java-solution-very-easy-to-understand
 
+did@5.16
+
+```python
+class Solution:
+    def wallsAndGates(self, rooms: List[List[int]]) -> None:
+        """
+        Do not return anything, modify rooms in-place instead.
+        """
+        for i in range(len(rooms)):
+            for j in range(len(rooms[0])):
+                if rooms[i][j]==0:
+                    self.dfs(rooms, i, j, 1)
+                    
+    def dfs(self, rooms, i, j, distance):
+        
+        for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+            if i+dx>=0 and i+dx<len(rooms) and j+dy>=0 and j+dy<len(rooms[0]) and rooms[i+dx][j+dy]>distance:
+                rooms[i+dx][j+dy] = distance
+                self.dfs(rooms, i+dx, j+dy, distance+1)
+```
 
 
-#### Solution-bfs-queue-worth
+
+#### Solution-bfs-queue-$
 
 Ref: https://leetcode.com/problems/walls-and-gates/discuss/72753/6-lines-O(mn)-Python-BFS
 
@@ -63,11 +84,13 @@ def wallsAndGates(self, rooms):
 
 
 
-### 130. Surrounded Regions-想想思路
+### 130. Surrounded Regions-$
 
 https://leetcode.com/problems/surrounded-regions/
 
 #### Solution-bfs-recursive-by myself
+
+Ref: https://leetcode.com/articles/surrounded-regions/
 
 没必要建一个marked表
 
@@ -153,7 +176,7 @@ def solve(self, board):
 
 
 
-### 339. Nested List Weight Sum-$
+### 339. Nested List Weight Sum
 
 https://leetcode.com/problems/nested-list-weight-sum/description/
 
@@ -161,22 +184,70 @@ https://leetcode.com/problems/nested-list-weight-sum/description/
 
 https://leetcode.com/articles/nested-list-weight-sum/
 
-```java
-public int depthSum(List<NestedInteger> nestedList) {
-    return depthSum(nestedList, 1);
-}
+比较快
 
-public int depthSum(List<NestedInteger> list, int depth) {
-    int sum = 0;
-    for (NestedInteger n : list) {
-        if (n.isInteger()) {
-            sum += n.getInteger() * depth;
-        } else {
-            sum += depthSum(n.getList(), depth + 1);
-        }
-    }
-    return sum;
-}
+```java
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        return self.dfs(nestedList, 1)
+        
+    def dfs(self, nestedList, depth):
+        agg = 0
+        for i in nestedList:
+            if i.isInteger():
+                agg+=depth*i.getInteger()
+            else:
+                agg += self.dfs(i.getList(), depth+1)
+        return agg
+                
+```
+
+比较慢：@5.17你看，是不是又有重复结构
+
+```python
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        agg = 0
+        
+        for integer in nestedList:
+            agg+=self.dfs(integer, 1)
+            
+        return agg
+    
+    def dfs(self, integer, layer):
+        if integer.isInteger():
+            return layer*integer.getInteger()
+        
+        agg = 0
+        for i in integer.getList():
+            agg+=self.dfs(i, layer+1)
+            
+        return agg
+```
+
+
+
+#### Solution-bfs
+
+```python
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        agg = 0
+        queue = collections.deque(nestedList)
+        layer = 1
+        
+        while queue:
+            length = len(queue)
+            for _ in range(length):
+                integer = queue.popleft()
+                if integer.isInteger():
+                    agg+=layer*integer.getInteger()
+                else:
+                    for i in integer.getList():
+                        queue.append(i)
+            layer+=1
+            
+        return agg
 ```
 
 
@@ -222,7 +293,7 @@ Ref: https://leetcode.com/problems/nested-list-weight-sum-ii/discuss/114195/Java
 
 
 
-### 127. Word Ladder-$
+### 127. Word Ladder-$$
 
 https://leetcode.com/problems/word-ladder/description/
 
@@ -413,9 +484,47 @@ def valid(self, nums, n):# n 是刚加进去的row no
     return True
 ```
 
+By myself@5.18, 64 ms, 和@1.27没多大区别, 别人的和我的主要是一个pruning的区别
+
+```python
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        cols = [i for i in range(n)]
+        paths = []
+        self.helper(0, cols, set(), [], paths)
+        return [self.build(path, n) for path in paths]
+        
+            
+    def helper(self, i, cols, positions, path, paths):
+        if not cols:
+            paths.append(path)
+            return
+        
+        length = len(cols)
+        for _ in range(length):
+            col = cols.pop(0)
+            flag =1
+            for x,y in positions:
+                if (i-x)/(col-y) in [1,-1]:
+                    flag=0
+                    break
+            if flag:   
+                positions.add((i, col))
+                self.helper(i+1, cols, positions, path+[col], paths)
+                positions.remove((i, col))
+            cols.append(col)
+            
+            
+    def build(self, path, n):
+        res = []
+        for i in path:
+            res.append("."*i+'Q'+'.'*(n-i-1))
+        return res
+```
 
 
-By myself@1.27
+
+By myself@1.27, 84 ms
 
 ```python
 from collections import deque
@@ -470,3 +579,8 @@ https://leetcode.com/problems/n-queens-ii/
 
 
 
+### 1192. Critical Connections in a Network-$
+
+https://leetcode.com/problems/critical-connections-in-a-network/
+
+Ref: https://leetcode.com/problems/critical-connections-in-a-network/discuss/382638/No-TarjanDFS-detailed-explanation-O(orEor)-solution-(I-like-this-question)
