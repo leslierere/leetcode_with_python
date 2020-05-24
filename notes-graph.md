@@ -1,6 +1,8 @@
-### 261. Graph Valid Tree
+### 261. Graph Valid Tree-$
 
 https://leetcode.com/problems/graph-valid-tree/
+
+其实和topological sort差不多，只是多了对所有nodes是否visit过的判断
 
 #### Solution-dfs-$
 
@@ -73,11 +75,30 @@ class Solution:
 
 Ref: https://leetcode.com/problems/graph-valid-tree/discuss/69019/Simple-and-clean-c%2B%2B-solution-with-detailed-explanation.
 
+```c++
+class Solution {
+public:
+    bool validTree(int n, vector<pair<int, int>>& edges) {
+        vector<int> nodes(n,0);
+        for(int i=0; i<n; i++) nodes[i] = i;
+        for(int i=0; i<edges.size(); i++){
+            int f = edges[i].first;
+            int s = edges[i].second;
+            while(nodes[f]!=f) f = nodes[f];
+            while(nodes[s]!=s) s = nodes[s];
+            if(nodes[f] == nodes[s]) return false;
+            nodes[s] = f;
+        }
+        return edges.size() == n-1;
+    }
+};
+```
 
 
 
 
-### 323. Number of Connected Components in an Undirected Graph
+
+### 323. Number of Connected Components in an Undirected Graph-$
 
 https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/description/
 
@@ -121,11 +142,36 @@ class Solution:
 
 Ref: https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/discuss/77574/Easiest-2ms-Java-Solution
 
+```java
+public int countComponents(int n, int[][] edges) {
+    int[] roots = new int[n];
+    for(int i = 0; i < n; i++) roots[i] = i; 
+
+    for(int[] e : edges) {
+        int root1 = find(roots, e[0]);
+        int root2 = find(roots, e[1]);
+        if(root1 != root2) {      
+            roots[root1] = root2;  // union
+            n--; //太聪明了！
+        }
+    }
+    return n;
+}
+
+public int find(int[] roots, int id) {
+    while(roots[id] != id) {
+        roots[id] = roots[roots[id]];  // optional: path compression
+        id = roots[id];
+    }
+    return id;
+}
+```
 
 
 
 
-### 305. Number of Islands II-$
+
+### 305. Number of Islands II-$$
 
 https://leetcode.com/problems/number-of-islands-ii/description/
 
@@ -180,7 +226,7 @@ class Solution:
 
 
 
-### 133. Clone Graph-看看
+### 133. Clone Graph-$
 
 https://leetcode.com/problems/clone-graph/description/
 
@@ -330,7 +376,7 @@ def cloneGraph1(self, node):
 
 
 
-### 399. Evaluate Division
+### 399. Evaluate Division-$
 
 https://leetcode.com/problems/evaluate-division/description/
 
@@ -432,6 +478,8 @@ https://leetcode.com/problems/minimum-height-trees/description/
 
 Ref: https://leetcode.com/problems/minimum-height-trees/discuss/76055/Share-some-thoughts
 
+这里的做法比我5.22做的简单
+
 ```python
 class Solution:
     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
@@ -450,7 +498,7 @@ class Solution:
             for leaf in leaves:
                 v = nodes[leaf].pop()
                 nodes[v].remove(leaf)
-                if len(nodes[v])==1:
+                if len(nodes[v])==1:# 因为有这个也不用担心一个node被多次加入，因为只有剩一个连接点的时候会被加入
                     newLeaves.append(v)
                
             leaves = newLeaves
@@ -460,7 +508,7 @@ class Solution:
 
 
 
-### 149. Max Points on a Line-$
+### 149. Max Points on a Line-$$
 
 https://leetcode.com/problems/max-points-on-a-line/
 
@@ -656,7 +704,7 @@ class WordDictionary:
 
 
 
-### 212. Word Search II-$
+### 212. Word Search II-$$
 
 https://leetcode.com/problems/word-search-ii/description/
 
@@ -729,6 +777,18 @@ class Solution:
 
 
 Ref: https://leetcode.com/problems/word-search-ii/discuss/59780/Java-15ms-Easiest-Solution-(100.00)
+
+> Intuitively, start from every cell and try to build a word in the dictionary. `Backtracking (dfs)` is the powerful way to exhaust every possible ways. Apparently, we need to do `pruning` when current character is not in any word.
+>
+> 
+>
+> 1. How do we instantly know the current character is invalid? `HashMap`?
+> 2. How do we instantly know what's the next valid character? `LinkedList`?
+> 3. But the next character can be chosen from a list of characters. `"Mutil-LinkedList"`?
+>
+> 
+>
+> Combing them, `Trie` is the natural choice. Notice that:
 
 ```python
 class Solution:
