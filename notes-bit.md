@@ -1,4 +1,4 @@
-### 389. Find the Difference
+### 389. Find the Difference-$
 
 https://leetcode.com/problems/find-the-difference/
 
@@ -6,7 +6,7 @@ https://leetcode.com/problems/find-the-difference/
 
 Ref: https://leetcode.com/problems/find-the-difference/discuss/86881/Python-solution-which-beats-96
 
-两个相同的东西exclusiveor就会变成0
+两个相同的东西exclusiveor就会变成0, 并且exclusiveor满足交换律
 
 
 
@@ -20,7 +20,7 @@ https://leetcode.com/problems/single-number/
 
 
 
-### 318. Maximum Product of Word Lengths
+### 318. Maximum Product of Word Lengths-$
 
 https://leetcode.com/problems/maximum-product-of-word-lengths/description/
 
