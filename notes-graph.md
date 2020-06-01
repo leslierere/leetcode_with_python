@@ -94,6 +94,34 @@ public:
 };
 ```
 
+did@2020.5.29, 我觉得上面这个比较好，一发现一个圈就退出了, 但我的做了path compression比较好
+
+```python
+class Solution:
+    def validTree(self, n: int, edges: List[List[int]]) -> bool:
+        if len(edges)!=n-1:
+            return False
+        
+        nodes = [i for i in range(n)]
+        
+        for node1, node2 in edges:
+            root1 = self.find(node1, nodes)
+            root2 = self.find(node2, nodes)
+            nodes[root1] = root2
+
+        for i in range(n):
+            self.find(i, nodes)
+            
+        return len(set(nodes))==1
+            
+    
+    def find(self, position, nodes):
+        if position==nodes[position]:
+            return position
+        nodes[position] = self.find(nodes[position], nodes)
+        return nodes[position]
+```
+
 
 
 
@@ -176,6 +204,51 @@ public int find(int[] roots, int id) {
 https://leetcode.com/problems/number-of-islands-ii/description/
 
 #### Solution-union find/disjoint sets
+
+@20.5.29 我觉得我做的这个比较好
+
+```python
+class Solution:
+    def numIslands2(self, m: int, n: int, positions: List[List[int]]) -> List[int]:
+        grid = [[0 for i in range(n)] for j in range(m)]
+        res = []
+        number = 0
+        visited = set()
+        
+        for i, j in positions:
+            if (i, j) not in visited:
+                
+                neighbors = set()
+                for x, y in [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]:
+                    if 0<=x<len(grid) and 0<=y<len(grid[0]) and grid[x][y]!=0:
+                        root = self.find(x, y, grid)
+                        neighbors.add(root)
+                if neighbors:
+                    root1 = neighbors.pop()
+                    grid[i][j] = root1
+                    for neighbor in neighbors:
+                        x, y = neighbor
+                        grid[x][y] = root1
+                        number-=1
+                else:
+                    number+=1
+                    grid[i][j] = (i, j)
+            visited.add((i, j))
+            res.append(number)
+                
+        return res
+                    
+        
+        
+    def find(self, i, j, grid):
+        if grid[i][j] == (i,j):
+            return (i,j)
+        x, y = grid[i][j]
+        grid[i][j] = self.find(x, y, grid)
+        return grid[i][j]
+```
+
+
 
 Ref: https://www.cs.princeton.edu/~rs/AlgsDS07/01UnionFind.pdf
 
@@ -300,7 +373,7 @@ class Solution:
 
 
 
-#### Solution-bfs-iterative-worth
+#### Solution-bfs-iterative
 
 by myself@2.15
 
@@ -563,7 +636,7 @@ class Solution:
 
 
 
-### 208. Implement Trie (Prefix Tree)
+### 208. Implement Trie (Prefix Tree)-easy
 
 #### Solution-trie
 
@@ -638,7 +711,7 @@ class Trie:
 
 https://leetcode.com/problems/add-and-search-word-data-structure-design/description/
 
-#### Solution-trie
+#### Solution-dfs
 
 Ref: https://leetcode.com/problems/add-and-search-word-data-structure-design/discuss/59725/Python-easy-to-follow-solution-using-Trie.
 
@@ -700,11 +773,45 @@ class WordDictionary:
 # param_2 = obj.search(word)
 ```
 
+#### Solution-bfs@5.30
+
+```python
+    def search(self, word: str) -> bool:
+        """
+        Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter.
+        """
+        # node = self.root
+        queue = collections.deque()
+        queue.append(self.root)
+        for letter in word:
+            length = len(queue)
+            for _ in range(length):
+                node = queue.popleft()
+                if letter == '.':
+                    for child in node.children:
+                        queue.append(node.children[child])
+                elif letter in node.children:
+                    queue.append(node.children[letter])
+            if len(queue)==0:
+                return False
+        for node in queue:
+            if node.isWord:
+                return True
+        return False
+        
+
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
+```
 
 
 
 
-### 212. Word Search II-$$
+
+### 212. Word Search II-$
 
 https://leetcode.com/problems/word-search-ii/description/
 
