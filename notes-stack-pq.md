@@ -120,6 +120,36 @@ Ref: https://leetcode.com/problems/longest-absolute-file-path/discuss/86619/Simp
 
 with split()
 
+depth的问题inspired by stephon（我一开始用split来做，但不知为啥有问题，下次再试试），然后code三部分顺序很重要
+
+```python
+class Solution:
+    def lengthLongestPath(self, string: str) -> int:
+        lines = string.split('\n')
+        stack = [(-1, -1)]
+        res = 0
+        
+        for line in lines:
+            subdir = line.lstrip('\t')
+            depth = len(line)-len(subdir)
+            # part1
+            while stack and depth<=stack[-1][1]:
+                stack.pop()
+            # part2
+            stack.append((len(subdir)+stack[-1][0]+1, depth))
+            # part3
+            if '.' in subdir:
+                res = max(res, stack[-1][0])
+            
+        # if subdir[-1].find('.')!=-1:
+        #     res = max(res, stack[-1][0])
+        return res
+                    
+        
+```
+
+
+
 
 
 
@@ -200,6 +230,42 @@ https://leetcode.com/problems/basic-calculator/description/
 
 这里对+-符号的处理特别好，思想还是跟上一题stack一样
 
+@6.7这次比较好, 真延续上次做法
+
+```python
+class Solution:
+    def calculate(self, s: str) -> int:
+        sign = 1
+        num = 0
+        
+        stack = [0]
+        
+        for char in s:
+            if char.isdigit():
+                num = num*10 + int(char)
+            elif char=='+':
+                stack[-1]+=sign*num
+                num = 0
+                sign = 1
+            elif char=='-':
+                stack[-1]+=sign*num
+                num = 0
+                sign = -1
+            elif char=='(':
+                stack.append(sign)
+                stack.append(0)
+                sign = 1
+            elif char==')':
+                stack[-1]+=sign*num
+                subSum = stack.pop()*stack.pop()
+                stack[-1]+=subSum
+                num = 0
+                
+        return stack[-1]+num*sign
+```
+
+
+
 ```python
 class Solution:
     def calculate(self, s: str) -> int:
@@ -243,6 +309,40 @@ Ref: https://leetcode.com/problems/basic-calculator-ii/discuss/63003/Share-my-ja
 
 我做复杂了，比如+-其实可以通过往stack加数字时一起处理
 
+did@6.7, 感觉这个思路比较清晰
+
+```python
+class Solution:
+    def calculate(self, s: str) -> int:
+        s+='+'
+        # sign = 1
+        stack = []
+        num = 0
+        last_op = '+'
+        
+        # 碰到+-就直接处理
+        # 碰到*/就继续算
+        for char in s:
+            if char.isdigit():
+                num = num*10 + int(char)
+            elif char in "+-*/":
+                
+                if last_op =='*':
+                    stack[-1]*=num
+                elif last_op =='/':
+                    stack[-1]= int(stack[-1]/num)
+                elif last_op == "+":
+                    stack.append(num)
+                else:
+                    stack.append(-num)
+                last_op = char
+                num = 0
+                
+        return sum(stack)
+```
+
+
+
 ```python
 class Solution:
     def calculate(self, s: str) -> int:
@@ -277,6 +377,38 @@ class Solution:
 https://leetcode.com/problems/mini-parser/description/
 
 #### Solution-stack
+
+@6.7感觉这一次比较好！
+
+```python
+class Solution:
+    def deserialize(self, s: str) -> NestedInteger:
+        num = 0
+        stack = []
+        sign = 1
+        
+        for i, char in enumerate(s):
+            if char.isnumeric():
+                num = num*10 + int(char)
+            elif char=='[':
+                stack.append(NestedInteger())
+            elif char in ',]':
+                if s[i-1]==']':
+                    subInteger = stack.pop()
+                    stack[-1].add(subInteger)
+                elif s[i-1]!='[':
+                    stack[-1].add(NestedInteger(value=sign*num))
+                num = 0
+                sign = 1
+            else:
+                sign = -1
+        if stack:
+            return stack[-1]
+        else:
+            return NestedInteger(value=sign*num)
+```
+
+
 
 Ref: https://leetcode.com/problems/mini-parser/discuss/86066/An-Java-Iterative-Solution
 
@@ -378,7 +510,7 @@ def largestRectangleArea(self, height):
             w = i - stack[-1] - 1
             ans = max(ans, h * w)
         stack.append(i)
-    height.pop()
+    height.pop()#复原也要记得
     return ans
 ```
 
@@ -454,7 +586,7 @@ so total time complexity should be O(klogN)
 
 
 
-### 347. Top K Frequent Elements-$
+### 347. Top K Frequent Elements
 
 Ref: https://leetcode.com/problems/top-k-frequent-elements/
 
@@ -466,7 +598,7 @@ Heap or Counter+sort
 
 
 
-### 218. The Skyline Problem-$$
+### 218. The Skyline Problem-$$$
 
 https://leetcode.com/problems/the-skyline-problem/description/
 
@@ -524,7 +656,7 @@ class Solution(object):
 
 
 
-### 332. Reconstruct Itinerary-$$
+### 332. Reconstruct Itinerary-$$$
 
 https://leetcode.com/problems/reconstruct-itinerary/description/
 
@@ -538,44 +670,18 @@ Eulerian Path: [Eulerian Path ](http://en.wikipedia.org/wiki/Eulerian_path)is a 
 
 @3.28其实我觉得和topological sort的dfs很像
 
-### 341. Flatten Nested List Iterator- $$
+
+
+
+
+### 341. Flatten Nested List Iterator- $$$
 
 https://leetcode.com/problems/flatten-nested-list-iterator/
 
 #### Solution-stack-worth
 
-这个比较好理解：https://leetcode.com/articles/flatten-nested-iterator/
-
-```python
-class NestedIterator:
-    
-    def __init__(self, nestedList: [NestedInteger]):
-        self.stack = list(reversed(nestedList))
-        
-        
-    def next(self) -> int:
-        self.make_stack_top_an_integer()
-        return self.stack.pop().getInteger()
-    
-        
-    def hasNext(self) -> bool:
-        self.make_stack_top_an_integer()
-        return len(self.stack) > 0
-        
-        
-    def make_stack_top_an_integer(self):
-        # While the stack contains a nested list at the top...
-        while self.stack and not self.stack[-1].isInteger():
-            # Unpack the list at the top by putting its items onto
-            # the stack in reverse order.
-            self.stack.extend(reversed(self.stack.pop().getList()))
-```
-
-
-
-
+@6.8这个思路比较对
 
 Ref: https://leetcode.com/problems/flatten-nested-list-iterator/discuss/80146/Real-iterator-in-Python-Java-C%2B%2B
 
 > In my opinion an iterator shouldn't copy the entire data (which some solutions have done) but just iterate over the original data structure.
-

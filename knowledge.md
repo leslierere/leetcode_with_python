@@ -323,6 +323,8 @@ python3返回迭代器
 
 ### lambda
 
+Ref: https://www.liaoxuefeng.com/wiki/1016959663602400/1017451447842528
+
 ```python
 lambda arguments: expression
 ```
@@ -336,7 +338,21 @@ def f(x):
 
 应用场景：sort， [examples from here]([https://www.polarxiong.com/archives/Python-%E4%BD%BF%E7%94%A8lambda%E5%BA%94%E5%AF%B9%E5%90%84%E7%A7%8D%E5%A4%8D%E6%9D%82%E6%83%85%E5%86%B5%E7%9A%84%E6%8E%92%E5%BA%8F-%E5%8C%85%E6%8B%AClist%E5%B5%8C%E5%A5%97dict.html](https://www.polarxiong.com/archives/Python-使用lambda应对各种复杂情况的排序-包括list嵌套dict.html))
 
-* dict的value排序
+*key* 形参的值应该是一个函数，它接受一个参数并并返回一个用于排序的键。这种技巧速度很快，因为对于每个输入记录只会调用一次 key 函数。
+
+一种常见的模式是<u>使用对象的一些索引</u>作为键对复杂对象进行排序，给到匿名函数的变量是列表里面的各个item。例如：
+
+```python
+>>> student_tuples = [
+...     ('john', 'A', 15),
+...     ('jane', 'B', 12),
+...     ('dave', 'B', 10),
+... ]
+>>> sorted(student_tuples, key=lambda student: student[2])   # sort by age
+[('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+```
+
+* dict的value排序, 给到匿名函数的变量是键
 
 ```python
 dic = {'c': 1, 'b': 2, 'a': 3}
