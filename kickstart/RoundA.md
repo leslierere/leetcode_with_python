@@ -1,5 +1,7 @@
 ## Allocation
 
+@6.10关键是看懂他关于贪婪算法的证明
+
 ### Problem
 
 #### Problem
@@ -34,11 +36,11 @@ Memory limit: 1GB.
 
 #### Sample
 
-| Input                          | Output     |
-| ------------------------------ | ---------- |
-| 3 4<br />100 20 90 40 90<br /> | Case #1: 2 |
-| 4 50<br />30 30 10 10          | Case #2: 3 |
-| 3 300<br />999 999 999         | Case #3: 0 |
+| Input                            | Output     |
+| -------------------------------- | ---------- |
+| 5 100<br />100 20 90 40 90<br /> | Case #1: 2 |
+| 4 50<br />30 30 10 10            | Case #2: 3 |
+| 3 300<br />999 999 999           | Case #3: 0 |
 
 In Sample Case #1, you have a budget of 100 dollars. You can buy the 1st and 3rd houses for 20 + 40 = 60 dollars.
 In Sample Case #2, you have a budget of 50 dollars. You can buy the 1st, 3rd and 4th houses for 30 + 10 + 10 = 50 dollars.
@@ -152,9 +154,9 @@ Next, we iterate over the stacks and try to answer the question: *What is the ma
 The flow would look like:
 for i [1, **N**]:
  for j [0, **P**]:
-  dp[i][j] := 0
+  dp\[i][j] := 0
    for x [0, min(j, **K**)]:
-    dp[i][j] = max(dp[i][j], sum[i][x]+dp[i-1][j-x])
+    dp\[i][j] = max(dp\[i][j], sum\[i][x]+dp\[i-1][j-x])
 
 If we observe closely, this is similar to the [0-1 Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem#0-1_knapsack_problem) with some added complexity. To conclude, the overall time complexity would be O(**N*****P*****K**).
 
@@ -164,7 +166,7 @@ If we observe closely, this is similar to the [0-1 Knapsack Problem](https://en.
 
 
 
-## Workout
+## Workout-$
 
 ### Problem
 
@@ -191,7 +193,7 @@ Memory limit: 1GB.
 1 ≤ **T** ≤ 100.
 For at most 10 test cases, 2 ≤ **N** ≤ 105.
 For all other test cases, 2 ≤ **N** ≤ 300.
-1 ≤ **Mi** ≤ 109.
+1 ≤ **Mi** ≤ 10times9.
 **Mi** < **Mi+1** for all i.
 
 #### Test set 1
@@ -369,9 +371,13 @@ We need to maximise the sum of scores of each bundle. Let us consider a bundle a
 
 Now instead of finding the total score, we find the contribution of each prefix in the total score. So for maximising the total score, we would want to maximize the contribution of each prefix in the total score. Let the contribution of each prefix PRE be contibution(PRE). We want to maximize ∑ contribution(PRE) where PRE comprises all possible prefixes of the given strings.
 
+先看一个prefix的情况
+
 Let us say a prefix Pi is a prefix of S strings. The maximum number of bundles of size **K** formed by S strings is ⌊ S / **K** ⌋. In each of these ⌊ S / **K** ⌋ bundles, prefix Pi will add to their scores. Thus maximum value of contribution(Pi) can be ⌊ S / **K** ⌋. So a prefix Pi which occurs as a prefix of S strings will contribute ⌊ S / **K** ⌋ to the answer.
 
-Let us see if we can achieve this maximum value for all the prefixes. Consider a prefix P of length L. It occurs as a prefix in CNT number of strings. Now consider there are C prefixes of length L + 1 which contain the prefix P as a prefix (P1, P2, ....,PC). And we have stored the number of strings these prefixes are part of as (CNT1, CNT2, ....,CNTC).
+看多个prefix
+
+Let us see if we can achieve this maximum value for all the prefixes. Consider a prefix P of length L. It occurs as a prefix in CNT number of strings. Now consider there are C prefixes of length L + 1 which contain the prefix P as a prefix (P1, P2, ....,PC). And we have stored the number of strings these prefixes are part of as (CNT1, CNT2, ....,CNTC).（也就是CNT=CNT1+CNT2+...+CNTC)
 
 Let us say we divided the strings which have prefix Pi into ⌊ (CNTi / **K**) ⌋ bundles. Now we have CNTi%**K** strings remaining for each prefix that we need to arrange so that they make a bundle. For each of these remaining strings we cannot have a bundle of size **K** which would have a common prefix of length L + 1 because we have CNTi%**K** remaining strings for each Pi. So, we can make bundles in any order using the remanining strings. Those bundles will still have a prefix of length L shared among them. Thus we would be left with CNT%**K** number of strings which are not in any bundle when we consider prefix P. We can continue this procedure till we are left with prefix of length 0. We would be able to bundle all the strings at this point because we would have **N** % **K** strings remaining, and as specified in the problem, **N** is divisible by **K**.
 
