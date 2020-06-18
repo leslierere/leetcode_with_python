@@ -243,7 +243,47 @@ https://www.liaoxuefeng.com/wiki/1016959663602400/1017496679217440
 
 ### split()
 
-不管中间空格有几个都可以分组, 而且空格就自动没有了
+```python
+In [21]: s2.split??                                                         
+'''
+Signature: s2.split(sep=None, maxsplit=-1)
+Docstring:
+Return a list of the words in the string, using sep as the delimiter string.
+
+sep
+  The delimiter according which to split the string.
+  None (the default value) means split according to any whitespace,
+  and discard empty strings from the result.
+maxsplit
+  Maximum number of splits to do.
+  -1 (the default value) means no limit.
+Type:      builtin_function_or_method
+'''
+# split()和split('')是不一样的
+# 只要声明了sep，那么空字符串也会被单独分组
+  
+In [24]: s1                                                                 
+Out[24]: '  subdir1'
+
+In [25]: s2                                                                 
+Out[25]: ' subdir1'
+
+In [26]: s1.split(' ')                                                       
+Out[26]: ['', '', 'subdir1']
+
+In [27]: s2.split(' ')                                                       
+Out[27]: ['', 'subdir1']
+  
+In [34]: s1.split()                                                         
+Out[34]: ['subdir1']
+
+In [35]: s2.split()                                                         
+Out[35]: ['subdir1']
+```
+
+
+
+
 
 
 
@@ -596,6 +636,25 @@ Convert base-2 binary number string to int](https://stackoverflow.com/questions/
 #### Covert int to binary number string-bin()
 
 
+
+### Reading and Writing Files
+
+Ref: https://docs.python.org/3/tutorial/inputoutput.html
+
+> [`open()`](https://docs.python.org/3/library/functions.html#open) returns a [file object](https://docs.python.org/3/glossary.html#term-file-object), and is most commonly used with two arguments: `open(filename, mode)`.
+>
+> ```python
+> >>> f = open('workfile', 'w')
+> ```
+
+Mode: 
+
+* `'r'` when the file will only be read, default mode
+*  `'w'` for only writing (an existing file with the same name will be erased)
+* `'a'` opens the file for appending; any data written to the file is automatically added to the end.
+*  `'r+'` opens the file for both reading and writing. 
+
+> Normally, files are opened in *text mode*, that means, you read and write strings from and to the file, which are <u>encoded in a specific encoding</u>. If encoding is not specified, the default is platform dependent (see [`open()`](https://docs.python.org/3/library/functions.html#open)). `'b'` appended to the mode opens the file in *binary mode*: now the data is read and written in the form of bytes objects. This mode should be used for all files that don’t contain text.
 
 
 

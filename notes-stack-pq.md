@@ -1,4 +1,4 @@
-### 	155. Min Stack-$
+### 	155. Min Stack
 
 https://leetcode.com/problems/min-stack/description/
 
@@ -120,7 +120,13 @@ Ref: https://leetcode.com/problems/longest-absolute-file-path/discuss/86619/Simp
 
 with split()
 
-depth的问题inspired by stephon（我一开始用split来做，但不知为啥有问题，下次再试试），然后code三部分顺序很重要
+depth的问题inspired by stephon（我一开始用split来做，但不知为啥有问题，下次再试试），
+
+
+
+
+
+然后code三部分顺序很重要
 
 ```python
 class Solution:
@@ -144,11 +150,7 @@ class Solution:
         # if subdir[-1].find('.')!=-1:
         #     res = max(res, stack[-1][0])
         return res
-                    
-        
 ```
-
-
 
 
 
@@ -185,9 +187,34 @@ class Solution(object):
         return curString
 ```
 
+did@6.13
+
+```python
+class Solution:
+    def decodeString(self, s: str) -> str:
+        stack = [""]
+        num = 0
+        
+        for char in s:
+            if char.isnumeric():
+                num = num*10+int(char)
+            elif char=='[':
+                stack.append(num)
+                stack.append("")
+                num = 0
+            elif char==']':
+                string = stack.pop()
+                times = stack.pop()
+                stack[-1]+=times*string
+            else:
+                stack[-1]+=char
+                
+        return stack[-1]
+```
 
 
-#### Solution-recursive-worth
+
+#### Solution-recursive-try
 
 Ref: https://leetcode.com/problems/decode-string/discuss/87544/Clean-C%2B%2B-Recursive-Solution-with-Explanation
 
@@ -230,7 +257,7 @@ https://leetcode.com/problems/basic-calculator/description/
 
 这里对+-符号的处理特别好，思想还是跟上一题stack一样
 
-@6.7这次比较好, 真延续上次做法
+@6.7这次比较好, 真延续上面做法
 
 ```python
 class Solution:
@@ -307,9 +334,9 @@ https://leetcode.com/problems/basic-calculator-ii/description/
 
 Ref: https://leetcode.com/problems/basic-calculator-ii/discuss/63003/Share-my-java-solution
 
-我做复杂了，比如+-其实可以通过往stack加数字时一起处理
 
-did@6.7, 感觉这个思路比较清晰
+
+did@6.7, 感觉这个思路比较清晰，总之是依靠上一个符号来做不同的处理
 
 ```python
 class Solution:
@@ -668,7 +695,11 @@ https://www.cnblogs.com/grandyang/p/5183210.html
 
 Eulerian Path: [Eulerian Path ](http://en.wikipedia.org/wiki/Eulerian_path)is a path in graph that visits every edge exactly once. Eulerian Circuit is an Eulerian Path which starts and ends on the same vertex.
 
-@3.28其实我觉得和topological sort的dfs很像
+@3.28其实我觉得和topological sort的dfs很像，@6.18但其实没那么像，因为那个是要遍历所有的节点，而这个要遍历所有的edge，也就是上面说的Eulerian Path
+
+关键：
+
+> The nodes which have odd degrees (int and out) are the entrance or exit. In your example it's JFK and A.
 
 
 
@@ -680,7 +711,7 @@ https://leetcode.com/problems/flatten-nested-list-iterator/
 
 #### Solution-stack-worth
 
-@6.8这个思路比较对
+@6.8这个思路比较对, did@6.18
 
 Ref: https://leetcode.com/problems/flatten-nested-list-iterator/discuss/80146/Real-iterator-in-Python-Java-C%2B%2B
 
