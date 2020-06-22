@@ -1,8 +1,8 @@
-### 261. Graph Valid Tree-$
+### 261. Graph Valid Tree-$dfs和bfs做做
 
 https://leetcode.com/problems/graph-valid-tree/
 
-其实和topological sort差不多，只是多了对所有nodes是否visit过的判断
+@6.21使用dfs可以用topological sort的思路，只要edges数满足n-1且没有圈，就不会有问题；而这里dfs和bfs的做法是，通过一个node一定可以把所有其他node visit到，感觉是更自然的思路
 
 #### Solution-dfs-$
 
@@ -166,7 +166,7 @@ class Solution:
 
 #### Solution-dfs, did@2.14, 但我的方法不够好，还是用set或者array存一下visited的部分比较好
 
-#### Solution-dfs, union find-$
+#### Solution-dfs, union find-$,主要想一下怎么算出岛的数量
 
 Ref: https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/discuss/77574/Easiest-2ms-Java-Solution
 
@@ -205,47 +205,50 @@ https://leetcode.com/problems/number-of-islands-ii/description/
 
 #### Solution-union find/disjoint sets
 
-@20.5.29 我觉得我做的这个比较好
+@20.6.22 我觉得我做的这个比较好
 
 ```python
 class Solution:
     def numIslands2(self, m: int, n: int, positions: List[List[int]]) -> List[int]:
-        grid = [[0 for i in range(n)] for j in range(m)]
+        islands = [[0 for i in range(n)] for j in range(m)]
         res = []
         number = 0
-        visited = set()
         
         for i, j in positions:
-            if (i, j) not in visited:
-                
+            if islands[i][j]==0:
                 neighbors = set()
-                for x, y in [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]:
-                    if 0<=x<len(grid) and 0<=y<len(grid[0]) and grid[x][y]!=0:
-                        root = self.find(x, y, grid)
-                        neighbors.add(root)
-                if neighbors:
-                    root1 = neighbors.pop()
-                    grid[i][j] = root1
-                    for neighbor in neighbors:
-                        x, y = neighbor
-                        grid[x][y] = root1
-                        number-=1
-                else:
+                for x,y in [(i+1, j), (i-1, j), (i,j+1), (i,j-1)]:
+                    if 0<=x and x<m and 0<=y and y<n and islands[x][y]!=0:
+                        neighbors.add(self.find(islands, x, y))
+                        
+                if len(neighbors)==0:
+                    islands[i][j] = (i,j)
                     number+=1
-                    grid[i][j] = (i, j)
-            visited.add((i, j))
-            res.append(number)
-                
-        return res
+                    res.append(number)
+                else:
+                    islands[i][j]=neighbors.pop()
+                    while neighbors:
+                        neighbor = neighbors.pop()
+                        if islands[i][j]!=neighbor:
+                            rootI, rootJ = islands[i][j]
+                            islands[rootI][rootJ] = neighbor
+                            islands[i][j] = neighbor
+                            number-=1
+                    res.append(number)
+            else:
+                res.append(number)
                     
-        
-        
-    def find(self, i, j, grid):
-        if grid[i][j] == (i,j):
+        return res
+
+                    
+            
+            
+    def find(self, islands, i, j): #return the root
+        if islands[i][j]==(i,j):
             return (i,j)
-        x, y = grid[i][j]
-        grid[i][j] = self.find(x, y, grid)
-        return grid[i][j]
+        rootI,rootJ = islands[i][j]
+        islands[i][j] = self.find(islands,rootI,rootJ)
+        return islands[i][j]
 ```
 
 
