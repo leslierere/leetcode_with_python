@@ -1,53 +1,16 @@
-###7.15
-
 ####500. Keyboard Row
 
 https://leetcode.com/problems/keyboard-row/        
 
-* solution
+用set的这个特性, 想想就行
 
-  ```python
-      class Solution:
-      def findWords(self, words: List[str]) -> List[str]:
-          s1 = set("QWERTYUIOPqwertyuiop")
-          s2 = set("ASDFGHJKLasdfghjkl")
-          s3 = set("ZXCVBNMzxcvbnm")
-      r = []
-      for word in words:
-          s = set(word)
-          if ((s&s1) == s) or ((s&s2) == s) or ((s&s3) == s):
-              r.append(word)
-      return r
-  ```
+```python
+# s1 is subset of s2, return boolean
+s1 <= s2
 
-####463. Island Perimeter
-
-https://leetcode.com/problems/island-perimeter/
-
-* solution
-
-  对每个格子四个边处理
-
-  ```python
-  class Solution:
-      def islandPerimeter(self, grid: List[List[int]]) -> int:
-          m = len(grid)
-          n = len(grid[0])
-          res = 0
-          
-          for i in range(m):
-              for j in range(n):
-                  if grid[i][j] == 1:
-                      if j ==0 or grid[i][j-1]==0:#left
-                          res+=1
-                      if i ==0 or grid[i-1][j]==0:#top
-                          res+=1
-                      if j == n-1 or grid[i][j+1]==0:#right
-                          res+=1
-                      if i == m-1 or grid[i+1][j]==0:#bottom
-                          res+=1
-          return res
-  ```
+# s1 is proper subset of s2
+s1 < s2
+```
 
 
 
@@ -61,32 +24,9 @@ https://leetcode.com/problems/logger-rate-limiter/
 
 https://leetcode.com/problems/find-common-characters/
 
+使用counter的&和elements(), 想一想思路就好
 
 
-#### 811. Subdomain Visit Count-unsubmitted
-
-https://leetcode.com/problems/subdomain-visit-count/
-
-
-
-#### 1078. Occurrences After Bigram
-
-https://leetcode.com/problems/occurrences-after-bigram/
-
-
-
-#### 961. N-Repeated Element in Size 2N Array
-
-https://leetcode.com/problems/n-repeated-element-in-size-2n-array/solution/
-
-* solution-math
-
-  ```python
-  class Solution:
-  	def repeatedNTimes(self, A: List[int]) -> int:
-  		B = set(A)
-  		return (sum(A) - sum(B)) // (len(A) - len(B))
-  ```
 
 
 
@@ -127,73 +67,27 @@ class Solution(object):
 
 
 
-### 7.16
-
-#### 884. Uncommon Words from Two Sentences
+#### 884. Uncommon Words from Two Sentences-想想
 
 https://leetcode.com/problems/uncommon-words-from-two-sentences/
 
 * solution
 
-  ```python
-    class Solution(object):
-      def uncommonFromSentences(self, A, B):
-          count = {}
-          for word in A.split():
-              count[word] = count.get(word, 0) + 1
-          for word in B.split():
-              count[word] = count.get(word, 0) + 1  
-    	#Alternatively:
-      #count = collections.Counter(A.split())
-      #count += collections.Counter(B.split())
+  Ref: https://leetcode.com/problems/uncommon-words-from-two-sentences/discuss/158967/C%2B%2BJavaPython-Easy-Solution-with-Explanation
   
-      		return [word for word in count if count[word] == 1]
-  ```
+  这个把复杂化简单的思路太强了！
 
-#### 136. Single Number-favorites
 
-https://leetcode.com/problems/single-number/
-
-Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
-
-* solution1-Bit Manipulation
-
-***Concept***：
-
-1. *If we take XOR of zero and some bit, it will return that bit*
-
-   a*⊕0=*a
-
-2. If we take XOR of two same bits, it will return 0
-
-   *a*⊕*a*=0
-
-3. *a*⊕*b*⊕*a*=(*a*⊕*a*)⊕*b*=0⊕*b*=*b*
-
-* Solution2-hashtable，存在删除，不存在加入
-
-  ```python
-  class Solution(object):
-      def singleNumber(self, nums):
-          """
-          :type nums: List[int]
-          :rtype: int
-          """
-          a = 0
-          for i in nums:
-              a ^= i
-          return a
-  ```
-
-  
 
 
 
 #### 266. Palindrome Permutation
 
+想想怎么one pass
+
 https://leetcode.com/problems/palindrome-permutation/solution/
 
-* Solution1- bit manipulation
+* Solution1- bit manipulation，本质跟solution2没有区别
 
   > 我们建立一个 256 大小的 bitset，每个字母根据其 ASCII 码值的不同都有其对应的位置，然后我们遍历整个字符串，遇到一个字符，就将其对应的位置的二进制数 flip 一下，就是0变1，1变0，那么遍历完成后，所有出现次数为偶数的对应位置还应该为0，而出现次数为奇数的时候，对应位置就为1了，那么我们最后只要统计1的个数，就知道出现次数为奇数的字母的个数了，只要个数小于2就是回文数
   >
@@ -207,121 +101,15 @@ https://leetcode.com/problems/palindrome-permutation/solution/
 
   
 
-#### 575. Distribute Candies
-
-https://leetcode.com/problems/distribute-candies/
-
-* solution
-
-```python
-class Solution:
-    def distributeCandies(self, candies: List[int]) -> int:
-        length1 = len(candies)//2
-        s = set(candies)
-        length2 = len(s)
-        if length2 < length1:
-            return length2
-        else:
-            return length1
-```
-
-
-
-
-
 
 
 #### 706. Design HashMap
 
 https://leetcode.com/problems/design-hashmap/
 
-* solution-array+linked list-my answer
 
-  一般有Time Limit Exceeded就一定是循环卡死，所以要记得return，迭代什么的
 
-  ```python
-  class Node:
-      def __init__(self, key, val):
-          self.key = key
-          self.val = val
-          self.next = None
-  
-  class MyHashMap:
-  
-      def __init__(self):
-          """
-          Initialize your data structure here.
-          """
-          self.array = [None]*10000
-          
-  
-      def put(self, key: int, value: int) -> None:
-          """
-          value will always be non-negative.
-          """
-          index = key%10000
-          if self.array[index] == None:
-              self.array[index] = Node(key, value)
-          else:
-              n = self.array[index]
-              while n!= None:
-                  if n.key==key:
-                      n.val = value
-                      return
-                  elif n.next == None:
-                      n.next = Node(key, value)
-                      ##
-                      return
-                  else:
-                      n = n.next
-              
-  
-      def get(self, key: int) -> int:
-          """
-          Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key
-          """
-          index = key%10000
-          n = self.array[index]
-          while n!= None:
-              if key == n.key:
-                  return n.val
-              n = n.next
-          return -1
-          
-  
-      def remove(self, key: int) -> None:
-          """
-          Removes the mapping of the specified value key if this map contains a mapping for the key
-          """
-          index = key%10000
-          
-          last = self.array[index]
-          if last == None:
-              return
-          elif last.key == key:
-              self.array[index] = last.next
-              return
-          while last.next!=None:
-              if last.next.key == key:
-                  last.next = last.next.next
-                  return
-              else:
-                  last = last.next
-          
-  
-          
-  
-  
-  # Your MyHashMap object will be instantiated and called as such:
-  # obj = MyHashMap()
-  # obj.put(key,value)
-  # param_2 = obj.get(key)
-  # obj.remove(key)
-  ```
 
-  
-
-### 7.17
 
 #### 690. Employee Importance
 
@@ -332,8 +120,6 @@ https://leetcode.com/problems/employee-importance/
   有点像tree的结构，还可以用queue的方法来做，还没做
 
 
-
-### 7.18
 
 #### 705. Design HashSet
 
@@ -422,8 +208,6 @@ https://leetcode.com/problems/employee-importance/
 
 
 
-### 7.19
-
 #### 599. Minimum Index Sum of Two Lists
 
 https://leetcode.com/problems/minimum-index-sum-of-two-lists/
@@ -484,8 +268,6 @@ https://leetcode.com/problems/longest-harmonious-subsequence/
   > 下面方法不用任何 map，但是需要对数组进行排序，当数组有序了之后，我们就可以一次遍历搞定了。这实际上用到了滑动窗口 Sliding Window 的思想，用变量 start 记录当前窗口的左边界，初始化为0。用 new_start 指向下一个潜在窗口的左边界，初始化为0。i为当前窗口的右边界，从1开始遍历，首先验证当前窗口的差值是否小于1，用 nums[i] 减去  nums[start]，若不满足，则将 start 赋值为 new_start，即移动到下一个窗口。然后看当前数字跟之前一个数字是否相等，若不相等，说明当前数字可能是下一个潜在窗口的左边界，将 new_start 赋值为i。然后再看窗口的左右边界值是否刚好为1，因为题目中说了差值必须正好为1，由于我们对数组排序了，所以只要左右边界差值正好为1，那么这个窗口包含的数字就可以组成满足题意的子序列，用其长度来更新结果 res 即可
   >
   > Ref: https://www.cnblogs.com/grandyang/p/6896799.html
-
-### 7.20
 
 #### 645. Set Mismatch
 
@@ -549,8 +331,6 @@ https://leetcode.com/problems/isomorphic-strings/
 
 
 
-### 7.21
-
 #### 624. Maximum Distance in Arrays
 
 https://leetcode.com/problems/maximum-distance-in-arrays/
@@ -606,8 +386,6 @@ https://leetcode.com/problems/two-sum-iii-data-structure-design/
 https://leetcode.com/problems/find-all-anagrams-in-a-string/
 
 
-
-### 7.22
 
 #### 204. Count Primes
 

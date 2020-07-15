@@ -1034,3 +1034,35 @@ class Solution:
 https://leetcode.com/problems/longest-string-chain/
 
 像这道题我就还是用数组做的，但其实用hash就会快很多
+
+
+
+### 956. Tallest Billboard
+
+https://leetcode.com/problems/tallest-billboard/
+
+how to think of this problem: 
+
+> I think dp[d] mean the maximum pair of sum we can get with pair difference = **d**
+
+其实下面两个思路差不多
+
+#### Solution-dp
+
+[https://leetcode.com/problems/tallest-billboard/discuss/203181/JavaC%2B%2BPython-DP-min(O(SN2)-O(3N2-*-N)](https://leetcode.com/problems/tallest-billboard/discuss/203181/JavaC%2B%2BPython-DP-min(O(SN2)-O(3N2-*-N))
+
+#### Solution-permutation /w memorization
+
+https://leetcode.com/problems/tallest-billboard/discuss/219700/Python-DP-clean-solution(1D)
+
+
+
+### 1320. Minimum Distance to Type a Word Using Two Fingers
+
+https://leetcode.com/problems/minimum-distance-to-type-a-word-using-two-fingers/
+
+#### Solution-dp
+
+https://leetcode.com/problems/minimum-distance-to-type-a-word-using-two-fingers/discuss/477652/JavaC%2B%2BPython-1D-DP-O(1)-Space
+
+2d的思路跟956很像，1d还没看 

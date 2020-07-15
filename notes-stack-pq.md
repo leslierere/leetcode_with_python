@@ -36,9 +36,7 @@ https://leetcode.com/problems/implement-queue-using-stacks/description/
 
 #### Solution
 
-用python写没啥意义。。。
-
-
+有意义！想不清楚意义看https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/
 
 ### 225. Implement Stack using Queues
 
@@ -46,9 +44,7 @@ https://leetcode.com/problems/implement-stack-using-queues/description/
 
 #### Solution
 
-用python写没啥意义。。。
-
-
+有意义！
 
 
 
