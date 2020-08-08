@@ -1,5 +1,3 @@
-1.02
-
 @4.2，感觉tree的部分还比较薄弱
 
 ### 144.Binary Tree Preorder Traversal-$
@@ -24,7 +22,7 @@ class Solution:
                 stack.append(last.left)
         return res
       
-# 上下两个写法没有啥差别，但比solution2慢。。。
+# 上下两个写法没有啥差别，但比solution2慢。。。但不用在意吧。。。lc总是怪怪的
 class Solution:
     def preorderTraversal(self, root: TreeNode) -> List[int]:
         if not root:
@@ -247,6 +245,8 @@ class Solution:
 
 
 ### 小结
+
+Pre, in, post的subject都是指当前node啦
 
 基本上preorder，inorder， postorder traversal就是用recursive或者iterative(模拟递归)来做
 

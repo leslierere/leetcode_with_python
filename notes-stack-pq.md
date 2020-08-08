@@ -516,9 +516,32 @@ class Solution:
 
 ### 84. Largest Rectangle in Histogram-$
 
+did@6.8
+
+```python
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        heights.append(0)
+        stack = [-1]
+        maxArea = 0
+        
+        for i in range(len(heights)):
+            if len(stack)==1 or heights[i]>=heights[stack[-1]]:
+                stack.append(i)
+                continue
+            while heights[i]<heights[stack[-1]]:
+                top = stack.pop()
+                maxArea = max(maxArea, (i-stack[-1]-1)*heights[top])
+            stack.append(i)
+            
+        return maxArea
+```
+
+
+
 Ref: https://leetcode.com/problems/largest-rectangle-in-histogram/
 
-可以根据[这个思路](https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28917/AC-Python-clean-solution-using-stack-76ms)修改下面代码
+可以根据[这个思路](https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28917/AC-Python-clean-solution-using-stack-76ms)修改下面代码, This can ensure every bar(in other words, at different heights) would be calculated given the two boundaries that are just smaller than it.
 
 上面思路：
 
@@ -712,3 +735,198 @@ https://leetcode.com/problems/flatten-nested-list-iterator/
 Ref: https://leetcode.com/problems/flatten-nested-list-iterator/discuss/80146/Real-iterator-in-Python-Java-C%2B%2B
 
 > In my opinion an iterator shouldn't copy the entire data (which some solutions have done) but just iterate over the original data structure.
+
+
+
+
+
+### 1021. Remove Outermost Parentheses
+
+https://leetcode.com/problems/remove-outermost-parentheses/
+
+#### 
+
+### 456. 132 Pattern
+
+https://leetcode.com/problems/132-pattern/
+
+#### Solution-worth
+
+https://leetcode.com/problems/132-pattern/discuss/94071/Single-pass-C%2B%2B-O(n)-space-and-time-solution-(8-lines)-with-detailed-explanation.
+
+
+
+
+
+### 636. Exclusive Time of Functions
+
+https://leetcode.com/problems/exclusive-time-of-functions/
+
+#### Solution-worth
+
+I like this one in sample answer:
+
+```python
+class Solution:
+    def exclusiveTime(self, n: int, logs: List[str]) -> List[int]:
+        answer = [0 for _ in range(n)]
+        stack = []
+        for log in logs:
+            function, start_end, time = log.split(":")
+            if start_end == 'start':
+                stack.append([int(function), int(time)])
+            else:
+                func, start_time = stack.pop()
+                total = int(time) - start_time + 1
+                answer[func] += total 
+                if stack:
+                    answer[stack[-1][0]] -= total 
+        return answer 
+```
+
+
+
+
+
+
+
+### 735. Asteroid Collision
+
+https://leetcode.com/problems/asteroid-collision/
+
+#### Solution-did by me
+
+下次别用flag
+
+```python
+class Solution:
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        output = []
+        
+        for asteroid in asteroids:
+            if asteroid>0:
+                output.append(asteroid)
+                continue
+            if not output or output[-1]<0:
+                output.append(asteroid)
+            else:
+                flag = 1 # imply the current asteroid is still here
+                while flag and output and output[-1]>0:
+                    if output[-1]<-asteroid:
+                        output.pop()
+                    elif output[-1]==-asteroid:
+                        output.pop()
+                        flag=0
+                    else:
+                        flag=0
+                if flag:
+                    output.append(asteroid)
+                    
+        return output
+```
+
+
+
+
+
+### 880. Decoded String at Index
+
+
+
+之前做过一个很像的，有一个很巧妙的处理
+
+ 
+
+https://leetcode.com/problems/decoded-string-at-index/discuss/156747/C%2B%2BPython-O(N)-Time-O(1)-Space
+
+这个解法太强了，把它逆过来
+
+
+
+
+
+### 726. Number of Atoms
+
+https://leetcode.com/problems/number-of-atoms/
+
+#### Solution-stack
+
+其实就是要想成递归，关键搞清楚递归入口和出口处理
+
+Can be refined 
+
+```python
+class Solution:
+    def countOfAtoms(self, formula: str) -> str:
+        element = ""
+        times = 0
+        stack = [collections.Counter()]
+        
+        # 3 endings
+        # (ABC), (ABC)2, A, A2
+        # time to add to counter:another capital letter, right parenthesis with no digit, digit end with parenthesis before, left parenthesis
+
+        for i, char in enumerate(formula):
+            if char.isdigit(): # a.) before it b.element before it
+                times = times*10+int(char)
+                if i+1>=len(formula) or not formula[i+1].isdigit():# find out if digit end
+                    # if stack[-1]!=0: # b.element before it, A2, A2B, A2(OH),都会被catch到
+                    #     stack[-1][element]+=times
+                    if stack[-1]==0:    
+                    # else: # ) before it
+                        stack.pop() # pop 0 out
+                        sub = stack.pop()
+                        for sub_element in sub:
+                            stack[-1][sub_element]+=sub[sub_element]*times
+                        element=""
+                        times = 0
+            elif char=='(':
+                if element:
+                    if times==0:
+                        stack[-1][element]+=1
+                    else:
+                        stack[-1][element]+=times
+                    element=""
+                    times = 0
+                stack.append(collections.Counter())
+            elif char==')':
+                if element:
+                    if times==0:
+                        stack[-1][element]+=1
+                    else:
+                        stack[-1][element]+=times
+                if i+1>=len(formula) or not formula[i+1].isdigit():
+                    sub = stack.pop()
+                    for sub_element in sub:
+                        stack[-1][sub_element]+=sub[sub_element]
+                else:
+                    stack.append(0)
+                times = 0
+                element = ""
+            elif char.isupper():
+                if element:
+                    if times==0:
+                        stack[-1][element]+=1
+                    else:
+                        stack[-1][element]+=times
+                element = char
+                times = 0
+                        
+            else:
+                element+=char
+
+        if element:
+            if times==0:
+                stack[-1][element]+=1
+            else:
+                stack[-1][element]+=times        
+        finalCounter = stack[0]
+        for i in range(1, len(stack)):
+            finalCounter+=stack[i]
+
+        return "".join([str(key)+ (str(finalCounter[key]) if finalCounter[key]>1 else "") for key in sorted(finalCounter.keys())])
+```
+
+
+
+#### Solution-recursive

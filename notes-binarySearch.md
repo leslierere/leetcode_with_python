@@ -164,7 +164,13 @@ but why????
 
 
 
+### 4. Median of Two Sorted Arrays
 
+https://leetcode.com/problems/median-of-two-sorted-arrays/
+
+#### Solution-worth
+
+https://leetcode.com/problems/median-of-two-sorted-arrays/discuss/2481/Share-my-O(log(min(mn)))-solution-with-explanation
 
 
 
@@ -183,6 +189,38 @@ https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
 ### 50. Pow(x, n)
 
 https://leetcode.com/problems/powx-n/description/
+
+#### Solution-worth
+
+https://leetcode.com/problems/powx-n/discuss/19560/Shortest-Python-Guaranteed
+
+recursive&iterative are both worh reviewing
+
+***My explanation of why the iterative one work:***
+
+Let's get rid of the the math theories, instead, just think of the conversion between binary number and its according base 10 number.
+
+First of all, the code below can be regarded as converting a base 10 number to binary number with a few extra step to modify *pow*.
+
+```python
+while n:
+    if n & 1:
+        pow *= x
+    x *= x
+    n >>= 1
+```
+
+To illustrate, say, initially, n=11, pow = 1
+
+11/2 = 5 remains 1, X^1, pow = x^1
+
+5/2 = 2 remains 1, X^2, pow = x^3
+
+2/2 = 1 remains 0, X^4
+
+1/2 = 0 remains 1, X^8, pow = x^11
+
+Now, you may wonder, why do we update *pow* (multiplied by current X) when there is 1 remaining, in other words, when should we add the current power(1, 2, 8) to get a sum that is our final power(11), in other other words, how we can get a sum that is made of the aggregation of different, non-duplicate powers of 2, at this time, just think backwards, how we can convert binary 1011 to its base10 value 11, and here comes the answer.
 
 
 

@@ -565,46 +565,6 @@ Optimal solution是某个位置作为右下角的最大square area， 因为每�
 
 
 
-### 84. Largest Rectangle in Histogram-$
-
-https://leetcode.com/problems/largest-rectangle-in-histogram/
-
-#### Solution1-stack
-
-Ref: https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28917/AC-Python-clean-solution-using-stack-76ms
-
-This can ensure every bar(in other words, at different heights) would be calculated given the two boundaries that are just smaller than it.
-
-细节还蛮容易出错的
-
-```python
-class Solution:
-    def largestRectangleArea(self, heights: List[int]) -> int:
-        res = 0
-        
-        stack = [-1]
-        
-        for i in range(len(heights)):
-            item = heights[i]
-            if len(stack)==1 or item>=heights[stack[-1]]:
-                stack.append(i)
-                continue
-                
-            while len(stack)>1 and item<heights[stack[-1]]:
-                top = stack.pop()
-                area = (i-stack[-1]-1)*heights[top]
-                res = max(res, area)
-            stack.append(i)
-        
-        
-        while len(stack)>1:
-            top = stack.pop()
-            area = (i-stack[-1])*heights[top]
-            res = max(res, area)
-                
-        return res
-```
-
 
 
 ### 85. Maximal Rectangle-$$

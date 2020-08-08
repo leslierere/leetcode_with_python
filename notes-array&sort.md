@@ -282,6 +282,22 @@ https://leetcode.com/problems/game-of-life/
 
 
 
+#### 16. 3Sum Closest
+
+https://leetcode.com/problems/3sum-closest/
+
+* Solution-two pointers
+
+how to think of 2 pointers: https://leetcode.com/problems/3sum-closest/discuss/7871/Python-O(N2)-solution/210643
+
+> I think the insight is something like this - Given an array and a brute force algorithm that seems waaay too slow (n^3), try to think of ways that we could get it to n^2, nlogn, n. If the given array problem is the type of a problem where order/index doesn't matter, always consider sorting the array. Once you've got it sorted, you have a great heuristic to use to iterate over the array.
+>
+> 
+>
+> If you've gotten to that point, and are wondering how to traverse the array, 1, 2, 3+ pointers is always something that should be at the top of your list of things to consider when tackling an unfamiliar problem.
+
+
+
 #### 56. Merge Intervals
 
 https://leetcode.com/problems/merge-intervals/

@@ -648,6 +648,18 @@ class Solution(object):
 
 
 
+### 6. ZigZag Conversion
+
+https://leetcode.com/problems/zigzag-conversion/
+
+#### Solution-$
+
+https://leetcode.com/problems/zigzag-conversion/discuss/3404/Python-O(n)-Solution-in-96ms-(99.43)
+
+太妙了！关键是要找到条件变化的地方
+
+
+
 ## Substring
 
 ### 76. Minimum Window Substring-$
@@ -1566,11 +1578,13 @@ class Solution:
 
 
 
-### 187. Repeated DNA Sequences-$bit看一下
+### 187. Repeated DNA Sequences-$$bit看一下
 
 https://leetcode.com/problems/repeated-dna-sequences/
 
 * Solution -hash table, bit manipulation-又忘了字符串操作@1.02
+
+利用bit的点是，通过bit进行一个key的滑动操作
 
 ```python
 class Solution:# my solution

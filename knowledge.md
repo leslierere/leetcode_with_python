@@ -77,6 +77,10 @@ The following values are considered false in Python:
 
 ### Bit Operation(Python)
 
+位运算的precedence低于加减乘除
+
+**storing negative numbers**, and **two’s complement**. Remember, the leftmost bit of an integer number is called the sign bit. A negative integer number in Java always has its sign bit turned on (i.e. set to 1). A positive integer number always has its sign bit turned off (0). Java uses the two’s complement formula to store negative numbers. <u>To change a number’s sign</u> using two’s complement, ﬂip all the bits, then add 1 (with a byte, for example, that would mean adding 00000001 to the ﬂipped value).
+
 * ~ Binary Ones Complement
 
   flips all the bits
@@ -240,6 +244,44 @@ https://www.liaoxuefeng.com/wiki/1016959663602400/1017496679217440
 
 
 ## Function
+
+### str.isalnum()
+
+https://docs.python.org/3/library/stdtypes.html#str.isalnum
+
+Return `True` if all characters in the string are alphanumeric and there is at least one character, `False` otherwise. A character `c` is alphanumeric if one of the following returns `True`: `c.isalpha()`, `c.isdecimal()`, `c.isdigit()`, or `c.isnumeric()`.
+
+### str.isdecimal()[¶](https://docs.python.org/3/library/stdtypes.html#str.isdecimal)
+
+Return `True` if all characters in the string are decimal characters and there is at least one character, `False` otherwise. Decimal characters are those that can be used to form numbers in base 10, e.g. U+0660, ARABIC-INDIC DIGIT ZERO. Formally a decimal character is a character in the Unicode General Category “Nd”.
+
+### str.isdigit()
+
+Return `True` if all characters in the string are digits and there is at least one character, `False` otherwise. Digits include decimal characters and digits that need special handling, such as the compatibility superscript digits. This covers digits which cannot be used to form numbers in base 10, like the Kharosthi numbers. Formally, a digit is a character that has the property value **Numeric_Type=Digit** or **Numeric_Type=Decimal.**
+
+### str.isnumeric()[¶](https://docs.python.org/3/library/stdtypes.html#str.isnumeric)
+
+Return `True` if all characters in the string are numeric characters, and there is at least one character, `False` otherwise. Numeric characters include digit characters, and all characters that have the Unicode numeric value property, e.g. U+2155, VULGAR FRACTION ONE FIFTH. Formally, numeric characters are those with the property value **Numeric_Type=Digit**, **Numeric_Type=Decimal** or **Numeric_Type=Numeric**.
+
+```python
+In [28]: my_string = '\u00BC'                                                   
+In [29]: my_string.isdecimal()                                                  
+Out[29]: False
+
+In [30]: my_string.isdigit()                                                    
+Out[30]: False
+
+In [31]: my_string.isnumeric()                                                  
+Out[31]: True
+```
+
+
+
+### str.isalpha()
+
+Return `True` if all characters in the string are alphabetic and there is at least one character, `False` otherwise. Alphabetic characters are those characters defined in the Unicode character database as “Letter”, i.e., those with general category property being one of “Lm”, “Lt”, “Lu”, “Ll”, or “Lo”. Note that this is different from the “Alphabetic” property defined in the Unicode Standard.
+
+
 
 ### split()
 
