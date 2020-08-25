@@ -270,6 +270,31 @@ https://www.youtube.com/watch?v=Tuij96VBdu8
 
 #### Solution-dfs-worth trying
 
+did@8.9, 不过这个存level的方法，用dfs，bfs都行
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        dic = collections.defaultdict(list)
+        self.dfs(root, 0, dic)
+        return dic.values()      
+        
+    def dfs(self, node, level, dic):
+        if not node:
+            return 
+        dic[level].append(node.val)
+        self.dfs(node.left, level+1, dic)
+        self.dfs(node.right, level+1, dic)
+```
+
+
+
 
 
 ### 100. Same Tree
@@ -277,6 +302,44 @@ https://www.youtube.com/watch?v=Tuij96VBdu8
 https://leetcode.com/problems/same-tree/
 
 #### Solution-iterative-32ms
+
+did@8.9
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+        if not p and not q:
+            return True
+        elif not p or not q:
+            return False
+        
+        stack = [(p, q)]
+        
+        while stack:
+            p, q = stack.pop()
+            if p.val!=q.val:
+                return False
+            
+            if p.right and q.right:
+                stack.append((p.right, q.right))
+            elif p.right or q.right:
+                return False
+            
+            if p.left and q.left:
+                stack.append((p.left, q.left))
+            elif p.left or q.left:
+                return False
+            
+        return True
+```
+
+
 
 #### Solution-recursive-easy
 
@@ -366,6 +429,20 @@ https://leetcode.com/problems/invert-binary-tree/description/
 #### Solution-recursive
 
 ```python
+# did at 2020.8.10
+
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+       
+        if not root:
+            return None
+        reverted = TreeNode(root.val)
+        reverted.left = self.invertTree(root.right)
+        reverted.right = self.invertTree(root.left)
+        
+        return reverted
+        
+        
 # by me, 28ms
 class Solution:
     def invertTree(self, root: TreeNode) -> TreeNode:
@@ -374,14 +451,7 @@ class Solution:
             self.invertTree(root.left)
             self.invertTree(root.right)
         return root
-# 24ms
-class Solution:
-    def invertTree(self, root: TreeNode) -> TreeNode:
-        if root:
-            root.right, root.left = root.left, root.right
-            self.invertTree(root.left)
-            self.invertTree(root.right)
-            return root
+
 ```
 
 
@@ -394,7 +464,9 @@ Ref: https://leetcode.com/problems/binary-tree-paths/discuss/68272/Python-soluti
 
 #### Solution-bfs, iterative, queue-下次把字符串加进去
 
-#### Solution-dfs, recursive, worth doing
+#### Solution-dfs, recursive
+
+did@20.8.10
 
 ```python
 # Definition for a binary tree node.
@@ -403,60 +475,136 @@ Ref: https://leetcode.com/problems/binary-tree-paths/discuss/68272/Python-soluti
 #         self.val = x
 #         self.left = None
 #         self.right = None
-
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
 class Solution:
     def binaryTreePaths(self, root: TreeNode) -> List[str]:
-        res = []
-        self.helper(root, "", res)
-        return res
+        if not root:
+            return []
         
-        
-    def helper(self, node, path, res):
-        if not node:
+        result = []
+        self.helper(root, "", result)
+                
+        return result
+    
+    def helper(self, node, path, result):
+        path+=str(node.val)
+        if not node.left and not node.right:
+            result.append(path)
             return
-        if node.left and node.right:
-            self.helper(node.left, path+str(node.val)+"->", res)
-            self.helper(node.right, path+str(node.val)+"->", res)
-        elif node.left:
-            self.helper(node.left, path+str(node.val)+"->", res)
-        elif node.right:
-            self.helper(node.right, path+str(node.val)+"->", res)
-        else:
-            res.append(path+str(node.val))
+        if node.right:
+            self.helper(node.right, path+"->", result)
+        if node.left:
+            self.helper(node.left, path+"->", result)
 ```
 
 
 
 #### Solution-dfs, iterative, stack, worth doing
 
+did@20.8.10
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def binaryTreePaths(self, root: TreeNode) -> List[str]:
+        if not root:
+            return []
+        
+        result = []
+        stack = [(root, "")]
+        
+        while stack:
+            node, path = stack.pop()
+            path+=str(node.val)
+            if node.right:
+                stack.append((node.right, path+"->"))
+            if node.left:
+                stack.append((node.left, path+"->"))
+            if not node.left and not node.right:
+                result.append(path)
+                
+        return result
+```
 
 
-### 112. Path Sum-iterative$
+
+### 112. Path Sum
 
 https://leetcode.com/problems/path-sum/description/
 
-#### Solution-dfs, recursive, 做出来了
+#### Solution-dfs, recursive
+
+did@20.8.11
 
 ```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
 class Solution:
-    def hasPathSum(self, root: TreeNode, sum: int) -> bool:
+    def hasPathSum(self, root: TreeNode, sums: int) -> bool:
         if not root:
             return False
+        return self.helper(root, sums-root.val)
         
-        return self.dfs(root, 0, sum)
-
+    def helper(self, node, subSum):
+        if not node.left and not node.right:
+            return subSum==0
         
-    def dfs(self, node, agg, sum):
-        if node:
-            if not node.left and not node.right and agg+node.val==sum:
-                return True
-            agg += node.val
-            return self.dfs(node.left, agg, sum) or self.dfs(node.right, agg, sum)
+        if node.left and self.helper(node.left, subSum-node.left.val):
+            return True
+        if node.right and self.helper(node.right, subSum-node.right.val):
+            return True
 ```
 
 
 
 #### Solution-dfs, iterative, stack, worth doing@1.10
+
+did@20.8.11
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def hasPathSum(self, root: TreeNode, sums: int) -> bool:
+        if not root:
+            return False
+        
+        stack = [(root, root.val)]
+        
+        while stack:
+            node, subSum = stack.pop()
+            
+            if not node.left and not node.right:
+                if subSum==sums:
+                    return True
+            if node.left:
+                stack.append((node.left, subSum+node.left.val))
+            if node.right:
+                stack.append((node.right, subSum+node.right.val))
+                
+                
+        return False
+```
+
+
 
 #### Solution-bfs, iterative, queue，worth doing @1.10
 
@@ -486,11 +634,11 @@ class Solution:
         return res
 ```
 
+@20.8.11其实对于这题bfs，dfs都差不多啦
 
+#### Solution-dfs, iterative, stack, did@1.9, 4.5
 
-#### Solution-dfs, iterative, stack, worth, did@1.9, 4.5
-
-#### solution-bfs, iterative, queue，worth doing, did@4.5
+#### solution-bfs, iterative, queue，did@4.5
 
 
 
@@ -502,9 +650,11 @@ https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 
 #### Solution-dfs, recursive, 做出来了
 
-#### Solution-dfs, iterative, stack, need speed up, did@1.10@4.5
+@20.8.11其实对于这题bfs，dfs都差不多啦
 
-#### solution-bfs, iterative, queue, worth doing 
+#### Solution-dfs, iterative, stack, did@1.10@4.5
+
+#### solution-bfs, iterative, queue
 
 
 
@@ -543,47 +693,46 @@ class Solution:
 
 
 
-#### Solution-dfs, stack, did@4.5
+#### Solution-dfs, stack, did@20.8.13
 
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
 class Solution:
     def longestConsecutive(self, root: TreeNode) -> int:
         if not root:
             return 0
         
-        stack = []
-        stack.append((root, 1))
-        res = 1
+        stack = [(root, 1)]
+        maxLength = 1
         
         while stack:
             node, length = stack.pop()
-            if not node.left and not node.right:
-                res = max(res, length)
-                continue
-            if node.right:
-                if node.val+1==node.right.val:
-                    stack.append((node.right, length+1))
-                else:
-                    res = max(res, length)
-                    stack.append((node.right, 1))
+            
             if node.left:
-                if node.val+1==node.left.val:
+                if node.left.val==node.val+1:
                     stack.append((node.left, length+1))
+                    maxLength = max(maxLength, length+1)
                 else:
-                    res = max(res, length)
                     stack.append((node.left, 1))
                     
-        return res
+            if node.right:
+                if node.right.val==node.val+1:
+                    stack.append((node.right, length+1))
+                    maxLength = max(maxLength, length+1)
+                else:
+                    stack.append((node.right, 1))
+                    
+        return maxLength
 ```
 
-#### solution-bfs, iterative, queue，worth doing, did@1.10
+#### solution-bfs, iterative, queue, did@1.10
+
+@20.8.11其实对于这题bfs，dfs都差不多啦
 
 ```python
 class Solution:
@@ -624,9 +773,9 @@ class Solution:
 
 https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
 
-#### Solution-dfs, recursive, 没做
+#### Solution-dfs, recursive, 没必要
 
-#### Solution-dfs, iterative, stack, did@4.5
+#### Solution-dfs, iterative, stack,没必要 did@4.5
 
 ```python
 class Solution:
@@ -678,9 +827,29 @@ class Solution:
 
 https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 
-#### Solution-dfs, recursive, 没做
+#### Solution-dfs, recursive, did@20.8.15
 
-#### Solution-dfs, iterative, stack, 没做
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        return self.dfs(root)
+        
+    def dfs(self, node):
+        if not node:
+            return 0
+        
+        return 1+max(self.dfs(node.left), self.dfs(node.right))
+```
+
+
+
+#### Solution-dfs, iterative, stack, did@20.8.15
 
 #### solution-bfs, iterative, queue, 做了
 
@@ -690,7 +859,7 @@ https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 
 https://leetcode.com/problems/balanced-binary-tree/description/
 
-#### Solution-recursive-O(n) worth doing and thinking，把问题分解
+#### Solution-recursive-O(n) 
 
 Ref: http://zxi.mytechroad.com/blog/leetcode/leetcode-110-balanced-binary-tree/
 
@@ -711,9 +880,7 @@ class Solution:
             return 0
         return max(1+self.height(root.left), 1+self.height(root.right))
       
-# based on huahua's, O(logn)
-# 求解高度时一边看左右节点高度是否平衡
-# @1.4 我开始错的原因是balanced进来是拷贝变量，所以需要使用全局变量或者返回
+
 ```
 
 <img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol5t4tqij30xq08qmy5.jpg" alt="image-20200104152112111" style="zoom:30%;" />
@@ -744,9 +911,35 @@ class Solution:
 
 
 
+#### Solution-dfs-dictionary@20.8.15
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        dic = dict()
+        self.dfs(root, dic)
+        return all(dic.values())
+        
+    def dfs(self, node, dic):
+        if not node:
+            return 0
+        
+        left = self.dfs(node.left, dic)
+        right = self.dfs(node.right, dic)
+        dic[node]= abs(left-right)<2
+        return max(left, right)+1
+```
 
 
-### 124. Binary Tree Maximum Path Sum-想一下就好
+
+### 124. Binary Tree Maximum Path Sum
 
 https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 
@@ -814,7 +1007,7 @@ class Solution:
             return node.val
 ```
 
-#### 为啥这样写就会错？？？
+#### 为啥这样写就会错？？？see comment
 
 ```python
 # Definition for a binary tree node.
@@ -840,6 +1033,7 @@ class Solution:
             if node.right and node.left:
                 # left = self.helper(node.left)
                 # right = self.helper(node.right)
+                # as here, if self.helper(node.left)!=node.val, the program doesn't bother to analyze the right side, so it will miss some nodes
                 if self.helper(node.left)!=node.val or node.val!= self.helper(node.right):
                     return None
 
@@ -887,7 +1081,7 @@ class Solution:
 
 
 
-### 337. House Robber III-@
+### 337. House Robber III
 
 https://leetcode.com/problems/house-robber-iii/description/
 
@@ -909,7 +1103,7 @@ https://leetcode.com/problems/binary-tree-level-order-traversal-ii/
 
 #### Solution-bfs，和103差不多
 
-#### Solution-dfs, 思想和366一样, worth@1.13
+#### Solution-dfs, 思想和366一样, @1.13
 
 Ref: https://leetcode.com/problems/binary-tree-level-order-traversal-ii/discuss/34978/Python-solutions-(dfs-recursively-dfs%2Bstack-bfs%2Bqueue).
 
@@ -982,7 +1176,7 @@ class Solution:
 
 
 
-### 199. Binary Tree Right Side View-$想一下就好
+### 199. Binary Tree Right Side View-想一下就好
 
 https://leetcode.com/problems/binary-tree-right-side-view/description/
 
@@ -1035,45 +1229,13 @@ class Solution:
 
 
 
-### 98. Validate Binary Search Tree-$
+### 98. Validate Binary Search Tree-$$
 
 https://leetcode.com/problems/validate-binary-search-tree/
 
-#### Solution-inorder
-
-```python
-class Solution:
-    def isValidBST(self, node: TreeNode) -> bool:
-        if not node:
-            return True
-        return self.helper(node, float('-inf')) != float("inf")
-        
-        
-    def helper(self, node, flag):
-        if node:
-            if node.left:
-                cur = self.helper(node.left, flag)
-                if not cur >flag:
-                    return float("inf")
-                else:
-                    flag = cur
-                    
-            if not node.val> flag:
-                return float("inf")
-            flag = node.val
-            
-            if node.right:
-                cur = self.helper(node.right, flag)
-                if not cur >flag:
-                    return float("inf")
-                else:
-                    flag = cur
-            return flag
-```
 
 
-
-#### Solution-dfs, did@1.13@4.10
+#### Solution-dfs, did@1.13@4.10，下面那个比较好
 
 ```python
 class Solution:
@@ -1169,7 +1331,7 @@ Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tre
 
 
 
-### 236. Lowest Common Ancestor of a Binary Tree-$
+### 236. Lowest Common Ancestor of a Binary Tree-$$
 
 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
@@ -1181,7 +1343,7 @@ Ref: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/discu
 
 Ref: https://leetcode.wang/leetcode-236-Lowest-Common-Ancestor-of-a-Binary-Tree.html
 
-
+@20.8.19, 感觉很奇怪。。。
 
 
 
@@ -1253,7 +1415,7 @@ Ref: https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/dis
 
 #### Solution-厉害！！**worth doing and thinking**
 
-@1.13, 4.2还是想不到, 其实是inorder traversal的思想
+@1.13, 4.2, 8.20还是想不到, 其实是inorder traversal的思想
 
 Ref: https://leetcode.wang/leetcode-109-Convert-Sorted-List-to-Binary-Search-Tree.html
 
@@ -1336,7 +1498,7 @@ class Solution:
 
 #### Solution-inorder traversal, recursive
 
-#### Solution-Follow up:worth@1.13
+#### Solution-Follow up:worth@1.13, 8.20
 
 What if the BST is modified (insert/delete operations) often and you need to find the kth smallest frequently? How would you optimize the kthSmallest routine?
 
@@ -1348,7 +1510,7 @@ Ref: https://leetcode.com/articles/kth-smallest-element-in-a-bst/
 
 
 
-1.6
+
 
 ### 297. Serialize and Deserialize Binary Tree-$$
 
@@ -1457,6 +1619,87 @@ class Codec:
 
 #### Solution-level order/bfs-**worth doing and thinking**，did@1.13
 
+did@20.8.22, 我觉得我这个好，不要额外弄一个列表，但是root的处理emmm
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        if not root:
+            return ""
+        queue = collections.deque()
+        queue.append(root)
+        output = ""
+        
+        while queue:
+            node = queue.popleft()
+            if node:
+                output+=str(node.val)
+                queue.append(node.left)
+                queue.append(node.right)
+            else:
+                output+='*'
+            output+=','
+            
+            
+        return output
+        
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        if data=='':
+            return None
+        firstComma = data.find(",")
+        queue = collections.deque()
+        root = TreeNode(int(data[:firstComma]))
+        queue.append(root)
+        values = []
+        value = ""
+        
+        for char in data[firstComma+1:]:
+            
+            if char==',':
+                values.append(value)
+                value=""
+                
+                if len(values)==2:
+                    node = queue.popleft()
+                    if values[0]!="*":
+                        node.left = TreeNode(int(values[0]))
+                        queue.append(node.left)
+                    if values[1]!="*":
+                        node.right = TreeNode(int(values[1]))
+                        queue.append(node.right)
+                    values.clear()
+                            
+            else:
+                value+=char
+                
+        return root
+                
+        
+
+# Your Codec object will be instantiated and called as such:
+# codec = Codec()
+# codec.deserialize(codec.serialize(root))
+```
+
 
 
 
@@ -1466,6 +1709,50 @@ class Codec:
 https://leetcode.com/problems/inorder-successor-in-bst/
 
 #### Solution-iterative-worth doing and thinking，利用好bst的特性，但还是可以尝试常规的办法
+
+@20.8.20, 但做复杂了，可以先看看，仔细想想step2和1的关系
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderSuccessor(self, root: 'TreeNode', p: 'TreeNode') -> 'TreeNode':
+        if not root:
+            return None
+        #step 1
+        parent = None # we only record its parent if it is the left child
+        while root.val!=p.val:
+            if root.val<p.val:
+                root = root.right
+            else:
+                parent = root
+                root = root.left
+                
+        # step 2        
+        if root.right:
+            root = root.right
+            stack = []
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            return root
+                
+            
+        elif parent:
+            return parent
+        else:
+            return None
+```
+
+
+
+
 
 Ref: https://leetcode.com/problems/inorder-successor-in-bst/discuss/72656/JavaPython-solution-O(h)-time-and-O(1)-space-iterative
 
@@ -1516,6 +1803,8 @@ class Solution:
 ### 270. Closest Binary Search Tree Value
 
 https://leetcode.com/problems/closest-binary-search-tree-value/description/
+
+@20.8.22 you should make us of the properties of BST
 
 #### Solution-inorder, iterative-**worth doing and thinking**
 
@@ -1644,7 +1933,7 @@ Ref: https://leetcode.com/problems/closest-binary-search-tree-value-ii/discuss/7
 
 https://leetcode.com/problems/recover-binary-search-tree/
 
-* solution- inorder- **worth doing and thinking**
+#### solution- inorder
 
 主要是得分两种情况, ref: https://leetcode.wang/leetcode-99-Recover-Binary-Search-Tree.html
 
@@ -1666,7 +1955,7 @@ https://leetcode.com/problems/recover-binary-search-tree/
 
 
 
-* Solution-morris!!!
+#### Solution-morris!!!
 
 
 
@@ -1674,7 +1963,7 @@ https://leetcode.com/problems/recover-binary-search-tree/
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
 
-* solution-dfs-recursive-**worth doing and thinking**, 这个人的写法感觉抓到了关键
+#### solution-dfs-recursive-**worth doing and thinking**, 这个人的写法感觉抓到了关键-$$
 
 Ref: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/discuss/37715/Python-solutions-(Recursively-BFS%2Bqueue-DFS%2Bstack)
 
@@ -1686,47 +1975,67 @@ def connect1(self, root):
             root.right.next = root.next.left#这个是关键
         self.connect(root.left)
         self.connect(root.right)
+        
 ```
 
-by myself@1.21
+by myself@1.21, 8.22
 
 dfs向下伸时，左儿子指到右儿子，看看爸爸有没有右兄弟，如果有，右儿子指到爸爸兄弟的左儿子
 
 ```python
 class Solution:
-    def connect(self, root: 'Node') -> 'Node':
-        if not root or not root.left:
-            return root
-        root.left.next = root.right
-        if root.next:
-            root.right.next = root.next.left
-        self.connect(root.left)
-        self.connect(root.right)
-        return root
+    def connect(self, node: 'Node') -> 'Node':
+        if node and node.left:
+            node.left.next = node.right
+            if node.next:
+                node.right.next = node.next.left
+            self.connect(node.left)
+            self.connect(node.right)
+            
+        return node
 ```
 
 
 
-* Solution - dfs - stack
-* Solution - bfs
+#### Solution - dfs - stack
+
+#### Solution - bfs
 
 
 
-### 117. Populating Next Right Pointers in Each Node II-$
+### 117. Populating Next Right Pointers in Each Node II-$$
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/description/
 
-* Solution-bfs/level order, done
+#### Solution-bfs/level order, done
 
 就用普通的level order还是简单的，但这样空间复杂度是O(N)
 
-另一种：https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/discuss/37824/AC-Python-O(1)-space-solution-12-lines-and-easy-to-understand
+另一种, 看下面的更好理解：https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/discuss/37824/AC-Python-O(1)-space-solution-12-lines-and-easy-to-understand
+
+```python
+def connect(self, node):
+    tail = dummy = TreeLinkNode(0)
+    while node:
+        tail.next = node.left#dummy.next = node.left
+        if tail.next:#如果有左崽子
+            tail = tail.next#tail变成左崽子
+        tail.next = node.right#如果没有左崽子，dummy.next = node.right
+        if tail.next:#如果有右崽子
+            tail = tail.next#tail变成右崽子
+        node = node.next#在本层移动
+        if not node:
+            tail = dummy
+            node = dummy.next#崽子层最左边一个
+```
 
 
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/discuss/37811/Simple-solution-using-constant-space
 
 这个人写的比较好理解，但其实tempChild不需要每次都重建
+
+@20.8.23，就是如果我当层有next，我就帮下面的继续连
 
 ```python
 public class Solution {
@@ -1748,7 +2057,7 @@ public class Solution {
 
 
 
-* Solution-recursive-看看别人的
+#### Solution-recursive-看看别人的
 
 
 
@@ -1762,17 +2071,19 @@ public class Solution {
 
 https://leetcode.com/problems/binary-tree-vertical-order-traversal/description/
 
-* Solution-hash table, **worth thinking and doing**, 很巧妙
+#### Solution-hash table, 
+
+**worth thinking and doing**, 很巧妙
 
 https://leetcode.com/problems/binary-tree-vertical-order-traversal/discuss/76424/Python-solution
 
 
 
-### 95. Unique Binary Search Trees II-$
+### 95. Unique Binary Search Trees II-$$
 
 https://leetcode.com/problems/unique-binary-search-trees-ii/
 
-* Solution-recursive, **worth thinking and doing**-did@4.17
+#### Solution-recursive, **worth thinking and doing**-did@4.17
 
 Ref: https://leetcode.wang/leetCode-95-Unique-Binary-Search-TreesII.html
 
@@ -1822,7 +2133,7 @@ class Solution:
 
 
 
-* Solution-dynamic programming-太强了-**worth doing and thinking**-$
+#### Solution-dynamic programming-太强了-**worth doing and thinking**-$
 
 Ref: https://leetcode.com/problems/unique-binary-search-trees-ii/discuss/31493/Java-Solution-with-DP
 
