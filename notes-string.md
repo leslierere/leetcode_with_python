@@ -20,7 +20,7 @@ https://leetcode.com/problems/longest-common-prefix/
 
 
 
-### 58. Length of Last Word
+### 58. Length of Last Word-unnecesarry
 
 https://leetcode.com/problems/length-of-last-word/
 
@@ -31,6 +31,16 @@ https://leetcode.com/problems/length-of-last-word/
 https://leetcode.com/problems/first-unique-character-in-a-string/
 
 用collections.Counter计数较快
+
+```python
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        c = Counter(s)
+        for i, ch in enumerate(s):
+            if c[ch] == 1:
+                return i
+        return -1
+```
 
 
 
@@ -51,7 +61,7 @@ def canConstruct(self, ransomNote, magazine):
 
 
 
-### 344. Reverse String
+### 344. Reverse String-easy
 
 https://leetcode.com/problems/reverse-string/
 
@@ -63,11 +73,7 @@ https://leetcode.com/problems/reverse-string/
 
 https://leetcode.com/problems/reverse-words-in-a-string/
 
-#### solution
 
-Ref: https://leetcode.com/problems/reverse-words-in-a-string/discuss/47720/Clean-Java-two-pointers-solution-(no-trim(-)-no-split(-)-no-StringBuilder)
-
-尝试O(1) space-not done
 
 
 
@@ -77,9 +83,9 @@ https://leetcode.com/problems/reverse-words-in-a-string-ii/
 
 
 
-### 345. Reverse Vowels of a String
+### 205. Isomorphic Strings
 
-https://leetcode.com/problems/reverse-vowels-of-a-string/
+https://leetcode.com/problems/isomorphic-strings/
 
 #### Solution
 
@@ -130,7 +136,7 @@ Ref: https://leetcode.com/problems/word-pattern/discuss/73433/Short-in-Python
 
 ```python
 def wordPattern(self, pattern, str):
-    f = lambda s: map({}.setdefault, s, range(len(s)))
+    f = lambda s: map(dict.setdefault, s, range(len(s)))
     return f(pattern) == f(str.split())
 ```
 
@@ -149,7 +155,7 @@ def f(sequence):
 
 
 
-### 242.Valid Anagram
+### 242.Valid Anagram-easy
 
 #### Solution-Counter()
 
@@ -167,6 +173,8 @@ https://leetcode.com/problems/group-anagrams/
 
 https://leetcode.com/problems/group-shifted-strings/
 
+想想怎么解决一个字母的时候，比如这里对第一个字母同样的操作对key的一一对应没有影响
+
 #### Solution
 
 [Ref](https://leetcode.com/problems/group-shifted-strings/discuss/67466/1-4-lines-Ruby-and-Python): 巧妙解决了只有一个字母的时候的情况
@@ -182,8 +190,6 @@ def groupStrings(self, strings):
 
 
 
-
-8.22
 
 ### 87. Scramble String-$
 
@@ -203,7 +209,7 @@ class Solution:
         
         if s1 ==s2:
             return True
-        elif sorted(s1)!=sorted(s2):
+        elif sorted(s1)!=sorted(s2):# an important step to prevent more recursions
             return False
         else:
             for i in range(len(s1)-1):  
@@ -218,7 +224,7 @@ class Solution:
 
 
 
-#### Solution-DP
+#### Solution-DP-$$
 
 Ref: https://leetcode.wang/leetCode-87-Scramble-String.html
 
@@ -226,7 +232,7 @@ Ref: https://leetcode.wang/leetCode-87-Scramble-String.html
 
 
 
-8.26
+
 
 ### 161. One Edit Distance-看看想想
 
@@ -236,24 +242,30 @@ https://leetcode.com/problems/one-edit-distance/
 
 感觉这个更好吧，切分较少
 
-Ref: https://leetcode.com/problems/one-edit-distance/discuss/50108/C%2B%2B-DP
+Ref: https://leetcode.com/problems/one-edit-distance/discuss/50095/Python-concise-solution-with-comments.
 
-```c++
-bool isOneEditDistance(string s, string t) {
-    for(int i = 0; i < s.size() && i < t.size(); ++i)
-        if(s[i] != t[i])
-            return s.substr(i) == t.substr(i+1) || s.substr(i+1) == t.substr(i) || s.substr(i+1) == t.substr(i+1);
-    return abs(int(s.size()) - int(t.size())) == 1;
-}
+```python
+def isOneEditDistance(self, s, t):
+    if s == t:
+        return False
+    l1, l2 = len(s), len(t)
+    if l1 > l2: # force s no longer than t
+        return self.isOneEditDistance(t, s)
+    if l2 - l1 > 1:
+        return False
+    for i in xrange(len(s)):
+        if s[i] != t[i]:
+            if l1 == l2:
+                s = s[:i]+t[i]+s[i+1:]  # replacement
+            else:
+                s = s[:i]+t[i]+s[i:]  # insertion
+            break
+    return s == t or s == t[:-1]
 ```
 
 
 
 
-
-### 38. Count and Say
-
-https://leetcode.com/problems/count-and-say/
 
 
 
@@ -299,6 +311,40 @@ class Solution:
 
 
 
+did@20.9.1
+
+```python
+class Solution:
+    def rearrangeString(self, s: str, k: int) -> str:
+        if k==0:
+            return s
+        
+        counter = collections.Counter(s)
+        lis = [(-counter[key], key) for key in counter] 
+        heapq.heapify(lis)
+        output = ""
+        backlis = []
+        heapq.heapify(backlis)
+        
+        while lis: # s*logk
+            for _ in range(k):
+                if not lis:
+                    if backlis:
+                        return ""
+                    else:
+                        return output
+                value, letter = heapq.heappop(lis)
+                output+=letter
+                if value+1<0:
+                    heapq.heappush(backlis, (value+1,letter))
+            while backlis:
+                heapq.heappush(lis, heapq.heappop(backlis))
+                
+                
+        return output
+        
+```
+
 
 
 
@@ -311,7 +357,45 @@ https://leetcode.com/problems/remove-duplicate-letters/
 
 Ref: https://leetcode.com/problems/remove-duplicate-letters/discuss/76769/Java-solution-using-Stack-with-comments
 
+did@20.9.2
 
+```python
+class Solution:
+    def removeDuplicateLetters(self, s: str) -> str:
+        if not s:
+            return ""
+        stack = [s[0]]
+        
+        for i in range(1, len(s)):
+            char = s[i]
+            
+            if char not in stack:
+                while stack and ord(stack[-1])>ord(char) and stack[-1] in s[i+1:]:
+                    stack.pop()
+                stack.append(char)
+            
+        return "".join(stack)
+    		
+        
+```
+
+Explanation:
+
+1. why we only consider it if the char not in stack:
+   Between the entering char and the same char currently in the stack, if there is a lower order right after the char in stack, the char will not be in the stack at all, if the right-after one is higher order, pluck the already-in-stack-same char and use the entering char would only make the situation worse
+
+2. when should we pluck out chars in the stack
+
+   * clearly,  if we need pluck out one, there must be one after the current char
+   * also the plucked one should have higher order, as we always want the lower orders to be at the front
+
+3. should we pluck out all the higher order ones in the stack or as long as we moved downward in the stack and  reached one of no higher order we should stop
+
+   * the answer is we would never confront with a situation to skip chars in stack and pluck out chars below them.
+
+     as if the skipped one are skipped, this means their oders are lower, say *the current one is **s***, the *skipped one is  **r***, since there are other chars before ***r*** we need pluck out, this means it is one of higher order than ***s***, say ***t***, and there is another ***t*** after ***s***,  however, the ***s*** would be plucked out when we try to insert ***r***
+
+     
 
 ### 271. Encode and Decode Strings-$
 
@@ -327,11 +411,11 @@ https://leetcode.com/problems/encode-and-decode-strings/discuss/70448/1%2B7-line
 
 8.30
 
-### 168. Excel Sheet Column Title
+### 168. Excel Sheet Column Title-$
 
 https://leetcode.com/problems/excel-sheet-column-title/
 
-可以做一下
+@20.9.5和进制的转换有点像，但是因为起点不是0会有点不一样
 
 
 
@@ -350,6 +434,26 @@ https://leetcode.com/problems/roman-to-integer/
 #### Solution
 
 Ref: https://leetcode.com/problems/roman-to-integer/discuss/6547/Clean-O(n)-c%2B%2B-solution
+
+did@20.8.22
+
+```python
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        output = 0
+        last = ""
+        dic = {"I":1, "V":5, "X":10, "L":50, "C":100, "D":500, "M":1000}
+        dic2 = {"V": "I", "X":"I", "L":"X", "C":"X", "D":"C", "M":"C"}
+        
+        for char in s:
+            
+            output+=dic[char]
+            if char in dic2 and last==dic2[char]:
+                output-=2*dic[last]
+            last = char
+            
+        return output
+```
 
 
 
@@ -498,6 +602,34 @@ https://leetcode.com/problems/read-n-characters-given-read4-ii-call-multiple-tim
 
 虽然题目烂，还是可以再做的
 
+did@20.9.10
+
+```python
+# The read4 API is already defined for you.
+# def read4(buf4: List[str]) -> int:
+
+class Solution:
+    def __init__(self):
+    
+        self.remain = collections.deque([""]*4)
+    
+    def read(self, buf: List[str], n: int) -> int:
+        position = 0
+            
+        while position<n:
+            if self.remain[0]=="":
+                readNo4 = read4(self.remain)
+                if readNo4==0:
+                    break
+            buf[position] = self.remain.popleft()
+            self.remain.append("")
+            position+=1
+            
+        return position
+```
+
+
+
 
 
 ### 68. Text Justification
@@ -562,88 +694,105 @@ class Solution:
 
 https://leetcode.com/problems/valid-number/
 
-#### DFA(Deterministic Finite Automaton)-worth doing and thinking, 下次画图@12.22
+这个很clean：https://leetcode.com/problems/valid-number/discuss/173977/Python-with-simple-explanation
 
-Link: https://leetcode.com/problems/valid-number/discuss/23728/A-simple-solution-in-Python-based-on-DFA
+did@2020.9.12
 
 ```python
-class Solution(object):
-  def isNumber(self, s):
-      """
-      :type s: str
-      :rtype: bool
-      """
-      #define a DFA
-      state = [{}, 
-              {'blank': 1, 'sign': 2, 'digit':3, '.':4}, 
-              {'digit':3, '.':4},
-              {'digit':3, '.':5, 'e':6, 'blank':9},
-              {'digit':5},
-              {'digit':5, 'e':6, 'blank':9},
-              {'sign':7, 'digit':8},
-              {'digit':8},
-              {'digit':8, 'blank':9},
-              {'blank':9}]
-      currentState = 1
-      for c in s:
-          if c >= '0' and c <= '9':
-              c = 'digit'
-          if c == ' ':
-              c = 'blank'
-          if c in ['+', '-']:
-              c = 'sign'
-          if c not in state[currentState].keys():
-              return False
-          currentState = state[currentState][c]
-      if currentState not in [3,5,8,9]:
-          return False
-      return True
-    
-# with comments
-class Solution(object):
-    def isNumber(self, s):
-        """
-        :type s: str
-        :rtype: bool
-        """
-        #define DFA state transition tables
-        states = [{},
-                 # State (1) - initial state (scan ahead thru blanks)
-                 {'blank': 1, 'sign': 2, 'digit':3, '.':4},
-                 # State (2) - found sign (expect digit/dot)
-                 {'digit':3, '.':4},
-                 # State (3) - digit consumer (loop until non-digit)
-                 {'digit':3, '.':5, 'e':6, 'blank':9},
-                 # State (4) - found dot (only a digit is valid)
-                 {'digit':5},
-                 # State (5) - after dot (expect digits, e, or end of valid input)
-                 {'digit':5, 'e':6, 'blank':9},
-                 # State (6) - found 'e' (only a sign or digit valid)
-                 {'sign':7, 'digit':8},
-                 # State (7) - sign after 'e' (only digit)
-                 {'digit':8},
-                 # State (8) - digit after 'e' (expect digits or end of valid input) 
-                 {'digit':8, 'blank':9},
-                 # State (9) - Terminal state (fail if non-blank found)
-                 {'blank':9}]
-        currentState = 1
-        for c in s:
-            # If char c is of a known class set it to the class name
-            if c in '0123456789':
-                c = 'digit'
-            elif c in ' \t\n':
-                c = 'blank'
-            elif c in '+-':
-                c = 'sign'
-            # If char/class is not in our state transition table it is invalid input
-            if c not in states[currentState]:
-                return False
-            # State transition
-            currentState = states[currentState][c]
-        # The only valid terminal states are end on digit, after dot, digit after e, or white space after valid input    
-        if currentState not in [3,5,8,9]:
+class Solution:
+    def isNumber(self, s: str) -> bool:
+        # invalid:
+        # invalid char
+        # dot after e
+        # no digit either before it or after it
+        # two dots
+        # sign not (at the beginning or right after e) or no number after it)
+        # more than 1 e
+        # no number after e
+        # space between numbers
+        # zero
+        hasE = False
+        hasDot = False
+        s = s.strip()
+        if not s:
             return False
+        
+        for i, char in enumerate(s):
+            if not char.isdigit() and char not in "+-.e":
+                return False
+            if char=='e':
+                if hasE:
+                    return False
+                if i+1==len(s) or not (s[i+1].isdigit() or s[i+1] in "+-") or i==0 or not (s[i-1].isdigit() or s[i-1]=='.'):
+                    return False
+                hasE=True
+            elif char=='.':
+                if hasDot or hasE:
+                    return False
+                if not ((i+1<len(s) and (s[i+1].isdigit() or (s[i+1]=='e' and i!=0))) or (i!=0 and (s[i-1].isdigit() or (s[i-1]=='e' and i+1!=len(s))))):
+                    return False
+                hasDot=True
+            elif char in "+-":
+                if i+1==len(s) or not (s[i+1].isdigit() or s[i+1]=='.'):
+                    return False
+                elif i!=0 and s[i-1]!='e':
+                    return False
+            # elif char=='0':
+            #     if i>1 and s[i-1]=='e':
+            #         return False
+                
+        
         return True
+            
+```
+
+
+
+check if the one before one is decimal and the one after is integer
+
+```python
+class Solution:
+    def isNumber(self, s: str) -> bool:
+        # it must be integer after e
+        # return True
+    
+        s = s.strip()
+        if not s:
+            return False
+        parts = s.split("e")
+        if len(parts)>2:
+            return False
+        
+        if not self.isValid(parts[0]):
+            return False
+        elif len(parts)==2 and ("." in parts[1] or not self.isValid(parts[1])):
+            return False
+        
+        return True
+            
+        
+        
+    def isValid(self, s):
+        if not s:
+            return False
+        hasDot = False
+        
+        for i, char in enumerate(s):
+            if not char.isdigit() and char not in "+-.e":
+                return False
+            elif char=='.':
+                if hasDot:
+                    return False
+                if not ((i+1<len(s) and (s[i+1].isdigit())) or (i!=0 and (s[i-1].isdigit()))):# there is no valid number either before it or after it
+                    return False
+                hasDot = True
+            elif char in "+-":
+                if i!=0 or i+1==len(s) or not (s[i+1].isdigit() or s[i+1]=='.'):
+                    return False
+        
+        return True
+        
+        
 ```
 
 
@@ -652,7 +801,7 @@ class Solution(object):
 
 https://leetcode.com/problems/zigzag-conversion/
 
-#### Solution-$
+#### Solution
 
 https://leetcode.com/problems/zigzag-conversion/discuss/3404/Python-O(n)-Solution-in-96ms-(99.43)
 
@@ -813,23 +962,114 @@ class Solution(object):
 
 Ref: https://leetcode.com/problems/substring-with-concatenation-of-all-words/discuss/13699/92-JAVA-O(N)-with-explaination
 
+did@2020.9.14
+
+```python
+class Solution:
+    def findSubstring(self, s: str, words: List[str]) -> List[int]:
+        wordL = len(words[0])
+        noWords = len(words)
+        wholeL = wordL*noWords
+        wordCount = collections.Counter(words)
+        curCount = collections.defaultdict(int)
+        result = []
+        
+        for start in range(wordL):
+            left = right = start
+            forms = 0
+            while left<=len(s)-wholeL:
+                
+                while right<=len(s)-wordL and right-left<wholeL:
+                    word = s[right:right+wordL]
+                    
+                    if word not in wordCount:
+                        right = right+wordL
+                        left = right
+                        curCount.clear()
+                        continue
+                    while curCount[word]==wordCount[word]:
+                        curCount[s[left:left+wordL]]-=1
+                        left+=wordL
+                        
+                    curCount[word]+=1
+                    right+=wordL
+                    
+                if right-left==wholeL:
+                    result.append(left)
+                    
+                curCount[s[left:left+wordL]]-=1
+                left+=wordL
+                right = left
+                curCount.clear()
+                
+                    
+        return result
+```
+
 
 
 ### 3. Longest Substring Without Repeating Characters
 
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
-* solution-会做前面两个就根本不用看这个
+#### Solution
+
+Nice!
+
+```python
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        
+        seen = {}
+        start = end = 0
+        max_length = 0
+        
+        for end in range(len(s)):
+            if s[end] in seen:
+                start = max(seen[s[end]]+1, start)
+                # start = seen[s[end]]+1
+            
+            seen[s[end]] = end
+            max_length = max(max_length, end-start+1)
+        
+        return max_length
+```
+
+
 
 
 
 12.14
 
-### 340. Longest Substring with At Most K Distinct Characters-$
+### 340. Longest Substring with At Most K Distinct Characters
 
 https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/
 
 * solution-会做前面的这个也会做
+
+没有必要像我开始用了一个deque来存当前window的元素，存index就行
+
+```python
+class Solution:
+    def lengthOfLongestSubstringKDistinct(self, s: str, k: int) -> int:
+        l = r = 0
+        charDict = collections.defaultdict(int)
+        
+        res = []
+        
+        while r<len(s):
+            charDict[s[r]]+=1
+            while len(charDict)>k:
+                res.append(r-l)
+                charDict[s[l]]-=1
+                if charDict[s[l]]==0:
+                    charDict.pop(s[l])
+                l+=1
+            r+=1
+        res.append(r-l)
+        
+        return max(res)
+```
 
 
 
@@ -837,9 +1077,13 @@ https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characte
 
 https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
 
-* Solution-Divide and Conquer- worth doing and thinking-12.23还是不会
+* Solution-Divide and Conquer- worth doing and thinking
+
+https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/discuss/87768/4-lines-Python
 
 3.12终于想出来了
+
+> I can just take the first too rare character instead of a rarest.
 
 ```python
 import re
@@ -851,7 +1095,7 @@ class Solution:
         charSet = set(s)
         
         for char in charSet:
-            if s.count(char)<k:
+            if s.count(char)<k: # we can divide as long as we find one not qualified
                 substrings = s.split(char)
                 return max([self.longestSubstring(substring, k) for substring in substrings])
             
