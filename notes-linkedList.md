@@ -6,11 +6,26 @@ https://leetcode.com/problems/reverse-linked-list/
 
 #### Solution-iterative
 
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        node = None
+        while head:
+            temp= head.next#2
+            head.next = node#1->null
+            node = head#node = 1
+            head = temp
+            
+        return node
+```
+
+
+
 #### Solution-recursive-worth
 
 Ref: https://leetcode.wang/leetcode-206-Reverse-Linked-List.html
 
-
+did@20.9.16
 
 
 
@@ -101,7 +116,7 @@ https://leetcode.com/problems/remove-linked-list-elements/
 
 
 
-### 82. Remove Duplicates from Sorted List II
+### 82. Remove Duplicates from Sorted List II-$
 
 https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/description/
 
@@ -179,7 +194,7 @@ class Solution:
 
 #### Solution-iterative, two pointers, 巧妙
 
-
+https://leetcode.com/problems/plus-one-linked-list/discuss/84125/Iterative-Two-Pointers-with-dummy-node-Java-O(n)-time-O(1)-space
 
 ### 2. Add Two Numbers
 
@@ -271,11 +286,13 @@ class Solution:
 
 
 
-### 234. Palindrome Linked List
+### 234. Palindrome Linked List-$
 
 https://leetcode.com/problems/palindrome-linked-list/
 
 #### Solution
+
+修改了之前的列表指向
 
 Ref: https://leetcode.com/problems/palindrome-linked-list/discuss/64500/11-lines-12-with-restore-O(n)-time-O(1)-space
 
@@ -372,11 +389,11 @@ def detectCycle(self, head):
 
 
 
-### 148. Sort List
+### 148. Sort List-$
 
 https://leetcode.com/problems/sort-list/description/
 
-#### Solution-O(logN) space- worth
+#### Solution-O(logN) space
 
 #### Solution-O(NlogN) time, O(1) space- worth, bottom up merge sort, need speed up
 

@@ -559,6 +559,8 @@ char = chr(number)
 
 ### String
 
+String and list both belongs to the [`collections.abc.Sequence`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence) ABC, for more about the ABC, see https://docs.python.org/3/library/stdtypes.html#common-sequence-operations.
+
 #### string.find()
 
 ```python
@@ -575,6 +577,8 @@ str.find(sub[, start[, end]] )
 
   * If substring exists inside the string, it returns the index of first occurence of the substring.
   * If substring doesn't exist inside the string, it returns -1.
+
+Index() has the same function and unlike find(), it can also be used by list. However, it will throw an exception if it doesn't find it.
 
 #### string.count()
 
@@ -698,7 +702,18 @@ Mode:
 
 > Normally, files are opened in *text mode*, that means, you read and write strings from and to the file, which are <u>encoded in a specific encoding</u>. If encoding is not specified, the default is platform dependent (see [`open()`](https://docs.python.org/3/library/functions.html#open)). `'b'` appended to the mode opens the file in *binary mode*: now the data is read and written in the form of bytes objects. This mode should be used for all files that don’t contain text.
 
+It is good practice to use the [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) keyword when dealing with file objects. The advantage is that the file is properly closed after its suite finishes, even if an exception is raised at some point.
 
+```python
+>>> with open('workfile') as f:
+...     read_data = f.read()
+
+>>> # We can check that the file has been automatically closed.
+>>> f.closed
+True
+```
+
+If you’re not using the [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) keyword, then you should call `f.close()` to close the file and immediately free up any system resources used by it.
 
 
 
@@ -1420,6 +1435,48 @@ Ref:  [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycl
 
 
 
+### is
+
+`is None` *is* ok
+
+Also, when you compare a value to `None`, it is recommended (it is Pythonic to do so) that you use the **`is`** operator and not `==`:
+
+```
+if parameter is None:
+   # do something
+```
+
+`is True` *is* **not** ok
+
+Do NOT use the `is` operator for testing other values (numbers, strings, booleans, etc).
+
+
+
+## span lines in Python
+
+n addition to using variables, you can use parentheses to allow your code to span multiple lines (splitting the line with a carriage return (or newline) will result in a syntax error):
+
+```
+def will_eat(hungry, price):
+  if (price > 1.00 and price < 2.00 
+     or hungry == True):
+    return True
+  return False
+```
+
+Note in the above code, parentheses are used to allow the line to be split over more than one line. You can avoid this by using an optional line continuation character '' (the backslash):
+
+```
+def will_eat1(price, hungry):
+  if price == 0.25 or \
+     price == 0.50 or \
+     price == 1.00 and hungry == True:
+    return True
+  return False
+```
+
+The above can be simplified by just returning the result of the expression (skipping the entire if statement) as well.
+
 
 
 ## Math more
@@ -1437,3 +1494,11 @@ In [Cartesian coordinates](https://en.wikipedia.org/wiki/Cartesian_coordinates),
 #### indicator function
 
 In [mathematics](https://en.wikipedia.org/wiki/Mathematics), an **indicator function** or a **characteristic function** is a [function](https://en.wikipedia.org/wiki/Function_(mathematics)) defined on a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) *X* that indicates membership of an [element](https://en.wikipedia.org/wiki/Element_(mathematics)) in a [subset](https://en.wikipedia.org/wiki/Subset) *A* of *X*, having the value 1 for all elements of *A* and the value 0 for all elements of *X* not in *A*. It is usually denoted by a symbol 1 or *I*, sometimes in boldface or [blackboard boldface](https://en.wikipedia.org/wiki/Blackboard_bold), with a subscript specifying the subset.
+
+
+
+## Notion
+
+### Signature
+
+Two functions have the same signature if their input types and order are the same and their output types are the same.
