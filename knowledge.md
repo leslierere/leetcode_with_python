@@ -50,6 +50,12 @@ Assume a BST is defined as follows:
 
 
 
+### Segment Tree
+
+
+
+
+
 ### Return
 
 函数体内部可以用`return`随时返回函数结果；
@@ -405,60 +411,64 @@ python3返回迭代器
 
 ### lambda
 
-Ref: https://www.liaoxuefeng.com/wiki/1016959663602400/1017451447842528
+Say you wanna sort a list of strings by string length, you can first define a function:
 
 ```python
-lambda arguments: expression
+def by_length(animal):
+  return len(animal)
 ```
 
-lambda x: x*x 表示以下代码
+Now you pass `by_length` to `sorted` (YES, functions can be parameters) using the `key` parameter. When you see a parameter being named (as in `key=by_length`), this parameter is called a *keyword* or *named argument*.
 
 ```python
-def f(x):
-    return x * x
+animals = ["Fox", "Snake", "Octopus", "Bear"]
+print(sorted(animals, key=by_length))
 ```
 
-应用场景：sort， [examples from here]([https://www.polarxiong.com/archives/Python-%E4%BD%BF%E7%94%A8lambda%E5%BA%94%E5%AF%B9%E5%90%84%E7%A7%8D%E5%A4%8D%E6%9D%82%E6%83%85%E5%86%B5%E7%9A%84%E6%8E%92%E5%BA%8F-%E5%8C%85%E6%8B%AClist%E5%B5%8C%E5%A5%97dict.html](https://www.polarxiong.com/archives/Python-使用lambda应对各种复杂情况的排序-包括list嵌套dict.html))
+The function `by_length` <u>will be called for every value</u> in the animals' list. The `sorted` function will use the returned values to determine the order.
 
-*key* 形参的值应该是一个函数，它接受一个参数并并返回一个用于排序的键。这种技巧速度很快，因为对于每个输入记录只会调用一次 key 函数。
+Since the `sort` function just calls the built-in `len` function, you can just use that:
 
-一种常见的模式是<u>使用对象的一些索引</u>作为键对复杂对象进行排序，给到匿名函数的变量是列表里面的各个item。例如：
+```
+print(sorted(animals, key=len))
+```
+
+As you may have noticed these sort functions are usually pretty short. There's a way in Python to create/define a function using a special syntax that allows you to write the entire function in one line of code! It's called a **lambda** function. Let's see how to create one.
+
+What if you had a list of numbers as strings and you wanted to sort the list based on the numeric value?
+
+We can create a sort function to help us:
+
+```
+values = ["1", "10", "2", "20"] 
+def by_value(num):
+  return int(num)
+print(sorted(values, key=by_value))
+```
+
+There is a special shorthand notation that's very useful for passing a function into another function called a *lambda* function
 
 ```python
->>> student_tuples = [
-...     ('john', 'A', 15),
-...     ('jane', 'B', 12),
-...     ('dave', 'B', 10),
-... ]
->>> sorted(student_tuples, key=lambda student: student[2])   # sort by age
-[('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+by_value = lambda x: int(x)
+values = ["1", "10", "2", "20"]
+print(sorted(values, key=by_value))
 ```
 
-* dict的value排序, 给到匿名函数的变量是键
+- `lambda` is a keyword
+- `x` is the parameter, it can be any legal variable name
+- `:` separates the input from the output
+- `int(x)` (all the stuff to the right of the `:`) is what value is returned
+
+So everything between `lambda` and the colon is the input and everything after the colon is the output.
+
+Every time you create a function it's visible to the entire module it's created in. However, many of these functions are for "one-time" use and there's no need to keep them around after the sorting has finished. The nice thing about `lambda` functions is that they can be created in-line with the function call:
 
 ```python
-dic = {'c': 1, 'b': 2, 'a': 3}
-print(sorted(dic, key=lambda k: dic[k]))
-# ['c', 'b', 'a']
-print(sorted(dic, key=lambda k: dic[k], reverse=True))
-# ['a', 'b', 'c']
+values = ["1", "10", "2", "20"]
+print(sorted(values, key=lambda x: int(x)))
 ```
 
-* list内嵌套list排序
-
-```python
-lis = [[4, 2, 9], [1, 5, 6], [7, 8, 3]]
-print(sorted(lis, key=lambda k: k[0]))
-# [[1, 5, 6], [4, 2, 9], [7, 8, 3]]
-print(sorted(lis, key=lambda k: k[1]))
-# [[4, 2, 9], [1, 5, 6], [7, 8, 3]]
-print(sorted(lis, key=lambda k: k[2]))
-# [[7, 8, 3], [1, 5, 6], [4, 2, 9]]
-print(sorted(lis, key=lambda k: k[0], reverse=True))
-# [[7, 8, 3], [4, 2, 9], [1, 5, 6]]
-```
-
-
+In this case, since this `lambda` function has no name, it's referred to as an anonymous function. Anonymous functions were first studied in lambda calculus and that's why the keyword `lambda` is used.
 
 
 
@@ -752,7 +762,9 @@ If you’re not using the [`with`](https://docs.python.org/3/reference/compound_
 list.reverse()
 ```
 
+* reversed()
 
+You can also use the global `reversed` function to reverse items; however, it does not modify its parameter. The `reversed` function also does **not** return a list (it returns an *iterator*):
 
 #### tuple
 
@@ -1502,3 +1514,30 @@ In [mathematics](https://en.wikipedia.org/wiki/Mathematics), an **indicator func
 ### Signature
 
 Two functions have the same signature if their input types and order are the same and their output types are the same.
+
+
+
+### Method V.S. function
+
+A method is a function that is owned by an object. The function `len` is NOT a method since you can use it on many types of values (e.g. both lists and strings).
+
+
+
+### programming constructs 
+
+All imperative languages (e.g Java, C, JavaScript, etc) have three programming constructs (things that the language allows you to do):
+
+- Sequential Control Flow
+- Selection
+- Iteration
+
+Since all three determine how the code is run, these programming constructs are also called control flow structures.
+
+
+
+
+
+## Notes
+
+* pay attention to the situation where the input can be null
+* able to explain why you should use a specific data structure in your solution

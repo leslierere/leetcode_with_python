@@ -390,13 +390,29 @@ https://leetcode.com/problems/range-sum-query-2d-immutable/description/
 
 https://leetcode.com/problems/range-sum-query-mutable/description/
 
-#### Solution
+#### Solution-segment tree$
 
 Ref: https://www.youtube.com/watch?v=rYBtViWXYeI
 
 ![image-20200224132016505](https://tva1.sinaimg.cn/large/0082zybpgy1gc83g632exj31c00u07wh.jpg)
 
+#### Solution-array-worth!!!!
 
+* why we need to build from back to front?
+
+  we want to give 2 consecutive nodes one parent, divide by 2 can do this
+
+* how can we certify the length of reserved spaces for parents?
+
+  n/2^1 + (n/2)/2 + (n/4)/2 +.... n/2^i = 1 this can never exceeds n
+
+* also, when we update, we can always just trace back to its parent and add the difference until our root, and we are done then.
+
+* when sum range, consider sum [7, 10]
+
+![image-20210304222855635](https://tva1.sinaimg.cn/large/008eGmZEgy1go8x28nlflj31400u0wq0.jpg)
+
+![image-20210304222910892](https://tva1.sinaimg.cn/large/008eGmZEgy1go8x2dz8o1j30u01hmnhp.jpg)
 
 
 

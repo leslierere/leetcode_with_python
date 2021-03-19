@@ -174,6 +174,30 @@ https://www.youtube.com/watch?v=A6iCX_5xiU4
 # 上面的核心思想
 # 后序遍历的顺序是 左 -> 右 -> 根。
 # 前序遍历的顺序是 根 -> 左 -> 右，左右其实是等价的，所以我们也可以轻松的写出 根 -> 右 -> 左 的代码。
+# preorder: self, left, right
+# postorder: left, right, self
+# reverse of post order: self, right, left
+
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        if root is None:
+            return []
+        
+        stack = [root]
+        result = []
+        while stack:
+            node = stack.pop()
+            result.append(node.val)
+            if node.left: 
+                stack.append(node.left)
+            if node.right:
+                stack.append(node.right)
+                
+        result.reverse()        
+        return result
+
+
+
 # 然后把 根 -> 右 -> 左 逆序，就是 左 -> 右 -> 根，也就是后序遍历了, 而这里res使用deque，这样最后我们就不需要倒叙一遍了
 # my solution based on huahua's
 # 这一面很重要
@@ -187,16 +211,17 @@ class Solution:
         stack = [root]
         
         while stack:
-            top = stack.pop()
-            if top:
-              res.appendleft(top.val)
-                stack.append(top.left)
-                stack.append(top.right)
+            root = stack.pop()
+            res.appendleft(root.val)
+            if root.left:
+                stack.append(root.left)
+            if root.right:
+                stack.append(root.right)
         
         return res
 ```
 
-#### Solution2-iterative-模拟递归
+#### Solution2-iterative-模拟递归, break topology
 
 ```python
 class Solution:
@@ -215,7 +240,42 @@ class Solution:
         return res
 ```
 
+#### Solution3-iterative
 
+Ref: https://leetcode.com/problems/binary-tree-postorder-traversal/discuss/45551/Preorder-Inorder-and-Postorder-Iteratively-Summarization/120145
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        
+        result = []
+        stack = [root]
+        pre = root # tricky, dumb, or None or root?
+        
+        while stack:
+            top = stack[-1]
+            if (not top.left and not top.right) or top.right==pre or top.left==pre: # Tricky, you may wonder, for node with both left and right children, what if its left node was just added to result, actually we don't need worry about this, as when the pre is your left node, the node currently under inspection is not you.
+
+                pre = stack.pop()
+                result.append(pre.val)
+            else:   
+                if top.right:
+                    stack.append(top.right)
+                if top.left:
+                    stack.append(top.left)
+                
+        return result
+```
+
+![image-20210303144305495](https://tva1.sinaimg.cn/large/e6c9d24ely1go7dz8lhykj21hf0u07ag.jpg)
 
 #### Solution-recursive-worth doing
 
@@ -244,16 +304,23 @@ class Solution:
 
 
 
+
+
 ### 小结
 
 Pre, in, post的subject都是指当前node啦
 
-基本上preorder，inorder， postorder traversal就是用recursive或者iterative(模拟递归)来做
+基本上preorder，inorder， postorder traversal的dfs就是用两种方法
+
+* recursive
+* iterative
+  * 普通stack：其实就是想清楚先进后出的关系
+  * 模拟递归
 
 * Dfs
-  * preorder traversal (self-left-right): stack(a. 模拟递归，b.**左右子节点同时入栈**)
+  * preorder traversal (self-left-right)
   * inorder traversal (left-self-right): stack
-  * Postorder traversal (left-right-self): stack(a. 模拟递归，b.**左右子节点同时入栈**)
+  * Postorder traversal (left-right-self)
 
 * bfs
   * level-order traversal
@@ -859,7 +926,7 @@ class Solution:
 
 https://leetcode.com/problems/balanced-binary-tree/description/
 
-#### Solution-recursive-O(n) 
+#### Solution-recursive-O(n) , 感觉复杂了
 
 Ref: http://zxi.mytechroad.com/blog/leetcode/leetcode-110-balanced-binary-tree/
 
@@ -1231,6 +1298,8 @@ class Solution:
 
 ### 98. Validate Binary Search Tree-$$
 
+You can do 333 instead, they are essentially the same.
+
 https://leetcode.com/problems/validate-binary-search-tree/
 
 
@@ -1335,9 +1404,74 @@ Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tre
 
 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
-* Solution-dfs-**worth thinking and doing**@1.13
+* Solution-dfs-1-**worth thinking and doing**@1.13
 
 Ref: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/discuss/158060/Python-DFS-tm
+
+@21.3.3, by myself
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if not root:
+            return False
+        # Find nothing: return False
+        # Find one: return True
+        # Find both: return the node
+        
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+        
+        # First, we would identify if we find it
+        if left and left!=True:
+            return left
+        if right and right!=True:
+            return right
+        
+        # see if the current one can be the result
+        if left==True and right==True:
+            return root
+        if left and (root==p or root==q):
+            return root
+        if right and (root==p or root==q):
+            return root
+        
+        return left or right or root==p or root==q
+```
+
+
+
+* Solution-recursive2, 感觉这个比较秒
+
+```java
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q ) {
+        return root;
+    } 
+    TreeNode leftCommonAncestor =  lowestCommonAncestor(root.left, p, q); 
+    TreeNode rightCommonAncestor =  lowestCommonAncestor(root.right, p, q); 
+    //在左子树中没有找到，那一定在右子树中
+    if(leftCommonAncestor == null){
+        return rightCommonAncestor;
+    }
+    //在右子树中没有找到，那一定在左子树中
+    if(rightCommonAncestor == null){
+        return leftCommonAncestor;
+    }
+    //不在左子树，也不在右子树，那说明是根节点
+    return root;
+}
+
+```
+
+
 
 * Solution-inorder traversal
 
@@ -1518,7 +1652,7 @@ https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
 
 我觉得这个本质上就是preorder<->treenode, 跟前面一个题类似, **蛮重要的**
 
-#### Solution-preorder-**worth doing and thinking**, need speed up
+#### Solution-preorder-1-**worth doing and thinking**, need speed up
 
 别人快的区别在deserialize时别人用了iter模块，放在下面了
 
@@ -1572,7 +1706,9 @@ class Codec:
         return doit(int(nodeL.pop(0)))
 ```
 
-别人的快的
+#### Solution-preorder-2
+
+别人的快的, 下面我做了一个，但本质上就是手动实现了一个iterator
 
 ```python
 class Codec:
@@ -1614,6 +1750,122 @@ class Codec:
         vals = iter(data.split())
         return build()
 ```
+
+#### Solution-preorder-3
+
+did@21.3.3
+
+```python
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        string = ""
+        if not root:
+            return string
+        
+        stack = [root]
+        while stack:
+            root = stack.pop()
+            if root is not None:
+                string+=str(root.val)+","
+                stack.append(root.right)
+                stack.append(root.left)
+            else:
+                string+="#,"
+            
+        return string
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        :type data: str
+        :rtype: TreeNode
+        """
+        if len(data)==0:
+            return None
+        return self.helper([0], data)
+       
+    def helper(self, position, data):
+        if data[position[0]] == "#":
+            position[0]+=2
+            return None
+        comma = data.find(",", position[0])
+        node = TreeNode(int(data[position[0]: comma]))
+        position[0] = comma+1
+        node.left = self.helper(position, data)
+        node.right = self.helper(position, data)
+        return node
+```
+
+
+
+#### Solution-postorder
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        :type root: TreeNode
+        :rtype: str
+        """
+        if not root:
+            return ""
+        
+        result = []
+        stack = [root]
+        while stack:
+            root = stack.pop()
+            if root is not None:
+                result.append(str(root.val))
+                stack.append(root.left)
+                stack.append(root.right)
+            else:
+                result.append("#")
+            
+        result.reverse()    
+        return " ".join(result)
+                
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        if len(data)==0:
+            return None
+        
+        values = data.split()
+        stack = []
+        for value in values:
+            if value=="#":
+                stack.append(None)
+            else:
+                node = TreeNode(int(value))
+                node.right = stack.pop()
+                node.left = stack.pop()
+                stack.append(node)
+                
+        return stack[0]   
+
+# Your Codec object will be instantiated and called as such:
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
+```
+
+
 
 
 
@@ -2091,7 +2343,7 @@ Ref: https://leetcode.wang/leetCode-95-Unique-Binary-Search-TreesII.html
 
 ```python
 # Definition for a binary tree node.
-# class TreeNode:
+# class TfreeNode:
 #     def __init__(self, x):
 #         self.val = x
 #         self.left = None

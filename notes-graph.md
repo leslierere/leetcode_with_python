@@ -16,6 +16,8 @@ Ref: https://www.cnblogs.com/grandyang/p/5257919.html
 
 class Solution:
     def validTree(self, n: int, edges: List[List[int]]) -> bool:
+        if len(edges)!=n-1: # examine the edge number first
+            return False
         neighbors = {i:[] for i in range(n)}
         visited = [False]*n
         
@@ -45,81 +47,65 @@ class Solution:
 Ref: https://www.cnblogs.com/grandyang/p/5257919.html
 
 ```python
-from collections import deque
 class Solution:
     def validTree(self, n: int, edges: List[List[int]]) -> bool:
-        neighbors = {i:set() for i in range(n)}
-        visited = [True]+[False]*(n-1)
-        queue = deque([0])
+        if len(edges)!=n-1: # examine the edge number first
+            return False
+        nodes = collections.defaultdict(set)
+        for node1, node2 in edges:
+            nodes[node1].add(node2)
+            nodes[node2].add(node1)
         
-        for edge in edges:
-            neighbors[edge[0]].add(edge[1])
-            neighbors[edge[1]].add(edge[0])
-            
+        visited = [0 for _ in range(n)]
+        queue = collections.deque([0])
+        
         while queue:
-            parent = queue.popleft()
-            
-            for node in neighbors[parent]:
-                if visited[node]:
-                    return False
-                visited[node] = True
-                queue.append(node)
-                neighbors[node].remove(parent) # major diff from dfs
+            node = queue.popleft()
+            if visited[node]:
+                return False
+            visited[node] = 1
+            while nodes[node]:
+                neighbor = nodes[node].pop()
+                nodes[neighbor].remove(node)
+                queue.append(neighbor)
                 
         return all(visited)
 ```
 
 
 
-#### Solution-union find-worth-$
+#### Solution-disjoint sets-union find-worth-$$
 
 Ref: https://leetcode.com/problems/graph-valid-tree/discuss/69019/Simple-and-clean-c%2B%2B-solution-with-detailed-explanation.
 
-```c++
-class Solution {
-public:
-    bool validTree(int n, vector<pair<int, int>>& edges) {
-        vector<int> nodes(n,0);
-        for(int i=0; i<n; i++) nodes[i] = i;
-        for(int i=0; i<edges.size(); i++){
-            int f = edges[i].first;
-            int s = edges[i].second;
-            while(nodes[f]!=f) f = nodes[f];
-            while(nodes[s]!=s) s = nodes[s];
-            if(nodes[f] == nodes[s]) return false;
-            nodes[s] = f;
-        }
-        return edges.size() == n-1;
-    }
-};
-```
 
-did@2020.5.29, 我觉得上面这个比较好，一发现一个圈就退出了, 但我的做了path compression比较好
 
 ```python
 class Solution:
     def validTree(self, n: int, edges: List[List[int]]) -> bool:
-        if len(edges)!=n-1:
+        if len(edges)!=n-1: # examine the edge number first
             return False
         
         nodes = [i for i in range(n)]
         
         for node1, node2 in edges:
-            root1 = self.find(node1, nodes)
+            root1 = self.find(node1, nodes) 
             root2 = self.find(node2, nodes)
+            
+            if root1== root2:
+                return False
+            
             nodes[root1] = root2
-
-        for i in range(n):
-            self.find(i, nodes)
             
-        return len(set(nodes))==1
+        return True
             
-    
-    def find(self, position, nodes):
-        if position==nodes[position]:
-            return position
-        nodes[position] = self.find(nodes[position], nodes)
-        return nodes[position]
+            
+    def find(self, node, nodes):# do path compression
+        if node==nodes[node]:
+            return node
+        
+        nodes[node] = self.find(nodes[node], nodes)
+        return nodes[node]
 ```
 
 
@@ -205,7 +191,7 @@ https://leetcode.com/problems/number-of-islands-ii/description/
 
 #### Solution-union find/disjoint sets
 
-@20.6.22 我觉得我做的这个比较好
+@20.6.22 我觉得我做的这个比较好, @21,3,12咋觉得这个也不是很清楚， 看下面的
 
 ```python
 class Solution:
@@ -249,6 +235,40 @@ class Solution:
         rootI,rootJ = islands[i][j]
         islands[i][j] = self.find(islands,rootI,rootJ)
         return islands[i][j]
+```
+
+@21.3.12这个清楚点
+
+```python
+class Solution:
+    def numIslands2(self, m: int, n: int, positions: List[List[int]]) -> List[int]:
+        graph = [[0 for j in range(n)] for i in range(m)]
+        number = 0
+        result = []
+        
+        for i, j in positions:
+            
+            if graph[i][j]==0: # may add node that has been added before
+                number+=1
+                graph[i][j] = (i, j)
+                for neighbor_i, neighbor_j in [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]:
+                    if neighbor_i>=0 and neighbor_i<m and neighbor_j>=0 and neighbor_j<n and graph[neighbor_i][neighbor_j]!=0:
+                        root_i, root_j = self.find(neighbor_i, neighbor_j, graph)
+                        my_root = self.find(i, j, graph)
+                        if my_root != (root_i, root_j):
+                            graph[my_root[0]][my_root[1]] = (root_i, root_j)
+                            number-=1
+
+            result.append(number)
+            
+        return result
+            
+    def find(self, i, j, graph):
+        if graph[i][j] == (i, j):
+            return graph[i][j]
+        neigjbor_i, neighbor_j = graph[i][j]
+        graph[i][j] = self.find(neigjbor_i, neighbor_j, graph)
+        return graph[i][j]
 ```
 
 
@@ -374,9 +394,42 @@ class Solution:
 
 #### Solution-dfs-iterative-worth
 
+did@2021.3.13
+
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val = 0, neighbors = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+"""
+
+class Solution:
+    def cloneGraph(self, node: 'Node') -> 'Node':
+        if node is None:
+            return None
+        
+        stack = [node]
+        visited = dict()
+        visited[node.val] = Node(val = node.val)
+        
+        while stack:
+            node = stack.pop()
+            for neighbor in node.neighbors:
+                if neighbor.val not in visited:
+                    neighbor_cpy = Node(neighbor.val)
+                    visited[neighbor.val] = neighbor_cpy
+                    stack.append(neighbor)
+                visited[node.val].neighbors.append(visited[neighbor.val])
+                    
+        return visited[1]
+                    
+```
 
 
-#### Solution-bfs-iterative
+
+#### Solution-bfs-iterative, too complicated....
 
 by myself@2.15
 
@@ -456,42 +509,47 @@ def cloneGraph1(self, node):
 
 https://leetcode.com/problems/evaluate-division/description/
 
-#### Solution-dfs-recursive-by me
+#### Solution-dfs-@2021.3.14
+
+Pre in dfs is not necessary
 
 ```python
 class Solution:
     def calcEquation(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
-        dic = {}
-        
+        graph = collections.defaultdict(dict)
         for i in range(len(values)):
-            num,deno = equations[i]
-            if num not in dic:
-                dic[num] = {deno:values[i]}
-            else:
-                dic[num][deno] = values[i]
-            if deno not in dic:
-                dic[deno] = {num: 1/values[i]}
-            else:
-                dic[deno][num] = 1/values[i]
+            value = values[i]
+            node1 = equations[i][0]
+            node2 = equations[i][1]
+            
+            graph[node1][node2] = value
+            graph[node2][node1] = 1/value
         
-        res = []
-        for x,y in queries:
-            res.append(self.bfs(x, y, dic, 1.0, set([x])))
-        return res
+        result = []
+        for node1, node2 in queries:
+            result.append(self.dfs(node1, node2, None, graph, set()))
+        return result
+            
         
+    def dfs(self, node, dest, pre, graph, visited):
+        if node not in graph or dest not in graph:
+            return -1
+        if node==dest:
+            return 1
+        if dest in graph[node]:
+            return graph[node][dest]
+        if node in visited:
+            return -1
         
-    def bfs(self, start, end, dic, cur, visited):
-        if start not in dic:
-            return -1.0
-        elif start==end:
-            return cur
-        for i in dic[start]:
-            if i not in visited:
-                visited.add(i)
-                ans = self.bfs(i, end, dic, cur*dic[start][i], visited)
-                if ans!=-1.0:
-                    return ans
-        return -1.0
+        next_val = -1
+        visited.add(node)
+        for neighbor in graph[node]:
+            if neighbor != pre:
+                next_val = self.dfs(neighbor, dest, node, graph, visited)
+                if next_val!=-1:
+                    return next_val * graph[node][neighbor]
+                
+        return next_val
 ```
 
 
@@ -546,7 +604,7 @@ class Solution(object):
 
 
 
-### 310. Minimum Height Trees-$
+### 310. Minimum Height Trees-$$
 
 https://leetcode.com/problems/minimum-height-trees/description/
 
@@ -581,61 +639,6 @@ class Solution:
                 
         return leaves
 ```
-
-
-
-### 149. Max Points on a Line-$$
-
-https://leetcode.com/problems/max-points-on-a-line/
-
-Ref: https://www.youtube.com/watch?v=7FPL7nAi9aM
-
-![image-20200125175557438](https://tva1.sinaimg.cn/large/006tNbRwgy1gb9mtptw7dj31c00u0nfy.jpg)
-
-```python
-# based on huahua's
-class Solution:
-    def maxPoints(self, points: List[List[int]]) -> int:
-        ans = 0
-        
-        
-        for i in range(len(points)):
-            sameP = 1 # first add the point itself
-            otherP = 0 # 局部最优解
-            dic = {}
-            point1 = points[i]
-            for j in range(i+1, len(points)):
-                point2 = points[j]
-                if point1[0]==point2[0] and point1[1]==point2[1]:
-                    sameP+=1
-                else:
-                    slope = self.getSlope(point1, point2)
-                    dic[slope] = dic.get(slope, 0)+1
-                    otherP = max(otherP, dic[slope])
-            ans = max(ans, sameP+otherP)
-            
-        return ans
-    
-    def getSlope(self, i, j):
-        dx = i[0]-j[0]
-        dy = i[1]-j[1]
-        
-        if dx==0:
-            return (i[0], 0)
-        if dy==0:
-            return (0, i[1])
-        
-        d = self.gcd(dx, dy)
-        return (dx//d, dy//d)
-    
-    def gcd(self, x, y):
-        if y==0:
-            return x
-        else:
-            return self.gcd(y, x%y)
-```
-
-
 
 
 
@@ -819,6 +822,8 @@ class WordDictionary:
 https://leetcode.com/problems/word-search-ii/description/
 
 #### Solution-trie, backtrack
+
+@2021.3.18看下面那个就好，但不知道为啥突然变巨慢。。。
 
 @2.16按照自己的思路, 但是就按照下面那个解法，其实并不需要一个visited表，直接在原表上面改后面复原即可
 

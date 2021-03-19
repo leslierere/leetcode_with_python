@@ -1,6 +1,6 @@
 12.19
 
-#### 7.Reverse Integer
+### 7.Reverse Integer
 
 https://leetcode.com/problems/reverse-integer/
 
@@ -17,7 +17,7 @@ class Solution:
         return number
 ```
 
-#### 165. Compare Version Numbers
+### 165. Compare Version Numbers
 
 https://leetcode.com/problems/compare-version-numbers/description/
 
@@ -51,7 +51,7 @@ class Solution:#my solution
 
 
 
-#### 66. Plus One
+### 66. Plus One
 
 https://leetcode.com/problems/plus-one/description/
 
@@ -76,7 +76,7 @@ class Solution:
 
 
 
-#### 8. String to Integer (atoi)
+### 8. String to Integer (atoi)
 
 https://leetcode.com/problems/string-to-integer-atoi/description/
 
@@ -84,7 +84,7 @@ https://leetcode.com/problems/string-to-integer-atoi/description/
 
 
 
-#### 258. Add Digits
+### 258. Add Digits
 
 https://leetcode.com/problems/add-digits/description/
 
@@ -92,7 +92,7 @@ https://leetcode.com/problems/add-digits/description/
 
 
 
-#### 67. Add Binary
+### 67. Add Binary
 
 https://leetcode.com/problems/add-binary/
 
@@ -102,7 +102,7 @@ https://leetcode.com/problems/add-binary/
 
 12.21
 
-#### 43. Multiply Strings
+### 43. Multiply Strings
 
 https://leetcode.com/problems/multiply-strings/description/
 
@@ -112,7 +112,7 @@ Ref: https://leetcode.wang/leetCode-43-Multiply-Strings.html 解法2
 
 
 
-#### 29. Divide Two Integers
+### 29. Divide Two Integers
 
 https://leetcode.com/problems/divide-two-integers/
 
@@ -136,7 +136,7 @@ class Solution:
 
 
 
-#### 365. Water and Jug Problem
+### 365. Water and Jug Problem
 
 https://leetcode.com/problems/water-and-jug-problem/
 
@@ -165,7 +165,7 @@ class Solution:
 
 
 
-#### 204. Count Primes
+### 204. Count Primes
 
 https://leetcode.com/problems/count-primes/description/
 
@@ -197,7 +197,7 @@ class Solution:
 
 
 
-#### 1. Two Sum
+### 1. Two Sum
 
 https://leetcode.com/problems/two-sum/
 
@@ -205,7 +205,7 @@ https://leetcode.com/problems/two-sum/
 
 
 
-#### 15. 3Sum
+### 15. 3Sum
 
 https://leetcode.com/problems/3sum/
 
@@ -217,7 +217,7 @@ Ref: https://leetcode.wang/leetCode-15-3Sum.html
 
 
 
-#### 18. 4Sum
+### 18. 4Sum
 
 https://leetcode.com/problems/4sum/
 
@@ -261,3 +261,60 @@ def findNsum(self, nums, target, N, result, results):
 ```
 
 
+
+### 149. Max Points on a Line-$$
+
+https://leetcode.com/problems/max-points-on-a-line/
+
+Ref: https://www.youtube.com/watch?v=7FPL7nAi9aM
+
+![image-20200125175557438](https://tva1.sinaimg.cn/large/006tNbRwgy1gb9mtptw7dj31c00u0nfy.jpg)
+
+```python
+# based on huahua's
+class Solution:
+    def maxPoints(self, points: List[List[int]]) -> int:
+        ans = 0
+        
+        
+        for i in range(len(points)):
+            sameP = 1 # first add the point itself
+            otherP = 0 # 局部最优解
+            dic = {}
+            point1 = points[i]
+            for j in range(i+1, len(points)):
+                point2 = points[j]
+                if point1[0]==point2[0] and point1[1]==point2[1]:
+                    sameP+=1
+                else:
+                    slope = self.getSlope(point1, point2)
+                    dic[slope] = dic.get(slope, 0)+1
+                    otherP = max(otherP, dic[slope])
+            ans = max(ans, sameP+otherP)
+            
+        return ans
+    
+    def getSlope(self, i, j):
+        dx = i[0]-j[0]
+        dy = i[1]-j[1]
+        
+        if dx==0:
+            return (i[0], 0)
+        if dy==0:
+            return (0, i[1])
+        
+        d = self.gcd(dx, dy)
+        return (dx//d, dy//d)
+    
+    def gcd(self, x, y):
+        if y==0:
+            return x
+        else:
+            return self.gcd(y, x%y)
+```
+
+
+
+
+
+### 
