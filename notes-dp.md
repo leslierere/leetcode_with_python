@@ -934,19 +934,85 @@ Here we don't consider the circumstances where * would be the first char in p.
 
 Ref: https://leetcode.com/problems/regular-expression-matching/discuss/5684/C%2B%2B-O(n)-space-DP
 
-如何定义dp\[i][j], 开始想的是表示starting和ending的地方，但其实这个思路是不对的，想想backtrack时即使回退也是回退到s和p前面都match的index:
 
-> We define `dp[i][j]` to be `true` if `s[0..i)` matches `p[0..j)` and `false` otherwise. 
 
-state equation: 在这里我们相当于只有当前匹配上了我们才看之前的是否匹配上再进行更新，不然就肯定为False，也就是默认值
+@2021.5.19
 
-> 1. `dp[i][j] = dp[i - 1][j - 1]`, if `p[j - 1] != '*' && (s[i - 1] == p[j - 1] || p[j - 1] == '.')`;
-> 2. `dp[i][j] = dp[i][j - 2]`, if `p[j - 1] == '*'` and the pattern repeats for 0 time;
-> 3. `dp[i][j] = dp[i - 1][j] && (s[i - 1] == p[j - 2] || p[j - 2] == '.')`, if `p[j - 1] == '*'` and the pattern repeats for at least 1 time.
+上面当然也是对的思路，但是我觉得不够自然
+
+First let's forget about the fact that we will use dp for the solution.
+Naturally, we would think try to match chars in pattern and string one by one, for string, there is not a lot to think about, as they are all letters, but for the pattern, there are 3 different situations when checking one specific char in pattern and string.
+
+* Char in pattern is plain letter
+
+  The only matching situations lies in, the previous chars in string and the ones in pattern is the same, and the current letter we are checking in pattern should be the same as the one in string.
+
+* Char in pattern is "."
+
+  As long as previous chars in string and pattern match, then the string and pattern so far is matching
+
+* Char in pattern is "*"
+
+  * If the char in pattern, before "\*", say "a",  with "\*" doesn't match the current letter, say "s" in string, the only matching situation is the "\*" will only repeat zero times of the char before it which is "a", and the substring before "a" in pattern should match the substring till "s"(included) in the string
+  * Otherwise, the char in pattern, before "\*", say "a" can match the current letter "a" in string, then for 2 substrings to match, we just need satisfy that the pattern till the "a"(included), will match the substring to "a"(excluded) in string.
+
+Condsider the above 3 situations, we can easily find out every time we rely on previous substring matching situation to duduct the current one, and that's where dp comes to be natural.
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        if len(p)==0 and len(s)==0: 
+            return True
+        if len(p)==0:
+            return False
+        
+        dp = [[False for _ in range(len(s)+1)] for _ in range(len(p)+1)]
+        dp[0][0] = True
+            
+        for i in range(1, len(dp)):
+            for j in range(0, len(dp[0])):
+                char_s = s[j-1] if j-1>=0 else ""
+                char_p = p[i-1]
+                
+                if char_p == "*": 
+                    dp[i][j] = dp[i-2][j] or (p[i-2] in [".", char_s] and dp[i][j-1])
+                elif char_p == ".":
+                    if j-1>=0:
+                        dp[i][j] = dp[i-1][j-1]
+                else:
+                    if j-1>=0:
+                        dp[i][j] = dp[i-1][j-1] and char_s==char_p
+                    
+        return dp[-1][-1]
+```
 
 
 
 #### Solution-recursive-worth
+
+Ref: https://leetcode.com/problems/regular-expression-matching/discuss/5665/My-concise-recursive-and-DP-solutions-with-full-explanation-in-C%2B%2B
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        return self.helper(s, p, 0, 0, {})
+        
+    def helper(self, s, p, i, j, dp):
+        if (i, j) in dp:
+            return dp[(i, j)]
+        if i>=len(s) and j>=len(p):
+            return True
+        if j>=len(p):
+            return False
+        
+        
+        if j<len(p)-1 and p[j+1]=="*":
+            dp[(i, j)] = self.helper(s, p, i, j+2, dp) or (i!=len(s) and p[j] in [".", s[i]] and self.helper(s, p, i+1, j, dp))
+            return dp[(i, j)]
+        else:
+            dp[(i, j)] = i!=len(s) and (s[i]==p[j] or p[j]==".") and self.helper(s, p, i+1, j+1, dp)
+            return dp[(i, j)]
+```
 
 
 

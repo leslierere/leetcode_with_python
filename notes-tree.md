@@ -350,7 +350,7 @@ class Solution:
     def levelOrder(self, root: TreeNode) -> List[List[int]]:
         dic = collections.defaultdict(list)
         self.dfs(root, 0, dic)
-        return dic.values()      
+        return dic.values() # we can just use dic.values here cuz Changed in version 3.7: Dictionary order is guaranteed to be insertion order. See https://docs.python.org/3.7/library/stdtypes.html?highlight=dict%20values#dict.values for more details   
         
     def dfs(self, node, level, dic):
         if not node:

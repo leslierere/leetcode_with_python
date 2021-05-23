@@ -699,6 +699,8 @@ https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
 
 #### Solution-backtrack-常规
 
+相当于dfs
+
 ```python
 class Solution:
     def letterCombinations(self, digits: str) -> List[str]:
@@ -716,6 +718,30 @@ class Solution:
             return
         for char in dic[digits[i]]: # you don't need write index here, which will slow down
             self.helper(i+1, digits, res, dic, path+char)
+```
+
+#### Solution-循环
+
+相当于bfs
+
+```python
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        if len(digits)==0:
+            return []
+        
+        mapping = {"2":"abc", "3":"def", "4":"ghi", "5":"jkl", "6":"mno", "7":"pqrs", "8":"tuv", "9":"wxyz"}
+        res = [""]
+            
+        for digit in digits:
+            new_res = []
+            for element in res:
+                for letter in mapping[digit]:
+                    new_res.append(element+letter)
+                    
+            res = new_res
+            
+        return res
 ```
 
 

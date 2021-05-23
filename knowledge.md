@@ -130,6 +130,20 @@ c = a << 2;       # 240 = 1111 0000
 c = a >> 2;       # 15 = 0000 1111
 ```
 
+#### trick
+
+##### 判断奇偶
+
+`if a&1 == 0`, equal zero->even number, otherwise, odd number
+
+##### 变相反数
+
+flip all the bits, then add 1
+
+##### 2的n次方
+
+1<<n
+
 
 
 ### Catalan number
@@ -1106,7 +1120,7 @@ Constructor for a priority queue. The lowest valued entries are retrieved first 
 
   将 item 放入堆中，然后弹出并返回 heap 的最小元素。该组合操作比先调用  heappush() 再调用 heappop()运行起来更有效率。
 
-LC378
+LC378,[Kth Smallest Element in a Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/)
 
 ```python
 from heapq import *
@@ -1116,7 +1130,7 @@ def find_Kth_smallest(matrix, k):
 
     # put the 1st element of each row in the min heap
     # we don't need to push more than 'k' elements in the heap
-    for i in range(min(k, len(matrix))):
+    for i in range(min(k, len (matrix))):
         heappush(minHeap, (matrix[i][0], 0, matrix[i]))
         # the 0 in the middle represents the index in the row
 
@@ -1507,6 +1521,28 @@ In [Cartesian coordinates](https://en.wikipedia.org/wiki/Cartesian_coordinates),
 
 In [mathematics](https://en.wikipedia.org/wiki/Mathematics), an **indicator function** or a **characteristic function** is a [function](https://en.wikipedia.org/wiki/Function_(mathematics)) defined on a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) *X* that indicates membership of an [element](https://en.wikipedia.org/wiki/Element_(mathematics)) in a [subset](https://en.wikipedia.org/wiki/Subset) *A* of *X*, having the value 1 for all elements of *A* and the value 0 for all elements of *X* not in *A*. It is usually denoted by a symbol 1 or *I*, sometimes in boldface or [blackboard boldface](https://en.wikipedia.org/wiki/Blackboard_bold), with a subscript specifying the subset.
 
+#### minimax
+
+**Without pruning:**
+
+![image-20210413121546057](https://tva1.sinaimg.cn/large/008eGmZEly1gpime8b77cj31c00u04jc.jpg)
+
+Static evaluation: AKA heuristic value of node
+
+Ref: https://en.wikipedia.org/wiki/Minimax#:~:text=The%20heuristic%20value%20is%20a,favorable%20for%20the%20minimizing%20player.
+
+The minimax function returns a heuristic value for [leaf nodes](https://en.wikipedia.org/wiki/Leaf_nodes) (terminal nodes and nodes at the maximum search depth). Non-leaf nodes inherit their value from a descendant leaf node. The heuristic value is a score measuring the favorability of the node for the maximizing player. Hence nodes resulting in a favorable outcome, such as a win, for the maximizing player have higher scores than nodes more favorable for the minimizing player. The heuristic value for terminal (game ending) leaf nodes are scores corresponding to win, loss, or draw, for the maximizing player. For non terminal leaf nodes at the maximum search depth, an evaluation function **estimates** a heuristic value for the node. The quality of this estimate and the search depth determine the quality and accuracy of the final minimax result.
+
+
+
+**with pruning**
+
+Alpha, beta keep track of the score either side can achieve assuming the best play from the opponent.
+
+In the initial score, the positive infinity represents the worst possible score for white, the negative infinity represents the worst possible score for black
+
+![image-20210413122018479](https://tva1.sinaimg.cn/large/008eGmZEly1gpimisulcyj31c00u01kx.jpg)
+
 
 
 ## Notion
@@ -1534,6 +1570,10 @@ All imperative languages (e.g Java, C, JavaScript, etc) have three programming c
 Since all three determine how the code is run, these programming constructs are also called control flow structures.
 
 
+
+### Bytes
+
+A kilobyte is not exactly, as one might expect, of 1000 bytes. Rather, the correct amount is 2^10 i.e. 1024 bytes. 
 
 
 

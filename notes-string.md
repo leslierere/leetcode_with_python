@@ -18,6 +18,28 @@ https://leetcode.com/problems/longest-common-prefix/
 
 用最小的作为参考来比较更快
 
+did@21.5.20
+
+```python
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        prefix = strs[0]
+        
+        for i in range(1, len(strs)):
+            maxLength = min(len(prefix), len(strs[i]))
+            prefix = prefix[:maxLength]
+            for j in range(maxLength):
+                if prefix[j]!=strs[i][j]:
+                    prefix = prefix[:j]
+                    break
+            if len(prefix)==0:
+                break
+                
+        return prefix
+```
+
+
+
 
 
 ### 58. Length of Last Word-unnecesarry
@@ -455,6 +477,28 @@ class Solution:
         return output
 ```
 
+did@21.5.20
+
+I think this one is more straightforward.
+
+```python
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        ref = {"I":1, "V":5, "X":10, "L":50, "C":100, "D":500, "M":1000}
+        deduct = {"I":"VX", "X":"LC", "C":"DM"}
+        res = 0
+        
+        for i, char in enumerate(s):
+            if char in deduct and i<len(s)-1 and s[i+1] in deduct[char]:
+                res-=ref[char]
+            else:
+                res+=ref[char]
+                
+        return res
+```
+
+
+
 
 
 9.14
@@ -463,9 +507,38 @@ class Solution:
 
 https://leetcode.com/problems/integer-to-roman/
 
-#### Solution
+#### Intersting Solution
 
 Ref: https://leetcode.com/problems/integer-to-roman/discuss/6274/Simple-Solution
+
+did@21.5.19
+
+```python
+class Solution:
+    def intToRoman(self, num: int) -> str:
+        dic = {1:"I", 5:"V", 10:"X", 50:"L", 100:"C", 500:"D", 1000:"M"}
+        
+        number = 10
+        res = ""
+        
+        while num:
+            digit = num%10
+            if digit<4:
+                res = digit*dic[number//10]+res
+            elif digit<=5:
+                res = (5-digit)*dic[number//10]+dic[5*number//10]+res
+            elif digit<9:
+                res = dic[5*number//10] + (digit-5)*dic[number//10] + res
+            else:
+                res = dic[number//10]+dic[number]+res
+            
+            number*=10
+            num = num//10
+            
+        return res
+```
+
+
 
 
 
@@ -806,6 +879,26 @@ https://leetcode.com/problems/zigzag-conversion/
 https://leetcode.com/problems/zigzag-conversion/discuss/3404/Python-O(n)-Solution-in-96ms-(99.43)
 
 太妙了！关键是要找到条件变化的地方
+
+```python
+class Solution:
+    def convert(self, s: str, numRows: int) -> str:
+        if numRows==1:
+            return s
+        rows = ["" for _ in range(numRows)]
+        
+        d = -1
+        row = 0
+        for i in range(len(s)):
+            rows[row]+=s[i]
+            if row==numRows-1 or row==0:
+                d = -d
+            row+=d
+            
+        return "".join(rows)
+```
+
+
 
 
 
@@ -1153,13 +1246,13 @@ https://leetcode.com/problems/valid-palindrome/
 
 https://leetcode.com/problems/longest-palindromic-substring/
 
-* Solution-dynamic programming- **worth doing and thinking**
+#### Solution-dynamic programming- **worth doing and thinking**
 
-@3.13关键是要倒着遍历才能转为一维数组
 
-> Ref：https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html
->
-> 首先定义 P（i，j）。
+
+Ref：https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html
+
+>  首先定义 P（i，j）。
 >
 > *P*(*i*,*j*)= True s[i,j] 是回文串
 >
@@ -1168,33 +1261,58 @@ https://leetcode.com/problems/longest-palindromic-substring/
 > 接下来
 >
 > P(*i*,*j*)=(*P*(*i*+1,*j*−1)&&*S*[*i*]==*S*[*j*])
->
-> （当求第 i 行的时候我们只需要第 i + 1 行的信息，并且 j 的话需要 j - 1 的信息，所以倒着遍历这样我们可以把二维数组转为用一维数组）
->
-> ```python
->public String longestPalindrome7(String s) {
->      int n = s.length();
->      String res = "";
->         boolean[] P = new boolean[n];
->         for (int i = n - 1; i >= 0; i--) {
->             for (int j = n - 1; j >= i; j--) {
->                 P[j] = s.charAt(i) == s.charAt(j) && (j - i < 3 || P[j - 1]);
->               //j - i < 3 意味着字符串长度小于等于3，很好理解
->               //P[j - 1] 上面那个圆圈是由下面的圆圈决定的，因为下面圆圈代表2起始3终点的substring是否palindromic
->                 if (P[j] && j - i + 1 > res.length()) {
->                     res = s.substring(i, j + 1);
->                 }
->             }
->         }
->         return res;
->     }
->    ```
->    
-> 
+
+Without optimization on space
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        if len(s)==0:
+            return ""
+        
+        # for "cbbd", since "bb" is a palindrom, it can be represented by dp[1][2]==1
+        dp = [[0 for _ in range(len(s))] for _ in range(len(s))]
+        res = s[0]
+        
+        for i in range(len(s)-1, -1, -1): # why we do this in a reversed order? As here, dp[i][j] = dp[i+1][j-1] and s[i]==s[j], we need the i+1 first to get i 
+            for j in range(i, len(s)):
+                dp[i][j] = s[i]==s[j] and (j-i<=1 or dp[i+1][j-1])
+                if dp[i][j] and j-i+1>len(res):
+                    res = s[i:j+1]
+                    
+        return res
+```
 
 
 
-* Solution-Manacher Algorithm-worth doing and thinking
+
+
+> 当求第 i 行的时候我们只需要第 i + 1 行的信息，并且 j 的话需要 j - 1 的信息，所以倒着遍历这样我们可以把二维数组转为用一维数组
+
+```python
+public String longestPalindrome7(String s) {
+  int n = s.length();
+  String res = "";
+     boolean[] P = new boolean[n];
+     for (int i = n - 1; i >= 0; i--) {
+         for (int j = n - 1; j >= i; j--) {
+             P[j] = s.charAt(i) == s.charAt(j) && (j - i < 3 || P[j - 1]);
+           //j - i < 3 意味着字符串长度小于等于3，很好理解
+           //P[j - 1] 上面那个圆圈是由下面的圆圈决定的，因为下面圆圈代表2起始3终点的substring是否palindromic
+             if (P[j] && j - i + 1 > res.length()) {
+                 res = s.substring(i, j + 1);
+             }
+         }
+     }
+     return res;
+ }
+```
+
+
+
+
+
+#### Solution-Manacher Algorithm-worth doing and thinking
 
 https://www.cnblogs.com/grandyang/p/4475985.html
 
@@ -1206,15 +1324,15 @@ https://www.zhihu.com/question/37289584
 
 Add # to string:
 
-For an odd number length example, the original string is "bob". After adding "#", it becomes "#b#o#b#". Also, we add a "$" before it, that is "\$#b#o#b#", we call it "s1".
+For an odd number length example, the original string is "bob". After adding "#", it becomes "#b#o#b#". Also, we add a "$" before it, that is "\$#b#o#b#", we call it "s1". And the number of chars in such palindrome is always odd, as # would be inserted between every char as well as the beginning and the end.
 
-In this way, the index of the longest palindrome here is "#b#o#b#", and the center is "o" with an index in s1 as 4, with a radius of 3(not including the center), the index of the beginning palindrome without #$ in the "bob" is 0 
+In this way, the index of the longest palindrome here is "\$#b#o#b#", and the center is "o" with an index in s1 as 4, with a radius of 3(not including the center), the index of the beginning palindrome without #$ in the "bob" is 0 
 
 For an even number length example, the original string is "122223". After adding "#", it becomes "#1#2#2#2#2#3#". Also, we add a "$" before it, that is "\$#1#2#2#2#2#3#", we call it "s2".
 
 In this way, the index of the longest palindrome here is "#2#2#2#2#", and the center is "#" with an index in s2 as 7, with a radius of 4(not including the center), the index of the beginning palindrome without #$ in the "122223" is 1 
 
-And we found out, the radius is the length of the palindrome; **the difference** of the new index of the center minus the radius **and then divided by 2 (i.e. the quotient) is the palindrome's begining character index** in original string.(not the residual)
+And we found out, the radius is the length of the palindrome(why? Cuz the radius doesn't include the center, and the number of # is always one more than the actual letters); **the difference** of the new index of the center minus the radius **and then divided by 2 (i.e. the quotient) is the palindrome's begining character index** in original string.(not the residual)
 
 
 
@@ -1227,17 +1345,37 @@ mx: the most right position of already known palindromes
 
 id: the center of the palindrome with the most right position in above
 
-**main problem**: How to update Mp[i]?(here we make use of the already known palindromes in the min part: min(mp[2 * id - i], mx - i))
+**main problem**: How to update mp[i]?(here we make use of the already known palindromes in the min part: min(mp[2 * id - i], mx - i))
+
+If mx<=i, we can only use mp[i]=0, and then we would compare the characters beside it step by step
+
+If mx>i, we can make use of the index that is symmatric to i with the center of id.
 
 ```
 mp[i] = mx > i ? min(mp[2 * id - i], mx - i) : 1;
 ```
 
-If mx<=i, we can only use mp[i]=0, and then we would compare the characters beside it step by step
 
-If mx>i, we would try to make use of the index that is symmatric to i with the center of id.
 
-<img src="/Users/leslieren/Library/Application Support/typora-user-images/image-20200314192944674.png" alt="image-20200314192944674" style="zoom:20%;" />
+
+
+![image-20210518124241205](/Users/leslieren/Library/Application Support/typora-user-images/image-20210518124241205.png)
+
+##### Questions 
+
+* Why we always remember the palindrome with the most right position?
+
+  !!!As the one with righter boarder will be more useful, because you always want the previous known palindrome to cover more area extending from your current center.
+
+* **Why we add the $**
+
+  Not necessary at all
+
+* Why we add the #
+
+  The padding is useful when we are in the situation of a palindrome with even number of letters. To add it at the beginning and the end, it is convenient for the calculation.
+
+
 
 ```python
 class Solution:
@@ -1264,7 +1402,7 @@ class Solution:
             if i+mp[i]>rightBoarder:
                 rightBoarder = i+mp[i]
                 rightCenter = i
-            if mp[i]>maxRadius:
+            if mp[i]>maxRadius: # update if this is a longer palindrom than the current longest one
                 maxRadius = mp[i]
                 beginIndex = (i-mp[i])//2
                 res = s[beginIndex:beginIndex+maxRadius]
@@ -1276,7 +1414,7 @@ class Solution:
 
 
 
-* solution-扩展中心, 比普通动态规划快那么多？@3.14
+#### solution-扩展中心, 比普通动态规划快很多
 
 Ref: https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html 解法4
 
@@ -1310,12 +1448,17 @@ def helper(self, s, l, r):
 
 12.15
 
-### 9. Palindrome Number-一个解法$
+### 9. Palindrome Number
 
 https://leetcode.com/problems/palindrome-number/
 
-* Solution-翻转字符串, 通过取整和取余来获得想要的数字
-* Solution-只要翻转后半部分，和前面相等则True-$
+#### Solution-Use what we did in problem 7, reverse integer, then compare
+
+Ref: https://leetcode.wang/leetCode-9-Palindrome-Number.html
+
+#### Solution-只要翻转后半部分，和前面相等则True
+
+Ref: https://leetcode.wang/leetCode-9-Palindrome-Number.html
 
 
 
@@ -1578,6 +1721,25 @@ https://leetcode.com/problems/valid-parentheses/
 https://leetcode.com/problems/generate-parentheses/
 
 * Solution-backtrack
+
+```python
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        res = []
+        self.helper(n,n,"",res)
+        return res
+        
+    def helper(self, left, right, string, res):
+        if left==0 and right ==0:
+            res.append(string)
+        
+        if left>0:
+            self.helper(left-1, right, string+"(", res)
+        if left==0: # optimised
+            res.append(string+right*")")
+        elif right>left:
+            self.helper(left, right-1, string+")", res)
+```
 
 
 
@@ -1862,5 +2024,4 @@ class Solution:# my solution
             
         return answer
 ```
-
 

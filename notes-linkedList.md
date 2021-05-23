@@ -1,6 +1,6 @@
 1.11
 
-### 206. Reverse Linked List
+### 206. Reverse Linked List-$
 
 https://leetcode.com/problems/reverse-linked-list/
 
@@ -485,7 +485,9 @@ https://leetcode.com/problems/reverse-nodes-in-k-group/description/
 
 #### Solution-指针-思路简单
 
-#### Solution-递归-相对巧妙
+#### Solution-递归-$
+
+其实每次遇到循环的都可以想想是不是可以递归来做
 
 Ref: https://leetcode.wang/leetCode-25-Reverse-Nodes-in-k-Group.html
 
@@ -554,15 +556,105 @@ Ref: https://leetcode.wang/leetCode-86-Partition-List.html
 
 
 
-### 23. Merge k Sorted Lists
+### 23. Merge k Sorted Lists-$
 
 https://leetcode.com/problems/merge-k-sorted-lists/description/
 
-#### Solution-两两合并，k个链表，合并log(k)次-可做
+#### Solution-两两合并
+
+This is an intuitive thinking, but since we already think of combine one list to the other, instead, we combine the first and the second, then third.... we can think of it will be more efficient to divide them first more equally... 
+
+For an lists of size k, and The sum of `lists[i].length`  is N. 
+
+* If we add them one by one the time complexity will be N/k, 2N/k, 3N/k, (k-1)N/k, which will give us O(k^2 * N/k), i.e O(Nk) in total. 
+* If we first try to divide it equally, then we will divide O(logk) times, and in each round where the number of divisions is the same, the time complexity is O(N), so overall the time complexity is O(Nlogk)
+
+**Divide and conquer**
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+from heapq import *
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        if len(lists)==0:
+            return None
+        if len(lists)==1:
+            return lists[0]
+        
+        half_len = len(lists)//2
+        return self.mergeTwoLists(self.mergeKLists(lists[:half_len]), self.mergeKLists(lists[half_len:]))
+    
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        dummy = ListNode()
+        node = dummy
+        
+        while l1 and l2:
+            if l1.val<=l2.val:
+                node.next = l1
+                node = l1
+                l1 = l1.next
+            else:
+                node.next = l2
+                node = l2
+                l2 = l2.next
+                
+        if l1:
+            node.next = l1
+        if l2:
+            node.next = l2
+            
+        return dummy.next
+            
+```
+
+
+
+
+
+
 
 #### Solution-priority queue-worth
 
 可以考虑用queue模块的priority queue([一个参考](https://leetcode.com/problems/merge-k-sorted-lists/discuss/10511/10-line-python-solution-with-priority-queue))来实现或者heapq模块
+
+**Use heapq**, reference: https://leetcode.com/problems/merge-k-sorted-lists/discuss/10513/108ms-python-solution-with-heapq-and-avoid-changing-heap-size/194464
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+from heapq import *
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        heap = []
+        dummy = ListNode()
+        node = dummy
+        
+        for i, head in enumerate(lists): #N is the numer of nodes, O(N)
+            if head is not None:
+                heappush(heap, (head.val, i, head))# O(LogN), we need add extra i here, cuz If two elements have the same val, the next tuple items will be compared:
+            
+        while len(heap)!=0: # O(N)
+            val, i, head = heappop(heap)
+            node.next = head
+            if head.next: # O(logN)
+                heappush(heap, (head.next.val, i, head.next))
+            head.next=None
+            node = head
+            
+        return dummy.next
+            
+```
+
+
+
+Use PriorityQueue
 
 
 

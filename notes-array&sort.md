@@ -177,11 +177,28 @@ https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/
 
 https://leetcode.com/problems/container-with-most-water/
 
-* solution
+##### solution- 2 pointer
 
-  Worth thinking when two columns are equal
+https://leetcode.wang/leetCode-11-Container-With-Most-Water.html
 
-  https://leetcode.wang/leetCode-11-Container-With-Most-Water.html
+```python
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        left = 0
+        right = len(height)-1
+        min_height = min(height[left], height[right])
+        res = (right-left)*min_height
+        
+        while left<right:
+            while height[left]<=min_height and left<right:
+                left+=1
+            while height[right]<=min_height and left<right:
+                right-=1
+            min_height = min(height[left], height[right])
+            res = max((right-left)*min_height, res)
+            
+        return res
+```
 
 
 
@@ -295,6 +312,29 @@ how to think of 2 pointers: https://leetcode.com/problems/3sum-closest/discuss/7
 > 
 >
 > If you've gotten to that point, and are wondering how to traverse the array, 1, 2, 3+ pointers is always something that should be at the top of your list of things to consider when tackling an unfamiliar problem.
+
+```python
+class Solution:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        nums.sort()
+        result = sum(nums[:3])
+        
+        for i in range(len(nums)-2):
+            k, j = i+1, len(nums)-1
+            
+            while k<j:
+                candidate = nums[i]+nums[j]+nums[k]
+                if candidate==target:
+                    return target
+                elif candidate<target:
+                    k+=1
+                else:
+                    j-=1
+                if abs(candidate-target)<abs(result-target):
+                    result = candidate
+                    
+        return result
+```
 
 
 
@@ -603,5 +643,4 @@ https://leetcode.com/problems/wiggle-sort/
 https://leetcode.com/problems/wiggle-sort-ii/
 
 * Solution-not done!!!
-
 

@@ -168,9 +168,54 @@ but why????
 
 https://leetcode.com/problems/median-of-two-sorted-arrays/
 
-#### Solution-worth
+#### Solution-find kth smallest number
 
-https://leetcode.com/problems/median-of-two-sorted-arrays/discuss/2481/Share-my-O(log(min(mn)))-solution-with-explanation
+Ref: https://leetcode.wang/leetCode-4-Median-of-Two-Sorted-Arrays.html
+
+解法3
+
+```python
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        mid = (len(nums1) + len(nums2)-1)//2
+        # for any time, we calculate the mid index
+        # if odd, we can get the exact index of the median
+        # if even, we get the index of the first half part of the median        
+        
+        if (len(nums1) + len(nums2))%2 ==1:
+            return self.findKth(nums1, nums2, mid+1)
+        else:
+            return (self.findKth(nums1, nums2, mid+1)+self.findKth(nums1, nums2, mid+2))/2
+        
+    
+    def findKth(self, nums1, nums2, k):
+        # the kth element in the array, satrting from 1
+        if len(nums1)==0:
+            return nums2[k-1]
+        if len(nums2)==0:
+            return nums1[k-1]
+        if k==1:
+            return min(nums1[0], nums2[0])
+        
+        
+        mid_idx = k//2 - 1 # we round down in case k is odd, round up will let us have more than k numnbers in the left halves of the 2 arrays and may let us give up the kth number, and we minus one to just get the index.
+        index1 = min(len(nums1)-1, mid_idx)
+        index2 = min(len(nums2)-1, mid_idx)
+        
+        
+        if nums1[index1]<nums2[index2]:
+            return self.findKth(nums1[index1+1:], nums2, k-index1-1)
+        else:
+            return self.findKth(nums1, nums2[index2+1:], k-index2-1)
+```
+
+
+
+#### Solution-also binary search
+
+Ref: https://leetcode.wang/leetCode-4-Median-of-Two-Sorted-Arrays.html
+
+解法4
 
 
 
