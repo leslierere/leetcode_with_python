@@ -20,7 +20,42 @@ pivot = left + (right - left) / 2;
 
 Ref: https://leetcode.com/problems/search-in-rotated-sorted-array/
 
-先看看我自己本来的code，其实分成两种情况就好
+先看看我自己本来的code，其实分成两种情况就好, like [this](https://leetcode.com/problems/search-in-rotated-sorted-array/discuss/14437/Python-binary-search-solution-O(logn)-48ms)
+
+```python
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        left = 0
+        right = len(nums)-1
+        
+        while left<=right:
+            mid = (left+right)//2
+            if target<nums[mid]:
+                if nums[left]<=nums[mid]: # the left side is ascending, tricky here, there should be equal sign here, as the left array may just has one element
+                    if nums[left]<=target:
+                        right = mid-1
+                    else:
+                        left = mid+1
+                else:
+                    right = mid-1
+            elif target>nums[mid]:
+                if nums[left]<=nums[mid]: # the left side is ascending
+                    left = mid+1
+                else:
+                    if nums[right]<target:
+                        right = mid-1
+                    else:
+                        left = mid+1
+            else:
+                return mid
+            
+        return -1
+                
+```
+
+
+
+A really [cool](https://leetcode.com/problems/search-in-rotated-sorted-array/discuss/14435/Clever-idea-making-it-simple) one that I don't understand yet.
 
 
 
@@ -99,7 +134,94 @@ https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-
 
 #### Solution
 
-two binary search
+two binary search, also if we find the first, we don't need to start from zero when we try to find the upper bound.
+
+did@21.5.24, feels messy
+
+```python
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        if len(nums) == 0:
+            return [-1, -1]
+        
+        left_low = right_low= 0
+        left_high = right_high = len(nums)-1
+        
+        while left_low<left_high:
+            mid = (left_low+left_high)//2
+            if target<nums[mid]:
+                left_high = mid
+            elif target>nums[mid]:
+                left_low = mid+1
+            else: # nums[mid]==target
+                if mid>0 and nums[mid-1]==target:
+                    left_high = mid-1
+                else:
+                    left_low = left_high = mid
+                    break
+            
+        if left_low!=left_high or nums[left_low]!=target:
+            return [-1, -1]
+        
+        while right_low<right_high:
+            mid = (right_low+right_high)//2
+            if target>nums[mid]:
+                right_low = mid+1
+            elif target<nums[mid]:
+                right_high = mid-1
+            else:
+                if nums[mid+1]==target:
+                    right_low = mid+1
+                else:
+                    right_low = mid
+                    break
+                
+        
+        return [left_low, right_low]
+```
+
+
+
+
+
+感觉这个代码清晰点, ref: https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/discuss/14734/Easy-java-O(logn)-solution
+
+```python
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        if len(nums) == 0:
+            return [-1, -1]
+        
+        left_low = right_low= 0
+        left_high = right_high = len(nums)-1
+        idx1=idx2 = -1
+        
+        
+        while left_low<=left_high:
+            mid = (left_low+left_high)//2
+            if target==nums[mid]:
+                idx1 = mid
+            if target<=nums[mid]:
+                left_high = mid-1
+            else:
+                left_low = mid+1
+            
+        if idx1==-1:
+            return [-1, -1]
+        
+        while right_low<=right_high:
+            mid = (right_low+right_high)//2
+            if target==nums[mid]:
+                idx2 = mid
+            if target>=nums[mid]:
+                right_low = mid+1
+            else:
+                right_high = mid-1
+                
+        return [idx1, idx2]
+```
+
+
 
 
 

@@ -10,6 +10,21 @@ https://leetcode.com/problems/remove-element/
 
 https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 
+Ref: https://leetcode.com/problems/remove-duplicates-from-sorted-array/discuss/11782/Share-my-clean-C%2B%2B-code
+
+```python
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        i = 0 # last index till which no duplicates exist
+        
+        for j in range(1, len(nums)):
+            if nums[i]!=nums[j]:
+                nums[i+1]=nums[j]
+                i+=1
+                
+        return i+1
+```
+
 
 
 #### 80. Remove Duplicates from Sorted Array II

@@ -4,9 +4,17 @@
 
 https://leetcode.com/problems/implement-strstr/
 
-#### Solution
+#### Solution-simple loop
 
 加特殊情况判断可speed up
+
+#### Solution-KMP-$
+
+See details on problem214 in this note
+
+
+
+
 
 
 
@@ -1512,7 +1520,21 @@ j一定可以走出最长回文串
 
 * Solution-KMP, Knuth–Morris–Pratt, **worth doing and thinking**
 
-算法解释：https://www.cnblogs.com/grandyang/p/6992403.html
+[Here](http://jakeboxer.com/blog/2009/12/13/the-knuth-morris-pratt-algorithm-in-my-own-words/) is a good explaination on what The Partial Match Table is and how to use the table
+
+Why would this work?
+
+As we move right, all we care about is if we would miss any substring that will match, see the following for example
+
+The string is XXXXOOO, and pattern is XXXX&
+
+X are the substring that matches between string and pattern, each X can represent different letters, and O in string are the and & in pattern that don't match, which can also be any letters.
+
+When we at index 4, we didn't match anymore. 
+
+The matched letters are in bold from here to illustrate. For string **XXXX**OOO, for pattern, **XXXX**&, when we move pattern forward, what we want to prevent is that we will miss subffixes in "XXXX" in string that matches prefixes in pattern. Right now, the partial_match_length is 4 which gives us a maximum steps we will move. And let's see one by one, if we just move one step and there is a match, what we have is the X**XXX**OOO matches **XXX**X&,  in this way, **XXX**X& matches X**XXX**&, and the length of current mapping substring is exactly the table[partial_match_length - 1] which is 3, and we will only move partial_match_length - table[partial_match_length - 1] steps, that is one step.
+
+
 
 
 
@@ -1749,6 +1771,8 @@ class Solution:
 
 https://leetcode.com/problems/longest-valid-parentheses/
 
+* solution normal dp
+
 * Solution-dynamic programming
 
 @3.18做出来了，但我也还没想特别清楚
@@ -1782,9 +1806,13 @@ Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
 dp [ i ] 代表以下标 i 结尾的合法序列的最长长度
 
-* solution-stack-**worth thinking and doing**, 想明白了@1.2
+* solution-stack with dp-**worth thinking and doing**, 想明白了@1.2
 
 Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
+
+Ref: https://leetcode.com/problems/longest-valid-parentheses/discuss/14312/my-ten-lines-python-solution/896329
+
+My explanation [here](https://leetcode.com/problems/longest-valid-parentheses/discuss/14312/My-ten-lines-python-solution/477058)
 
 
 

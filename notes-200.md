@@ -297,3 +297,46 @@ class Solution:
         return result
 ```
 
+
+
+
+
+## 29. Divide Two Integers
+
+https://leetcode.com/problems/divide-two-integers/
+
+### Solution-binary search
+
+```python
+class Solution:
+    def divide(self, dividend: int, divisor: int) -> int:
+        if dividend==0:
+            return 0
+        elif divisor == 1:
+            return dividend
+        elif divisor == -1:
+            if dividend==-2**31:
+                return 2**31-1
+            return -dividend
+        
+        if dividend>0 and divisor>0:
+            return self.helper(dividend, divisor)
+        elif dividend<0 and divisor<0:
+            return self.helper(-dividend, -divisor)
+        else:
+            return -self.helper(abs(dividend), abs(divisor))
+                
+    def helper(self, dividend, divisor):
+        if dividend<divisor:
+            return 0
+        elif dividend==divisor:
+            return 1
+        origin_divisor = divisor
+        times = 1
+        while dividend>divisor+divisor:
+            divisor+=divisor
+            times+=times
+            
+        return times+self.helper(dividend-divisor, origin_divisor)
+```
+

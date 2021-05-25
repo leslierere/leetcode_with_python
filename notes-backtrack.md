@@ -581,6 +581,8 @@ https://leetcode.com/problems/next-permutation/description/
 
 #### Solution-iterative
 
+my explanation: https://leetcode.com/problems/next-permutation/discuss/13867/C++-from-Wikipedia/948416
+
 注意等号
 
 ```python
