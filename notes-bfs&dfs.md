@@ -453,6 +453,83 @@ https://leetcode.com/problems/n-queens/
 
 queens can attack other queen in the same row, same column and the diagonal
 
+did@21.5.28, 觉得反正都要把之前的positions的list都循环一遍的话，这样比较简洁。不过还是用set去存对角线和col查找起来更快，看下面那个答案
+
+```python
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        res = []
+        self.backtrack(0, n, [], res)
+        return res
+        
+        
+    def backtrack(self, row, n, queens, res):
+        if row==n:
+            grid = self.build_str(queens, n)
+            res.append(grid)
+            return
+        
+        for col in range(n):
+            violate = False
+            for i,j in queens:
+                if col==j or abs(row-i) == abs(col-j):
+                    violate = True
+                    break
+            if not violate:
+                self.backtrack(row+1,n,queens+[(row, col)], res)
+                    
+    def build_str(self, queens, n):
+        grid = []
+        for i, j in queens:
+            grid.append("."*j+"Q"+"."*(n-j-1))
+        return grid
+```
+
+
+
+Ref: https://leetcode.com/problems/n-queens-ii/discuss/126533/Python-Backtracking-Solution-(Beats-97)
+
+```python
+class Solution:
+    def totalNQueens(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        
+        diag1 = set()
+        diag2 = set()
+        usedCols = set()
+        
+        return self.helper(n, diag1, diag2, usedCols, 0)
+
+    def helper(self, n, diag1, diag2, usedCols, row):
+        if row == n:
+            return 1
+        
+        solutions = 0
+        
+        for col in range(n):
+            if row + col in diag1 or row - col in diag2 or col in usedCols:
+                continue
+                
+            diag1.add(row + col)
+            diag2.add(row - col)
+            usedCols.add(col)
+            
+            solutions += self.helper(n, diag1, diag2, usedCols, row + 1)
+        
+            diag1.remove(row + col)
+            diag2.remove(row - col)
+            usedCols.remove(col)
+        
+        return solutions
+```
+
+
+
+
+
 #### Solution-dfs-worth
 
 Ref: https://leetcode.com/problems/n-queens/discuss/19971/Python-recursive-dfs-solution-with-comments.

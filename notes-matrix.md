@@ -640,6 +640,73 @@ class Solution:
 
 https://leetcode.com/problems/sudoku-solver/
 
+#### Solution-backtrack, did@21.5.25
+
+我觉得沿用36的方法比较好，用一个set来存所有已存在的东西
+
+```python
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        exist = set()
+        
+        for i in range(9):
+            for j in range(9):
+                num_str = board[i][j]
+                if num_str==".":
+                    continue
+                
+                row_str = "r"+ str(i) +num_str
+                col_str = "c"+ str(j) + num_str
+                grid_str = str(i//3)+str(j//3)+num_str
+                
+                exist.add(row_str)
+                exist.add(col_str)
+                exist.add(grid_str)
+                
+        self.backtrack(0, 0, board, exist)
+                
+        
+    def backtrack(self, i, j, board, exist):
+        
+        while board[i][j]!=".": # find next coordiates to fill in
+            j+=1
+            if j==9:
+                if i==8:
+                    return True
+                i+=1
+                j = 0
+                
+        for number in range(1, 10):
+            num_str = str(number)
+            row_str = "r"+ str(i) +num_str
+            col_str = "c"+ str(j) + num_str
+            grid_str = str(i//3)+str(j//3)+num_str
+            
+            if row_str in exist or col_str in exist or grid_str in exist:
+                continue
+            
+            exist.add(row_str)
+            exist.add(col_str)
+            exist.add(grid_str)
+            
+            board[i][j] = num_str
+            sub_result = self.backtrack(i, j, board, exist)
+            if sub_result:
+                return True
+            
+            exist.remove(row_str)
+            exist.remove(col_str)
+            exist.remove(grid_str)
+            board[i][j] = "."
+            
+        return False
+```
+
+
+
 #### Solution-backtrack, did@4.22
 
 Ref: https://leetcode.com/problems/sudoku-solver/discuss/15752/Straight-Forward-Java-Solution-Using-Backtracking

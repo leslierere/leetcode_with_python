@@ -545,7 +545,7 @@ Ref: https://leetcode.wang/leetCode-46-Permutations.html
 
 #### Solution-recursive, swap
 
-还没想清楚
+还没想清楚, 不想想这个
 
 
 
@@ -629,7 +629,36 @@ class Solution:
 
 https://leetcode.com/problems/permutation-sequence/description/
 
-#### Solution-不难，主要是细节, 不用一遍遍地算groupsize，每次除以一下就好了
+#### Solution-iterative
+
+did@21.5.29
+
+```python
+class Solution:
+    def getPermutation(self, n: int, k: int) -> str:
+        # every position can have n diff digits
+        permutations = 1
+        for i in range(1, n+1):
+            permutations*=i
+        
+        numbers = [i for i in range(1, n+1)]
+        res = ""
+        while len(numbers)!=1:
+            group_size = permutations//len(numbers) 
+            group_no = (k-1)//group_size # start from index 0
+            k = (k-1)%group_size+1
+            number = numbers.pop(group_no)
+            res+=str(number)
+            permutations = group_size
+            
+        res+=str(numbers[0])
+        
+        return res
+```
+
+
+
+#### Solution-recursive,不难，主要是细节, 不用一遍遍地算groupsize，每次除以一下就好了
 
 ```python
 import math
@@ -648,6 +677,8 @@ class Solution:
         nextK = groupSize if k%groupSize==0 else k%groupSize
         return self.helper(path+str(initial), nums, nextK,groupSize)
 ```
+
+
 
 
 

@@ -50,9 +50,25 @@ class Solution:
 
 
 
-### 58. Length of Last Word-unnecesarry
+### 58. Length of Last Word
 
 https://leetcode.com/problems/length-of-last-word/
+
+我本来想到的是用一个flag来表示是否已经有词，但其实用`l > 0` 就可以知道，聪明的做法！
+
+```python
+class Solution:
+    def lengthOfLastWord(self, s: str) -> int:
+        l = 0
+        for i in range(len(s)-1, -1, -1):
+            if s[i] != " ":
+                l+=1
+            elif l > 0:
+                break
+        return l
+```
+
+
 
 
 
@@ -307,39 +323,11 @@ https://leetcode.com/problems/rearrange-string-k-distance-apart/
 
 #### solution-Priority queue
 
-这个比我的要好一点
+下面一题767很像
 
-```python
-from heapq import *
-from collections import deque
-from collections import Counter
-class Solution:
-    def rearrangeString(self, s: str, k: int) -> str:
-        if k == 0:
-            return s
-        counter = Counter(s)
-        queue = [[-counter[char], char] for char in counter]
-        heapify(queue)
-        mem = deque()
-        res = ''
-        while len(queue) or len(mem):
-            if len(mem) == k:
-                curr = mem.popleft()
-                if curr[0] < 0:
-                    heappush(queue, curr)
-            if len(queue):
-                curr = heappop(queue)
-                res += curr[1]
-                curr[0] += 1
-                mem.append(curr)
-            else:
-                if sum([item[0] for item in mem]) == 0:
-                    return res
-                else:
-                    return ''
-```
+Ref: https://leetcode.com/problems/rearrange-string-k-distance-apart/discuss/83192/Java-7-version-of-PriorityQueue-O(nlogn)-with-comments-and-explanations
 
-
+> The greedy algorithm is that in each step, select the char with highest remaining count if possible (if it is not in the waiting queue). PQ is used to achieve the greedy. A regular queue waitQueue is used to "freeze" previous appeared char in the period of k.
 
 did@20.9.1
 
@@ -373,6 +361,41 @@ class Solution:
                 
         return output
         
+```
+
+
+
+### 767. Reorganize String
+
+https://leetcode.com/problems/reorganize-string/
+
+#### Solution-priority queue
+
+Ref: https://leetcode.com/problems/reorganize-string/discuss/113457/Simple-python-solution-using-PriorityQueue
+
+```python
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        
+        counter = collections.Counter(s)
+        heap = [(-val, letter) for letter,val in counter.items()]
+        heapq.heapify(heap)
+        res = ""
+        pre_count, pre_letter = 0, None
+        
+        while heap:
+            val, letter = heapq.heappop(heap)
+            # no need for this, if right now heap is not empty,we can definitely get a diff letter
+            # if len(res)!=0 and res[-1]==letter:
+            #     return ""
+            res+=letter
+            if pre_count!=0:
+                heapq.heappush(heap, (pre_count, pre_letter))
+            pre_count, pre_letter = val+1, letter
+            
+        if len(res)!=len(s):
+            return ""
+        return res
 ```
 
 

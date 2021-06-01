@@ -148,6 +148,29 @@ https://leetcode.com/problems/jump-game-ii/
 
 * Solution-greedy method, didn't submit
 
+* Solution-dp
+
+Did@21.5.26, https://leetcode.com/problems/jump-game-ii/discuss/1233094/Easy-to-understand-python-solution
+
+```python
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        steps = [1001 for _ in range(len(nums))]
+        steps[0] = 0
+        
+        for i in range(len(nums)):
+            for number in range(1, nums[i]+1):
+                next_pos = i+number
+                if next_pos<len(nums):
+                    steps[next_pos] = min(steps[i]+1, steps[next_pos])
+                else:
+                    break
+                
+        return steps[-1]
+```
+
+
+
 
 
 #### 121. Best Time to Buy and Sell Stock
@@ -367,6 +390,10 @@ https://leetcode.com/problems/merge-intervals/
 
 https://leetcode.com/problems/insert-interval/
 
+搞清边界很tricky
+
+这个就很简洁：https://leetcode.com/problems/insert-interval/discuss/21602/Short-and-straight-forward-Java-solution
+
 
 
 7.31
@@ -409,9 +436,11 @@ https://leetcode.com/problems/maximum-subarray/submissions/
   >
   > ***超级像演绎推理，把问题一般化***
 
-* Solution-divide and conquer-not done
+* Solution-divide and conquer
 
   ***worth thinking and doing***
+  
+  Ref: https://leetcode.com/problems/maximum-subarray/discuss/199163/Python-O(N)-Divide-and-Conquer-solution-with-explanations
 
 
 

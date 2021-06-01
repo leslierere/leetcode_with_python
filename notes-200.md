@@ -340,3 +340,141 @@ class Solution:
         return times+self.helper(dividend-divisor, origin_divisor)
 ```
 
+
+
+## 38. Count and Say
+
+Ref: https://leetcode.com/problems/count-and-say/
+
+这个人做的比较简单，当然我可以不recursive
+
+我开始记了一下begin的index，但其实没必要，因为还得知道现在的index，直接count就行
+
+```python
+class Solution:
+    def countAndSay(self, n: int) -> str:
+        if n == 1:
+            return "1"
+        
+        s = self.countAndSay(n-1)
+        cnt = 0
+        temp_s = ""
+        currChar = s[0]
+        for c in s:           
+            if c != currChar:
+                temp_s += str(cnt) + currChar
+                currChar = c
+                cnt = 0
+                
+            cnt += 1
+
+        return (temp_s + str(cnt) + currChar)
+```
+
+
+
+## 41. First Missing Positive
+
+Ref: https://leetcode.com/problems/first-missing-positive/
+
+### Solution
+
+比较容易想到的
+
+Ref: https://leetcode.wang/leetCode-41-First-Missing-Positive.html
+
+### Solution
+
+很巧妙的, Ref: https://leetcode.com/problems/first-missing-positive/discuss/17080/Python-O(1)-space-O(n)-time-solution-with-explanation
+
+
+
+
+
+## 42. Trapping Rain Water
+
+Ref: https://leetcode.com/problems/trapping-rain-water/
+
+### Solution-stack
+
+My post: https://leetcode.com/problems/trapping-rain-water/discuss/1232796/Very-simple-and-clear-code-with-stack-python-solution
+
+The basic idea is we count the area level by level horizontally. 
+
+To illustrate, in below, the number in shaded area means the order when it is counted. 
+
+Area 1 would be counted at index 6, area 2 will be counted at index 7, area 3 and 4 will be counted at index 9.
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqwimj7l9wj31400u0he6.jpg" alt="image-20210526160325696" style="zoom:30%;" />
+
+When using stack, we only add the current index to the stack if the stack is empty, or after adding the index, the height of indexes in the stack is still in descending order.
+
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        area = 0
+        stack = []
+        
+        for i, h in enumerate(height): # stack keeps descending order
+            
+            while stack and h>=height[stack[-1]]: 
+                if len(stack)==1: 
+					# this would only happen when we at the beggining when we have been unable to trap water yet 
+					# or we have counted the water before index i, so when the current height is higher then the 
+					# only one we have, that is the height of stack[-1](stack[-1] will always equal to i-1). We just 
+					# pop it out as stack[-1] won't be used to count at all, and add i in stack.
+                    stack.pop()
+                else:
+                    mid = stack.pop()
+                    left = stack[-1]
+                    area+=(min(height[left], h)-height[mid])*(i-left-1)
+                    
+            stack.append(i)
+                    
+        return area
+```
+
+Side notes: I feel like when we use stack, we should try to think of is under what condition should we add element to it and when to pop.
+
+
+
+## 43. Multiply Strings
+
+https://leetcode.com/problems/multiply-strings/
+
+### Solution-like count on paper
+
+Ref: https://leetcode.com/problems/multiply-strings/discuss/17605/Easiest-JAVA-Solution-with-Graph-Explanation
+
+### Solution-cool
+
+from sample 32 ms submission
+
+```python
+class Solution:
+    def multiply(self, num1: str, num2: str) -> str:
+        def stringToInt(num: str) -> int:
+            value_map = {
+                "0": 0,
+                "1": 1,
+                "2": 2,
+                "3": 3,
+                "4": 4,
+                "5": 5,
+                "6": 6,
+                "7": 7,
+                "8": 8,
+                "9": 9,
+            }
+            value: int = 0
+            for index, digit in enumerate(num[::-1]):
+                value += value_map[digit] * 10**index
+            return value
+
+        return str(stringToInt(num1) * stringToInt(num2))   
+```
+
+
+
+
+

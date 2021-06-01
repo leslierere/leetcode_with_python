@@ -22,7 +22,7 @@ https://leetcode.com/problems/unique-paths/
 
 #### Solution-dp
 
-update row by row
+update row by row, no need to update the first col separately
 
 ```python
 class Solution:
@@ -42,6 +42,8 @@ class Solution:
 https://leetcode.com/problems/unique-paths-ii/
 
 #### Solution-dp
+
+这个写得也太烦了吧，因为其实不用单独update first row or first col
 
 ```python
 class Solution:
@@ -1023,6 +1025,28 @@ class Solution:
 https://leetcode.com/problems/wildcard-matching/description/
 
 #### Solution-dp
+
+did@21.5.26, 可以对比https://leetcode.com/problems/regular-expression-matching/
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        dp = [[False for _ in range(len(s)+1)] for _ in range(len(p)+1)]
+        dp[0][0] = True
+        
+        for i in range(1, len(dp)):
+            for j in range(0, len(dp[0])):
+                if p[i-1]=="*":
+                    dp[i][j] = dp[i-1][j] or (j>0 and (dp[i][j-1] or dp[i-1][j-1]))
+                elif p[i-1]=="?":
+                    dp[i][j] = j>0 and dp[i-1][j-1]
+                else:
+                    dp[i][j] = j>0 and p[i-1]==s[j-1] and dp[i-1][j-1]
+                    
+        return dp[-1][-1]
+```
+
+
 
 Ref:https://leetcode.com/problems/wildcard-matching/discuss/17812/My-java-DP-solution-using-2D-table
 

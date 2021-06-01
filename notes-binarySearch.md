@@ -357,13 +357,25 @@ https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
 
 https://leetcode.com/problems/powx-n/description/
 
-#### Solution-worth
+#### Solution-recursive-worth
 
 https://leetcode.com/problems/powx-n/discuss/19560/Shortest-Python-Guaranteed
 
-recursive&iterative are both worh reviewing
+```python
+class Solution:
+    def myPow(self, x, n):
+        if not n:
+            return 1
+        if n < 0:
+            return 1 / self.myPow(x, -n)
+        if n % 2:
+            return x * self.myPow(x, n-1)
+        return self.myPow(x*x, n/2)# this is so cool
+```
 
-***My explanation of why the iterative one work:***
+#### Solution-iterative-worth
+
+***My explanation of why the iterative one work:*** https://leetcode.com/problems/powx-n/discuss/19560/Shortest-Python-Guaranteed/647115
 
 Let's get rid of the the math theories, instead, just think of the conversion between binary number and its according base 10 number.
 
@@ -387,7 +399,7 @@ To illustrate, say, initially, n=11, pow = 1
 
 1/2 = 0 remains 1, X^8, pow = x^11
 
-Now, you may wonder, why do we update *pow* (multiplied by current X) when there is 1 remaining, in other words, when should we add the current power(1, 2, 8) to get a sum that is our final power(11), in other other words, how we can get a sum that is made of the aggregation of different, non-duplicate powers of 2, at this time, just think backwards, how we can convert binary 1011 to its base10 value 11, and here comes the answer.
+Now, you may wonder, why do we update *pow* (multiplied by current X) when there is 1 remaining, in other words, when should we add the current power (1=2^0, 2=2^1, 8=2^3) to get a sum that is our final power(11), in other other words, how we can get a target power(11 in this case) that is the sum of different, non-duplicate powers of 2, at this time, just think backwards, how we can convert binary 1011 to its base10 value 11, and here comes the answer.
 
 
 
