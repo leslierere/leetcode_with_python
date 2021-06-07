@@ -2205,6 +2205,43 @@ https://leetcode.com/problems/recover-binary-search-tree/
 >
 >   所以我们只需要遍历数组，然后找到这两组逆序对，然后把第一组前一个数字和第二组后一个数字进行交换即完成了还原。
 
+did@21.6.7
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def recoverTree(self, root: TreeNode) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        last_node = TreeNode(val=float("-inf"))
+        small = large = None
+        stack = []
+        
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+            
+            root = stack.pop()
+            if last_node.val>=root.val:
+                if large==None:
+                    large, small = last_node,root
+                else:
+                    small = root
+                    break
+            last_node = root
+            root = root.right
+        
+        small.val, large.val = large.val, small.val
+        
+```
+
 
 
 #### Solution-morris!!!
@@ -2385,7 +2422,7 @@ class Solution:
 
 
 
-#### Solution-dynamic programming-太强了-**worth doing and thinking**-$
+#### Solution-dynamic programming-太强了-**worth doing and thinking**-$$
 
 Ref: https://leetcode.com/problems/unique-binary-search-trees-ii/discuss/31493/Java-Solution-with-DP
 

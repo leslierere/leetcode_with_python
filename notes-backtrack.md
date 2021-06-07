@@ -162,6 +162,12 @@ class Solution:
 
 https://leetcode.com/problems/combinations/description/
 
+Thinking process: 
+
+backtrack is easy to think of, which is a recursive solution, since this is like DFS, so of course we can have an according iterative solution as well. As there is a DFS solution, ofcourse we can have a BFS solution as well, which can be implemented iteratively.
+
+Since this is in essence a math problem,  C ( n, k ) = C ( n - 1, k - 1) + C ( n - 1, k ) , and from this formula we can see that a problem can be solved by solving subproblems first, thus we can implement recursively or using dp.
+
 #### Solution1-backtrack
 
 ```python
@@ -237,13 +243,76 @@ class Solution:
 
 
 
+#### Solution3-iterative based on backtrack
 
 
-#### Solution3-recursive
+
+#### Solution4-the other iterative
+
+Ref: https://leetcode.wang/leetCode-77-Combinations.html#%E8%A7%A3%E6%B3%95%E4%B8%89-%E8%BF%AD%E4%BB%A3%E6%B3%952
+
+> 解法三 迭代法2
+
+```java
+public List<List<Integer>> combine(int n, int k) {
+    if (n == 0 || k == 0 || k > n) return Collections.emptyList();
+    List<List<Integer>> res = new ArrayList<List<Integer>>();
+    //个数为 1 的所有可能
+    for (int i = 1; i <= n + 1 - k; i++) res.add(Arrays.asList(i));
+    //第一层循环，从 2 到 k
+    for (int i = 2; i <= k; i++) {
+        List<List<Integer>> tmp = new ArrayList<List<Integer>>();
+        //第二层循环，遍历之前所有的结果
+        for (List<Integer> list : res) {
+            //第三次循环，对每个结果进行扩展
+            //从最后一个元素加 1 开始，然后不是到 n ，而是和解法一的优化一样
+            //(k - (i - 1） 代表当前已经有的个数，最后再加 1 是因为取了 n
+            for (int m = list.get(list.size() - 1) + 1; m <= n - (k - (i - 1)) + 1; m++) {
+                List<Integer> newList = new ArrayList<Integer>(list);
+                newList.add(m);
+                tmp.add(newList);
+            }
+        }
+        res = tmp;
+    }
+    return res;
+}
+
+```
+
+
+
+#### Solution5-recursive
 
 Ref: https://leetcode.wang/leetCode-77-Combinations.html
 
 >  基于这个公式 C ( n, k ) = C ( n - 1, k - 1) + C ( n - 1, k ) 所用的思想
+
+Did @21.6.2
+
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        return self.helper(1, n, k, dict())
+        
+    def helper(self, start, n, k, seen):
+        if k==0:
+            return [[]]
+        elif n-start+1 == k:
+            return [[i for i in range(start, n+1)]]
+        elif (start, k) in seen:
+            return seen[(start, k)]
+        
+        res = []
+        res1 = self.helper(start+1, n, k-1, seen)
+        for subres in res1:
+            res.append([start]+subres)
+        res2 = self.helper(start+1, n, k, seen)
+        res.extend(res2)
+        seen[(start, k)] = res
+        
+        return res
+```
 
 
 
@@ -251,7 +320,7 @@ Ref: https://leetcode.wang/leetCode-77-Combinations.html
 
 #### Solution4-dynamic programming
 
-根据solution3来写
+根据solution3来写, not done
 
 
 
@@ -1050,6 +1119,14 @@ Ref: https://www.cnblogs.com/grandyang/p/5541012.html
 >     }
 > };
 > ```
+
+
+
+
+
+### 93. Restore IP Addresses
+
+https://leetcode.com/problems/restore-ip-addresses/
 
 
 

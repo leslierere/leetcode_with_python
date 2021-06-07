@@ -314,43 +314,30 @@ https://leetcode.com/problems/search-a-2d-matrix/description/
 
 #### Solution-binary search
 
+did@21.6.1
+
 ```python
 class Solution:
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-        if not matrix or not matrix[0]:
-            return False
-        rows = len(matrix)
-        cols = len(matrix[0])
+        left = 0
+        right = len(matrix)*len(matrix[0])-1
         
-        
-        order1 = 0
-        order2 = rows*cols-1
-
-        while order1<order2:
-            midOrder = (order1+order2)//2
-            midi, midj = self.getCodi(midOrder, cols)
-            if matrix[midi][midj]<target:
-                order1 = midOrder+1
-            elif matrix[midi][midj]==target:
+        while left<right:
+            mid = (left+right)>>1
+            i,j = self.order2coordinate(mid, matrix)
+            if matrix[i][j]==target:
                 return True
+            elif matrix[i][j]<target:
+                left = mid+1
             else:
-                order2 = midOrder-1
-            
-            
-        if order1==order2:
-            i, j = self.getCodi(order1, cols)
-            return matrix[i][j]==target
-        return False
-            
+                right = mid
+                
+        i,j = self.order2coordinate(left, matrix)
+        return matrix[i][j]==target
         
-    def getOrder(self, i , j, cols):
-        return i*cols+j
-    
-    def getCodi(self, order, cols):
-        i = order//cols
-        j = order%cols
         
-        return i,j
+    def order2coordinate(self, order, matrix):
+        return order//len(matrix[0]), order%len(matrix[0])
 ```
 
 

@@ -1545,6 +1545,34 @@ In the initial score, the positive infinity represents the worst possible score 
 
 
 
+#### Huffman codes
+
+Ref: 
+
+[Robert-Sedgewick,-Kevin-Wayne]-Algorithms,-4th-Ed(z-lib.org)
+
+Jeff
+
+We now examine a data-compression technique that can save a substantial amount of space in natural language ﬁles (and many other kinds of ﬁles). The idea is to abandon the way in which text ﬁles are usually stored: instead of using the usual 7 or 8 bits for each character, we use fewer bits for characters that appear often than for those that appear rarely.
+
+FIrst, we think of *A code associates each character with a bitstring: a symbol table with characters as keys and bitstrings as values.* But we will need delimiters.
+
+The next step is to *take advantage of the fact that delimiters are not needed if no character code is the preﬁx of another.* A code with this property is known as a **preﬁx-free** code. All preﬁx-free codes are uniquely decodable (without needing any delimiters) in this way, so preﬁx-free codes are widely used in practice. Note that ﬁxedlength codes such as 7-bit ASCII are preﬁx-free. Trie representation for preﬁx-free codes. One convenient way to represent a preﬁx-free code is with a trie.
+
+##### Optimal
+
+How do we ﬁnd the trie that leads to the best preﬁx-free code? 
+
+We have observed that high-frequency characters are nearer the root of the tree than lower-frequency characters and are therefore encoded with fewer bits, so this is a good code, but why is it an optimal preﬁx-free code?
+
+To answer this question, we begin by deﬁning the weighted external path length of a tree to be the sum of the weight (associated frequency count) times depth (see page 226) of all of the leaves. For any preﬁx-free code, the length of the encoded bitstring is equal to the weighted external path length of the corresponding trie.
+
+
+
+
+
+
+
 ## Notion
 
 ### Signature

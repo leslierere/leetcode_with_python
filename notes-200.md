@@ -476,5 +476,60 @@ class Solution:
 
 
 
+## 89. Gray Code
 
+https://leetcode.com/problems/gray-code/
+
+### Solution-backtrack
+
+did@21.6.4
+
+```python
+class Solution:
+    def grayCode(self, n: int) -> List[int]:
+        path = [0]
+        numbers = set()
+        numbers.add(0)
+        self.helper(n, path, 0, numbers)
+        return path
+        
+    def helper(self, n, path, number, seen):
+        if len(path)==1<<n:
+            return True
+        
+        for i in range(n):
+            if number&(1<<i)==0: # the bit is 0
+                next_num = number|(1<<i)
+                if next_num not in seen:
+                    seen.add(next_num)
+                    path.append(next_num)
+                    if self.helper(n, path, next_num, seen):
+                        return True
+                    path.pop()
+                    seen.remove(next_num)
+            else:
+                next_num = number&(~(1<<i))
+                if next_num not in seen:
+                    seen.add(next_num)
+                    path.append(next_num)
+                    if self.helper(n, path, next_num, seen):
+                        return True
+                    path.pop()
+                    seen.remove(next_num)
+                
+                    
+        return False
+```
+
+
+
+
+
+### Solution-$-递推，找规律？
+
+Ref: https://leetcode.com/problems/gray-code/discuss/29891/Share-my-solution
+
+
+
+### Solution-formula
 

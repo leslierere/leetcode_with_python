@@ -67,9 +67,13 @@ Ref: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
 
 
 
-### 81. Search in Rotated Sorted Array II
+### 81. Search in Rotated Sorted Array II-$
 
 Ref: https://leetcode.com/problems/search-in-rotated-sorted-array-ii/discuss/28195/Python-easy-to-understand-solution-(with-comments).
+
+For the subarray where the break locates, the invariant is the array[0]>=array[-1]
+
+If array[0]<array[-1], we can know it is ordered. Here in the solution, the equal will only happen, if left index equals to the mid, and they are still ordered.
 
 ```python
 def search(self, nums, target):
@@ -420,6 +424,8 @@ https://leetcode.com/problems/valid-perfect-square/description/
 * 对left和right的替换
 
   我的习惯是，right = len(n)-1, while left>right, left = mid + 1, right  = mid
+
+  有一种情况会出现死循环。。。应该是left = mid, right = mid, 但是到了最后缩到两个元素, 算mid总是会落到第一个元素，而他又不等于target，但left = mid+1就可以避免这点
 
 * 先对特殊值处理会更快（374）
 

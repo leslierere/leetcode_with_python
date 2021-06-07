@@ -422,8 +422,6 @@ class Solution:
 
 
 
-最基本的操作是，对一个字母进行insert/remove/replace的操作，从中间选取最小的
-
 [worth reading](https://leetcode.com/problems/edit-distance/discuss/159295/Python-solutions-and-intuition)，understand how to use recursive method to solve problem(memorize subresult to reduce stack), and how to convert recursive method to dp to prevent overflows of stack 
 
 https://leetcode.wang/leetCode-72-Edit-Distance.html
@@ -856,7 +854,7 @@ class Solution {
 
 https://leetcode.com/problems/decode-ways/description/
 
-@by others, 感觉还是初始化为0的比较能一般化
+@by others
 
 ```python
 class Solution:
@@ -868,7 +866,7 @@ class Solution:
         dp = [0 for _ in range(len(s) + 1)]
         dp[0] = 1
         for i in range(1, len(s)+1):
-            if s[i-1:i] != '0': # s[i-1]
+            if s[i-1] != '0': # s[i-1]
                 dp[i] += dp[i-1]
             if i != 1 and s[i-2] != '0' and s[i-2:i] < '27':
                 dp[i] += dp[i-2]
@@ -878,6 +876,8 @@ class Solution:
 
 
 #### Solution-dp-by myself
+
+这也写得太复杂了吧。。。
 
 Think of it in the way as the one in 276
 

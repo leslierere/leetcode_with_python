@@ -92,7 +92,7 @@ https://leetcode.com/problems/simplify-path/description/
 
 #### Solution-easy
 
-Using two pointer is slow, use split would be alright
+stack
 
 
 

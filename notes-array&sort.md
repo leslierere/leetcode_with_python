@@ -591,6 +591,57 @@ https://leetcode.com/problems/missing-ranges/
 
 https://leetcode.com/problems/merge-sorted-array/
 
+#### Solution-2 pointer
+
+```python
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+       
+        i = m-1
+        j = n-1
+        index = m+n-1
+        
+        while index>=0:
+            if j<0 or i>=0 and nums1[i]>=nums2[j]:
+                nums1[index] = nums1[i]
+                i-=1
+            else:
+                nums1[index] = nums2[j]
+                j-=1
+            index-=1
+```
+
+
+
+但是这个人的判断条件写得更好, 我们最后只需要考虑剩下j的情况，因为nums1中前i个自然就在那里了
+
+Ref: https://leetcode.com/problems/merge-sorted-array/discuss/29522/This-is-my-AC-code-may-help-you
+
+```java
+class Solution {
+public:
+    void merge(int A[], int m, int B[], int n) {
+        int i=m-1;
+		int j=n-1;
+		int k = m+n-1;
+		while(i >=0 && j>=0)
+		{
+			if(A[i] > B[j])
+				A[k--] = A[i--];
+			else
+				A[k--] = B[j--];
+		}
+		while(j>=0)
+			A[k--] = B[j--];
+    }
+};
+```
+
+
+
 
 
 #### 75. Sort Colors
@@ -603,38 +654,56 @@ https://leetcode.com/problems/sort-colors/
 
   想这个思路时，可以先考虑只有两个数的时候再推导到三个数的
 
+  ```python
+  class Solution:
+      def sortColors(self, nums: List[int]) -> None:
+          """
+          Do not return anything, modify nums in-place instead.
+          """
+          left = p = 0
+          right = len(nums)-1
+          
+          while p<=right: # think of why equal here
+              if nums[p]==1:
+                  p+=1
+              elif nums[p]==0:
+                  nums[p], nums[left] = nums[left], nums[p]
+                  left+=1
+                  p+=1
+              else:
+                  nums[p],nums[right] = nums[right], nums[p]
+                  right-=1
+  ```
+
+  
+
 * Solution-worth thinking
 
   本质是我们常用的递归思想，先假设一个小问题解决了，然后假如再来一个数该怎么操作。
 
-  Ref: https://leetcode.wang/leetCode-75-Sort-Colors.html
+  Ref: https://leetcode.wang/leetCode-75-Sort-Colors.html, https://leetcode.com/problems/sort-colors/discuss/26500/Four-different-solutions
 
   ```java
-  public void sortColors(int[] nums) {
+  // one pass in place solution
+  void sortColors(int A[], int n) {
       int n0 = -1, n1 = -1, n2 = -1;
-      int n = nums.length;
-      for (int i = 0; i < n; i++) {
-          if (nums[i] == 0) {
-              n2++;
-              nums[n2] = 2;
-              n1++;
-              nums[n1] = 1;
-              n0++;
-              nums[n0] = 0;
-          } else if (nums[i] == 1) {
-              n2++;
-              nums[n2] = 2;
-              n1++;
-              nums[n1] = 1;
-          } else if (nums[i] == 2) {
-              n2++;
-              nums[n2] = 2;
+      for (int i = 0; i < n; ++i) {
+          if (A[i] == 0) 
+          {
+              A[++n2] = 2; A[++n1] = 1; A[++n0] = 0;
+          }
+          else if (A[i] == 1) 
+          {
+              A[++n2] = 2; A[++n1] = 1;
+          }
+          else if (A[i] == 2) 
+          {
+              A[++n2] = 2;
           }
       }
   }
-  
   ```
-
+  
   
 
 #### 283. Move Zeroes

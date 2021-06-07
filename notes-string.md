@@ -800,6 +800,8 @@ https://leetcode.com/problems/valid-number/
 
 这个很clean：https://leetcode.com/problems/valid-number/discuss/173977/Python-with-simple-explanation
 
+其实这道题里面就只是有e的时候没有和你讲清楚，这个时候就可以向面试官确认。
+
 did@2020.9.12
 
 ```python
@@ -938,6 +940,10 @@ class Solution:
 ### 76. Minimum Window Substring-$
 
 https://leetcode.com/problems/minimum-window-substring/
+
+@2021.6.2
+
+开始我在找第一个匹配的时候单独把那部分循环拎了出来，但其实这没必要，这跟之后继续找匹配的时候可以放在一起
 
 * Solution- sliding window, 再做，我觉得不难@12.23
 
