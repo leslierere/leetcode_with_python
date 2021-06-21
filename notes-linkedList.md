@@ -1,10 +1,12 @@
-1.11
+ 1.11
 
 ### 206. Reverse Linked List-$
 
 https://leetcode.com/problems/reverse-linked-list/
 
 #### Solution-iterative
+
+You only need to save the tail of the reversed linked list before.
 
 ```python
 class Solution:
@@ -317,25 +319,57 @@ def isPalindrome(self, head):
 
 https://leetcode.com/problems/reorder-list/description/
 
-#### Solution-dfs, 写到一半
+#### Solution-O(1) space
 
-#### Solution
+Ref:https://leetcode.wang/leetcode-143-Reorder-List.html
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        # find the mid point
+        slow = fast = head
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
+        
+        right_head = None
+        if fast.next: # even numbers of nodes
+            right_head = slow.next.next
+            slow.next.next = None
+        else:
+            right_head = slow.next
+            slow.next = None
+        
+        # reverse the second half
+        pre = None
+        while right_head:
+            next_head = right_head.next
+            right_head.next = pre
+            pre = right_head
+            right_head = next_head
+        right_head = pre    
+        while head and right_head:
+            head_next = head.next
+            right_head_next = right_head.next
+            head.next = right_head
+            right_head.next = head_next
+            head = head_next
+            right_head = right_head_next
+```
+
+#### Solution-recursive-$
 
 Ref: https://leetcode.wang/leetcode-143-Reorder-List.html
 
-> 解法三:
->
-> 1 -> 2 -> 3 -> 4 -> 5 -> 6
-> 第一步，将链表平均分成两半
-> 1 -> 2 -> 3
-> 4 -> 5 -> 6
->
-> 第二步，将第二个链表逆序
-> 1 -> 2 -> 3
-> 6 -> 5 -> 4
->
-> 第三步，依次连接两个链表
-> 1 -> 6 -> 2 -> 5 -> 3 -> 4
+
 
 
 
@@ -666,7 +700,35 @@ Use PriorityQueue
 
 https://leetcode.com/problems/insertion-sort-list/description/
 
-不难
+#### O(1) space
+
+did@21.6.14
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def insertionSortList(self, head: ListNode) -> ListNode:
+        dummy = ListNode(-5001)
+        pre = dummy
+        while head:
+            node = dummy
+            head_next = head.next
+            head.next = None
+            while node and head.val>node.val:
+                pre = node
+                node = node.next
+            head.next = pre.next
+            pre.next = head
+            head = head_next
+            
+        return dummy.next
+```
+
+
 
 
 

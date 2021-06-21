@@ -198,9 +198,8 @@ class Solution:
 
 
 
-# 然后把 根 -> 右 -> 左 逆序，就是 左 -> 右 -> 根，也就是后序遍历了, 而这里res使用deque，这样最后我们就不需要倒叙一遍了
+# 然后把 根 -> 右 -> 左 逆序，就是 左 -> 右 -> 根，也就是后序遍历了, 而这里res使用deque，这样最后我们就不需要reverse
 # my solution based on huahua's
-# 这一面很重要
 from collections import deque
 class Solution:
     def postorderTraversal(self, root: TreeNode) -> List[int]:
@@ -240,9 +239,20 @@ class Solution:
         return res
 ```
 
-#### Solution3-iterative
+#### Solution3-iterative-$$-not break topology
 
 Ref: https://leetcode.com/problems/binary-tree-postorder-traversal/discuss/45551/Preorder-Inorder-and-Postorder-Iteratively-Summarization/120145
+
+Even though the final result is correct, imagine if there are topological dependencies among the nodes, the visiting order would be significant. Simply reversing the preorder result isn't right.
+
+Current node: **top**; Node whose value is just added: **pre**
+
+Add nodes to stack in the same way, to add the node value to result, we have 4 conditions:
+
+* not top.left **and** not top.right
+* has only top.left **and** top.left = pre
+* has only top.right **and** top.right = pre
+* has both top.left **and** top.right **and** top.right = pre
 
 ```python
 # Definition for a binary tree node.
@@ -277,7 +287,7 @@ class Solution:
 
 ![image-20210303144305495](https://tva1.sinaimg.cn/large/e6c9d24ely1go7dz8lhykj21hf0u07ag.jpg)
 
-#### Solution-recursive-worth doing
+#### Solution-recursive
 
 ```python
 # Definition for a binary tree node.
@@ -314,12 +324,12 @@ Pre, in, post的subject都是指当前node啦
 
 * recursive
 * iterative
-  * 普通stack：其实就是想清楚先进后出的关系
+  * 普通stack：每次把两个字子节点加进去
   * 模拟递归
 
 * Dfs
-  * preorder traversal (self-left-right)
-  * inorder traversal (left-self-right): stack
+  * preorder traversal (self-left-right)：模拟递归
+  * inorder traversal (left-self-right): 模拟递归
   * Postorder traversal (left-right-self)
 
 * bfs
@@ -978,7 +988,7 @@ class Solution:
 
 
 
-#### Solution-dfs-dictionary@20.8.15
+#### Solution-dfs postorder w/dictionary@20.8.15
 
 ```python
 # Definition for a binary tree node.
@@ -2252,7 +2262,7 @@ class Solution:
 
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
 
-#### solution-dfs-recursive-**worth doing and thinking**, 这个人的写法感觉抓到了关键-$$
+#### solution-dfs-recursive-**worth doing and thinking**, -$$
 
 Ref: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/discuss/37715/Python-solutions-(Recursively-BFS%2Bqueue-DFS%2Bstack)
 
@@ -2286,9 +2296,34 @@ class Solution:
 
 
 
+#### Solution - bfs-O(1) space-$$
+
+Ref: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/discuss/37472/A-simple-accepted-solution
+
+```java
+void connect(TreeLinkNode *root) {
+    if (root == NULL) return;
+    TreeLinkNode *pre = root;
+    TreeLinkNode *cur = NULL;
+    while(pre->left) {
+        cur = pre;
+        while(cur) {
+            cur->left->next = cur->right;
+            if(cur->next) cur->right->next = cur->next->left;
+            cur = cur->next;
+        }
+        pre = pre->left;
+    }
+}
+```
+
+
+
+
+
 #### Solution - dfs - stack
 
-#### Solution - bfs
+#### 
 
 
 
@@ -2320,29 +2355,44 @@ def connect(self, node):
 
 
 
-https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/discuss/37811/Simple-solution-using-constant-space
-
-这个人写的比较好理解，但其实tempChild不需要每次都重建
+#### Solution-bfs-O(1) space
 
 @20.8.23，就是如果我当层有next，我就帮下面的继续连
 
+Ref: https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/discuss/37811/Simple-solution-using-constant-space
+
 ```python
-public class Solution {
-    public void connect(TreeLinkNode root) {
-        
-        while(root != null){
-            TreeLinkNode tempChild = new TreeLinkNode(0);
-            TreeLinkNode currentChild = tempChild;
-            while(root!=null){
-                if(root.left != null) { currentChild.next = root.left; currentChild = currentChild.next;}
-                if(root.right != null) { currentChild.next = root.right; currentChild = currentChild.next;}
-                root = root.next;
-            }
-            root = tempChild.next;
-        }
-    }
-}
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val: int = 0, left: 'Node' = None, right: 'Node' = None, next: 'Node' = None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+"""
+
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        sentinel = Node()
+        node = root
+        while root:
+            current_child = sentinel
+            while root:
+                if root.left:
+                    current_child.next = root.left
+                    current_child = current_child.next
+                if root.right:
+                    current_child.next = root.right
+                    current_child = current_child.next
+                root = root.next
+            root = sentinel.next
+            sentinel.next = None
+            
+        return node
 ```
+
+
 
 
 

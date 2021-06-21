@@ -533,3 +533,393 @@ Ref: https://leetcode.com/problems/gray-code/discuss/29891/Share-my-solution
 
 ### Solution-formula
 
+
+
+
+
+## 106. Construct Binary Tree from Inorder and Postorder Traversal
+
+https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+
+### Solution
+
+模拟递归这个我觉得很妙
+
+让右边先recurse, 不然像我的每次还要在postorder里面找
+
+Ref: [https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/221681/Don't-use-top-voted-Python-solution-for-interview-here-is-why.](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/221681/Don't-use-top-voted-Python-solution-for-interview-here-is-why.)
+
+```python
+class Solution:
+    def buildTree(self, inorder, postorder):
+        map_inorder = {}
+        for i, val in enumerate(inorder): map_inorder[val] = i
+        def recur(low, high):
+            if low > high: return None
+            x = TreeNode(postorder.pop())
+            mid = map_inorder[x.val]
+            x.right = recur(mid+1, high)
+            x.left = recur(low, mid-1)
+            return x
+        return recur(0, len(inorder)-1)
+```
+
+
+
+did@21.6.7
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        dic = dict()
+        for i,val in enumerate(inorder):
+            dic[val] = i
+        return self.helper(inorder, postorder, len(inorder), 0, 0, dic)
+            
+            
+    def helper(self, inorder, postorder, length, start1, start2, dic):
+        if length==0:
+            return None
+        
+        root_val = postorder[start2+length-1]
+        index = dic[root_val]
+        root = TreeNode(val=root_val)
+        left_len = index-start1
+        right_len = length-left_len-1
+        root.left = self.helper(inorder, postorder, left_len, start1, start2, dic)
+        root.right = self.helper(inorder, postorder, right_len, index+1, start2+left_len, dic)
+        return root
+```
+
+
+
+
+
+## 114. Flatten Binary Tree to Linked List
+
+https://leetcode.com/problems/flatten-binary-tree-to-linked-list/
+
+### recursive-$
+
+Ref: https://leetcode.com/problems/flatten-binary-tree-to-linked-list/discuss/36977/My-short-post-order-traversal-Java-solution-for-share
+
+也可以用iterative的形式来做，也就是[这里](https://leetcode.wang/leetcode-114-Flatten-Binary-Tree-to-Linked-List.html#%E8%A7%A3%E6%B3%95%E4%B8%89)的解法三
+
+```java
+private TreeNode prev = null;
+
+public void flatten(TreeNode root) {
+    if (root == null)
+        return;
+    flatten(root.right);
+    flatten(root.left);
+    root.right = prev;
+    root.left = null;
+    prev = root;
+}
+```
+
+
+
+did by myself@21.6.8
+
+其实看看我自己的code其实是可以想到怎么把他改装成上面那样的, 反正面对tree，先可以有一些比较straightforward递归的形式，然后可以把它改装成普通的traversal, like 106,109, here
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        self.dfs(root)
+        
+    def dfs(self, node):
+        if not node:
+            return None, None
+        
+        left_head, left_tail = self.dfs(node.left)
+        right_head, right_tail = self.dfs(node.right)
+        node.left = None
+             
+        if left_head and right_head:
+            node.right = left_head
+            left_tail.right = right_head
+            return node, right_tail
+        elif right_head:
+            node.right = right_head
+            return node, right_tail
+        elif left_head:
+            node.right = left_head
+            return node, left_tail
+        else:
+            return node, node
+```
+
+
+
+
+
+## 120. Triangle
+
+https://leetcode.com/problems/triangle/
+
+### solution-dp
+
+但这里不需要一定按照从上到下向杨辉三角那样，从下至上更方便
+
+
+
+## 135. Candy
+
+https://leetcode.com/problems/candy/
+
+### Solution
+
+Ref: https://leetcode.com/problems/candy/discuss/135698/Simple-solution-with-one-pass-using-O(1)-space
+
+
+
+
+
+## 137. Single Number II
+
+https://leetcode.com/problems/single-number-ii/
+
+#### Solution-tricky
+
+Ref: https://leetcode.com/problems/single-number-ii/discuss/156957/Python
+
+```python
+def singleNumber(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    return (sum(set(nums)) *  3 - sum(nums)) // 2
+```
+
+
+
+#### Solution-bit
+
+Ref: https://leetcode.com/problems/single-number-ii/discuss/43385/Python-bitwise-solution
+
+Cuz at i==31, this is used for sign bit except for python, thus we need deduct that if we get a number larger than 2**31-1.
+
+```python
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        res = 0
+        
+        for i in range(32):
+            count = 0
+            mask = 1<<i
+            for num in nums:
+                if num&mask:
+                    count+=1
+                    
+            if count%3!=0:
+                res = res|mask
+        if res>=(1<<31):
+            return res-(1<<32)
+        return res
+```
+
+
+
+
+
+## 545. Boundary of Binary Tree
+
+https://leetcode.com/problems/boundary-of-binary-tree/
+
+### Solution-dfs-pre,postorder
+
+did@21.6.16
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def boundaryOfBinaryTree(self, root: TreeNode) -> List[int]:
+        res = []
+        res.append(root.val)
+        self.preorder(root.left, True, res)
+        self.postorder(root.right, True, res)
+        return res
+        
+    def preorder(self, root, is_bound, res):
+        if not root:
+            return
+        if not root.left and not root.right:
+            res.append(root.val)
+            return
+        if is_bound:
+            res.append(root.val)
+        if root.left and root.right:
+            self.preorder(root.left, is_bound, res)
+            self.preorder(root.right, False, res)
+        elif root.left:
+            self.preorder(root.left, is_bound, res)
+        else:
+            self.preorder(root.right, is_bound, res)
+            
+    def postorder(self, root, is_bound, res):
+        if not root:
+            return
+        if not root.left and not root.right:
+            res.append(root.val)
+            return
+        
+        if root.left and root.right:
+            self.postorder(root.left, False, res)
+            self.postorder(root.right, is_bound, res)
+        elif root.left:
+            self.postorder(root.left, is_bound, res)
+        else:
+            self.postorder(root.right, is_bound, res)
+        if is_bound:
+            res.append(root.val)
+```
+
+
+
+
+
+## 166. Fraction to Recurring Decimal
+
+https://leetcode.com/problems/fraction-to-recurring-decimal/
+
+did@21.6.19
+
+```python
+class Solution:
+    def fractionToDecimal(self, numerator: int, denominator: int) -> str:
+        result = ""
+        if numerator*denominator<0:
+            result = "-"
+        numerator = abs(numerator)
+        denominator = abs(denominator)
+        
+        result += str(numerator//denominator)
+        remainder = numerator%denominator
+        if remainder==0:
+            return result
+        
+        remainder_dic = dict()
+        remainder_dic[remainder] = 0
+        floats = ""
+        repeat = 0
+        while remainder:
+            power = 1
+            while remainder*10**power<denominator:
+                power+=1
+            numerator = remainder*10**power
+            temp = numerator//denominator
+            remainder = numerator%denominator
+            floats+="0"*(power-1)+str(temp)
+            if remainder in remainder_dic:
+                repeat=len(floats)-remainder_dic[remainder]
+                return result+"."+floats[:-repeat]+"("+floats[-repeat:]+")"
+            remainder_dic[remainder] = len(floats)
+        
+        return result+"."+floats
+```
+
+
+
+
+
+## 172. Factorial Trailing Zeroes
+
+https://leetcode.com/problems/factorial-trailing-zeroes/
+
+Ref: https://leetcode.wang/leetcode-172-Factorial-Trailing-Zeroes.html
+
+> 综上，规律就是每隔 `5` 个数，出现一个 `5`，每隔 `25` 个数，出现 `2` 个 `5`，每隔 `125` 个数，出现 `3` 个 `5`... 以此类推。
+>
+> 最终 `5` 的个数就是 `n / 5 + n / 25 + n / 125 ...`
+>
+> 写程序的话，如果直接按照上边的式子计算，分母可能会造成溢出。所以算 `n / 25` 的时候，我们先把 `n`更新，`n = n / 5`，然后再计算 `n / 5` 即可。后边的同理。
+
+```python
+class Solution:
+    def trailingZeroes(self, n: int) -> int:
+        res = 0
+        
+        while n:
+            res+=n//5
+            n = n//5
+            
+        return res
+```
+
+
+
+## 179. Largest Number
+
+https://leetcode.com/problems/largest-number/
+
+Ref: https://leetcode.com/problems/largest-number/discuss/53298/Python-different-solutions-(bubble-insertion-selection-merge-quick-sorts).
+
+multiple sort here, all in-place
+
+
+
+
+
+## 190. Reverse Bits
+
+https://leetcode.com/problems/reverse-bits/
+
+#### Solution
+
+Ref: https://leetcode.com/problems/reverse-bits/discuss/54738/Sharing-my-2ms-Java-Solution-with-Explanation
+
+```java
+public int reverseBits(int n) {
+    if (n == 0) return 0;
+    
+    int result = 0;
+    for (int i = 0; i < 32; i++) {
+        result <<= 1;
+        if ((n & 1) == 1) result++;
+        n >>= 1;
+    }
+    return result;
+}
+```
+
+
+
+
+
+## 191. Number of 1 Bits
+
+https://leetcode.com/problems/number-of-1-bits/
+
+### Solution-just count
+
+### Solution-tricky
+
+Ref: https://leetcode.wang/leetcode-191-Number-of-1-Bits.html
+
+> 当我们对一个数减 `1` 的话，比如原来的数是 `...1010000`，然后减一就会向前借位，直到遇到最右边的第一个 `1`，变成 `...1001111`，然后我们把它和原数按位与，就会把从原数最右边 `1` 开始的位置全部置零了 `...10000000`。
+>
+> 有了这个技巧，我们只需要把原数依次将最右边的 `1` 置为 `0`，直到原数变成 `0`，记录总共操作了几次即可。

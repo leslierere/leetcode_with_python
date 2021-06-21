@@ -1015,6 +1015,8 @@ class Solution:
 
 https://leetcode.com/problems/word-break-ii/description/
 
+change on the top of problem 139.
+
 #### Solution1-dfs+memory
 
 想清楚为啥要根据start momorize, 因为切的时候，就是到后面有的地方就是之前已经切过了
@@ -1058,15 +1060,36 @@ class Solution:
 
 
 
-#### Solution2
+#### Solution2-dp
 
-Ref: https://www.youtube.com/watch?v=JqOIRBC0_9c
+Did@21.6.13
 
-![image-20200110131829109](https://tva1.sinaimg.cn/large/006tNbRwgy1gas2if0ca2j31c00u0npd.jpg)
+```python
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        
+        min_len = max_len = len(wordDict[0])
+        for word in wordDict:
+            min_len = min(min_len, len(word))
+            max_len = max(max_len, len(word))
+        wordSet = set(wordDict)
+            
+        dp = [[] for i in range(len(s)+1)]
+        dp[0] = [[]]
+        
+        for end in range(min_len, len(s)+1):
+            for length in range(min_len, min(max_len, end)+1):
+                if s[end-length:end] in wordSet:
+                    if len(dp[end-length])!=0:
+                        for sub in dp[end-length]:
+                            dp[end].append(sub+[s[end-length:end]])
+        if len(dp[-1])==0:
+            return dp[-1]
+        
+        return [" ".join(sentence) for sentence in dp[-1]]
+```
 
-> 找分割点，右边子串必须在字典里，再对左边子串递归求解。
->
-> 每一个wordbreak返回来，我们都记忆一下，比如这里catsand->['cat sand', 'cats and'], 下次就可以直接返回
+
 
 
 

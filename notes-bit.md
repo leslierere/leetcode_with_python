@@ -46,15 +46,43 @@ This means 1 would be left shifted n times
 
 https://leetcode.com/articles/majority-element/
 
-#### Solution-Boyer-Moore Voting Algorithm-worth
+#### Solution-Boyer-Moore Voting Algorithm-worth$$$
 
 https://leetcode.com/articles/majority-element/
+
+太强了
+
+
 
 #### Solution-bit
 
 https://leetcode.com/problems/majority-element/discuss/51612/C%2B%2B-6-Solutions
 
 还不太理解。。。。
+
+did@21.6.18
+
+```python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        bits = [0 for i in range(33)]
+        
+        for num in nums:
+            for i in range(33):
+                mask = 1<<i
+                
+                if mask&num:
+                    bits[i]+=1
+                    
+        res = 0
+        for i, number in enumerate(bits):
+            if number>len(nums)//2:
+                res = res|(1<<i)
+                
+        return res if res<=(1<<32-1) else res-(1<<33)
+```
+
+
 
 
 

@@ -512,9 +512,11 @@ Ref: https://leetcode.com/problems/interleaving-string/discuss/31948/8ms-C%2B%2B
 
 1.16
 
-### 174. Dungeon Game-$$
+### 174. Dungeon Game-$$$
 
 https://leetcode.com/problems/dungeon-game/description/
+
+Learned: we need to identify the initial state and final state first to think of the subproblems.
 
 #### Solution-dp-worth, right bottom to left top
 
@@ -543,6 +545,36 @@ class Solution:
                     dp[i][j] = 1
                 
         return dp[0][0]
+```
+
+#### Solution-recursion
+
+did@21.6.20
+
+```python
+class Solution:
+    def calculateMinimumHP(self, dungeon: List[List[int]]) -> int:
+        dic = dict()
+        self.helper(dungeon, 0, 0, dic)
+        return dic[(0,0)]
+        
+        
+    def helper(self, dungeon, i, j, dic):
+        if i>=len(dungeon) or j>=len(dungeon[0]):
+            return float("inf")
+        elif (i,j) in dic:
+            return dic[(i,j)]
+        elif i==len(dungeon)-1 and j==len(dungeon[0])-1:
+            dic[(i,j)] = 1 if dungeon[i][j]>=0 else -dungeon[i][j]+1
+            return dic[(i,j)]
+        
+        
+        right = self.helper(dungeon, i, j+1, dic)
+        bottom = self.helper(dungeon, i+1, j, dic)
+        
+        cur_need = min(right, bottom)-dungeon[i][j]
+        dic[(i,j)] = max(1, cur_need)
+        return dic[(i,j)]
 ```
 
 

@@ -59,12 +59,6 @@ A really [cool](https://leetcode.com/problems/search-in-rotated-sorted-array/dis
 
 
 
-### 153. Find Minimum in Rotated Sorted Array
-
-Ref: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
-
-
-
 
 
 ### 81. Search in Rotated Sorted Array II-$
@@ -108,6 +102,27 @@ def search(self, nums, target):
 
 Ref: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
 
+did@21.6.16
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        
+        left = 0
+        right = len(nums)-1
+        
+        while left<right:
+            mid = (left+right)//2
+            if nums[left]>nums[mid]: # the left is in disorder
+                right = mid
+            elif nums[mid]>nums[right]: # the right is in disorder
+                left = mid+1
+            else:
+                return nums[left]
+                
+        return nums[left]
+```
+
 
 
 ### 154. Find Minimum in Rotated Sorted Array II
@@ -120,13 +135,41 @@ Ref: https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/discu
 
 学会这样分析
 
+did@ 21.6.16
+
+```python
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        left = 0
+        right = len(nums)-1
+        
+        while left<right:
+            mid = (left+right)//2
+            if nums[left]>nums[mid]: # left side is disorder
+                right = mid
+            elif nums[mid]>nums[right]:
+                left = mid+1
+            elif nums[mid]==nums[right]:
+                right-=1
+            elif left!=mid and nums[left]==nums[mid]:
+                left+=1
+            else:
+                return nums[left]
+            
+        return nums[left]
+```
+
+
+
 
 
 ### 162. Find Peak Element
 
 https://leetcode.com/problems/find-peak-element/description/
 
-Ref: https://leetcode.com/problems/find-peak-element/discuss/50239/Java-solution-and-explanation-using-invariants
+#### Solution-$
+
+Ref: https://leetcode.wang/leetcode-162-Find-Peak-Element.html
 
 
 

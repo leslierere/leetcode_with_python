@@ -293,16 +293,9 @@ https://leetcode.com/problems/unique-word-abbreviation/description/
 
 https://leetcode.com/problems/two-sum-iii-data-structure-design/description/
 
-#### Solution-easy
+#### Solution
 
-注意这个test case
-
-```python
-["TwoSum","add","find"]
-[[],[0],[0]]
-```
-
-
+考虑tradeoff：https://leetcode.com/problems/two-sum-iii-data-structure-design/discuss/52005/Trade-off-in-this-problem-should-be-considered
 
 
 
@@ -346,11 +339,9 @@ https://leetcode.com/problems/lru-cache/description/
 
 #### Solution-queue, hashtable, 很慢
 
-#### Solution-doubly linked list
+#### Solution-dic+doubly linked list
 
-
-
-Ref: Python Dict + Double LinkedList
+Ref: https://leetcode.com/problems/lru-cache/discuss/45926/Python-Dict-%2B-Double-LinkedList
 
 
 

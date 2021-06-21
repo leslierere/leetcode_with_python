@@ -1,12 +1,12 @@
 7.23
 
-#### 27. Remove Element-two pointers
+### 27. Remove Element-two pointers
 
 https://leetcode.com/problems/remove-element/
 
 
 
-#### 26. Remove Duplicates from Sorted Array-two pointers
+### 26. Remove Duplicates from Sorted Array-two pointers
 
 https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 
@@ -27,13 +27,13 @@ class Solution:
 
 
 
-#### 80. Remove Duplicates from Sorted Array II
+### 80. Remove Duplicates from Sorted Array II
 
 https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
 
 
 
-#### 277. Find the Celebrity
+### 277. Find the Celebrity
 
 https://leetcode.com/problems/find-the-celebrity/
 
@@ -41,17 +41,17 @@ https://leetcode.com/problems/find-the-celebrity/
 
 7.24
 
-#### 189. Rotate Array
+### 189. Rotate Array
 
 https://leetcode.com/problems/rotate-array/
 
-* solution
+#### solution
 
-  Approach #4 Using Reverse 
+Approach #4 in Solution Using Reverse 
 
 
 
-#### 41. First Missing Positive
+### 41. First Missing Positive
 
 https://leetcode.com/problems/first-missing-positive/
 
@@ -63,7 +63,7 @@ https://leetcode.com/problems/first-missing-positive/
 
 
 
-#### 299. Bulls and Cows
+### 299. Bulls and Cows
 
 https://leetcode.com/problems/bulls-and-cows/
 
@@ -78,7 +78,7 @@ https://leetcode.com/problems/bulls-and-cows/
 
   
 
-#### 274. H-Index
+### 274. H-Index
 
 https://leetcode.com/problems/h-index/
 
@@ -92,33 +92,45 @@ https://leetcode.com/problems/h-index/
 
 7.25
 
-#### 275. H-Index II
+### 275. H-Index II
 
 https://leetcode.com/problems/h-index-ii/
 
 
 
-#### 134. Gas Station
+### 134. Gas Station
 
 https://leetcode.com/problems/gas-station/
 
-* solution
-
-  https://leetcode.com/problems/gas-station/discuss/42568/Share-some-of-my-ideas.
-
-  > - If car starts at A and can not reach B. Any station between A and B
-  >   can not reach B.(B is the first station that A can not reach.)
-  > - If the total number of gas is bigger than the total number of cost. There must be a solution.
+#### Solution
 
 
 
-#### 243. Shortest Word Distance
+We can absolutely know that if total cost is larger than total cost, we got no solution. And for total cost==total gas, how to prove we must have a solution?
+
+Suppose there is a new array which will records the increment amount at a gas station, increments[i] = gas[i]-cost[i].
+
+Suppose when total cost==total gas, there is no solution, in this case, *starting from any gas station, at least one of the cumulative amount of increments will be less than zero*, 
+
+```
+gas = [1,2,3,4,5], cost = [3,4,5,1,2], increments = [-2, -2, -2, 3, 3]
+```
+
+Use this example, starting from i = 2, the cumulative value is -2, 1, 4, 2, 0 consecutively. So starting from i=2 is impossible to finish the route. See the cumulative value on the other side, we can know it is actually the sum of the sub array. To iterate *starting from any gas station, at least one of the cumulative amount of increments will be less than zero*, it is actually for any starting index, at least one sum of subarray is less than zero. Since we know the sum of the max length array is 0, if we find one sum of subarray<0, name it **array1**, a sum equals **sum1**, then the sum of subarray composed of the remaining numbers>0, name it **array2**, a sum equals **sum2**, we should finish going through **array2** before **array1**, in this case, we can make sure in **array1** we won't starve as sum1+sum2 = 0. However, you may ask, in the **array2**, there can be subarray whose sum<0, then for the remaining part, the sum also>0, and we should go through that first, and in the worst case, we always find one subarray whose sum<0, and we do this recursively, we will finnally land at an array whose sum>0 and there is just one element there. So we can definitly has one solution.
+
+Ref: https://leetcode.com/problems/gas-station/discuss/42572/Proof-of-%22if-total-gas-is-greater-than-total-cost-there-is-a-solution%22.-C%2B%2B
+
+好好体会。。。
+
+
+
+### 243. Shortest Word Distance
 
 https://leetcode.com/problems/shortest-word-distance/
 
 
 
-#### 244. Shortest Word Distance II
+### 244. Shortest Word Distance II
 
 https://leetcode.com/problems/shortest-word-distance-ii/
 
@@ -128,13 +140,13 @@ https://leetcode.com/problems/shortest-word-distance-ii/
 
 7.26
 
-#### 245. Shortest Word Distance III
+### 245. Shortest Word Distance III
 
 https://leetcode.com/problems/shortest-word-distance-iii/
 
 
 
-#### 55. Jump Game
+### 55. Jump Game
 
 https://leetcode.com/problems/jump-game/
 
@@ -142,7 +154,7 @@ https://leetcode.com/problems/jump-game/
 
 
 
-#### 45. Jump Game II
+### 45. Jump Game II
 
 https://leetcode.com/problems/jump-game-ii/
 
@@ -173,15 +185,75 @@ class Solution:
 
 
 
-#### 121. Best Time to Buy and Sell Stock
+### 121. Best Time to Buy and Sell Stock
 
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
 
+#### Solution
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        profit = 0
+        
+        min_price = prices[0]
+        
+        for price in prices:
+            profit = max(price-min_price, profit)
+            min_price = min(min_price, price)
+            
+        return profit
+```
+
+#### Solution-maximum subarray
+
+wow
+
+Ref: https://leetcode.com/problems/best-time-to-buy-and-sell-stock/discuss/39038/Kadane's-Algorithm-Since-no-one-has-mentioned-about-this-so-far-%3A)-(In-case-if-interviewer-twists-the-input)
 
 
-#### 122. Best Time to Buy and Sell Stock II
+
+### 122. Best Time to Buy and Sell Stock II
 
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
+
+#### Solution-stack
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        stack = [prices[0]]
+        profit = 0
+        
+        for i in range(1, len(prices)):
+            if prices[i]<=stack[-1]:
+                if len(stack)>1:
+                    profit += stack[-1]-stack[0]
+                stack = [prices[i]]
+            else:
+                stack.append(prices[i])
+        
+        if stack:
+            profit+=stack[-1]-stack[0]
+        return profit
+```
+
+
+
+#### Solution
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        res = 0
+        
+        for i in range(1, len(prices)):
+            diff = prices[i]-prices[i-1]
+            if diff>0:
+                res+=diff
+            
+        return res
+```
 
 
 
@@ -189,29 +261,113 @@ https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 
 7.27
 
-#### 123. Best Time to Buy and Sell Stock III
+### 123. Best Time to Buy and Sell Stock III
 
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/
 
-* Solution-dynamic programming
+#### Solution-dynamic programming-$$$
 
-  worth thinking
+Ref: https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/discuss/135704/Detail-explanation-of-DP-solution
 
-  主要是一个累计的思想，dp到底是啥？
+TLE
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        dp = [[0 for i in range(len(prices))] for j in range(3)]
+        
+        for k in range(1,3): # number of transactions
+            for i in range(1, len(dp[0])): # selling day
+                dp[k][i] = max(dp[k][i-1], prices[i]-prices[0]) # today sell or not sell
+                for j in range(0,i): # buying day, TODO
+                    dp[k][i] = max(dp[k][i], prices[i]-prices[j]+dp[k-1][j])
+                
+        return dp[2][-1]
+```
 
 
 
-#### 188. Best Time to Buy and Sell Stock IV
+做一个min_val的替换
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        dp = [[0 for i in range(len(prices))] for j in range(3)]
+        
+        for k in range(1,3): # number of transactions
+            for i in range(1, len(dp[0])): # selling day
+                # at first, min_val = prices[j]-dp[k-1][j-1]
+                # since we iterate j starting at 1, so when j==0
+                # min_val = prices[0] - dp[k-1][0-1], dp[k-1][j-1] has to be 0
+                min_val = prices[0]
+                for j in range(1,i): # buying day
+                    min_val = min(min_val, prices[j]-dp[k-1][j-1]) 
+                dp[k][i] = max(dp[k][i-1], prices[i]-min_val)
+                    
+        return dp[2][-1]
+```
+
+
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        dp = [[0 for i in range(len(prices))] for j in range(3)]
+        
+        for k in range(1,3): # number of transactions
+            min_val = prices[0]
+            dp[k][1] = max(dp[k][0], prices[1]-min_val)
+            for i in range(2, len(dp[0])): # selling day
+                # min_val = prices[0]
+                #for j in range(1,i): # buying day, everytime, what we actually update is just i-1
+                min_val = min(min_val, prices[i-1]-dp[k-1][i-2]) 
+                   	# min_val = min(min_val, prices[j]-dp[k-1][j-1]) 
+                dp[k][i] = max(dp[k][i-1], prices[i]-min_val)
+                    
+        return dp[2][-1]
+      
+```
+
+
+
+
+
+
+
+### 188. Best Time to Buy and Sell Stock IV
 
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/
 
-* solution
+* Solution-dp
 
   ***worth thinking and doing***
 
 
 
-#### 11. Container With Most Water
+Refer to 123
+
+```python
+class Solution:
+    def maxProfit(self, k: int, prices: List[int]) -> int:
+        if len(prices)<2:
+            return 0
+        dp = [[0 for i in range(len(prices))] for j in range(k+1)]
+        
+        for k in range(1,k+1): # number of transactions
+            min_val = prices[0]
+            dp[k][1] = max(dp[k][0], prices[1]-min_val)
+            for i in range(2, len(dp[0])): # selling day
+                min_val = min(min_val, prices[i-1]-dp[k-1][i-2]) 
+                dp[k][i] = max(dp[k][i-1], prices[i]-min_val)
+                    
+        return dp[k][-1]
+```
+
+
+
+
+
+### 11. Container With Most Water
 
 https://leetcode.com/problems/container-with-most-water/
 
@@ -240,7 +396,7 @@ class Solution:
 
 
 
-#### 334. Increasing Triplet Subsequence
+### 334. Increasing Triplet Subsequence
 
 https://leetcode.com/problems/increasing-triplet-subsequence/
 
@@ -269,7 +425,7 @@ https://leetcode.com/problems/increasing-triplet-subsequence/
 
 7.29
 
-#### 42. Trapping Rain Water-not submitted
+### 42. Trapping Rain Water-not submitted
 
 * Solution-stack
 * Solution-two pointers
@@ -278,7 +434,7 @@ https://leetcode.com/problems/increasing-triplet-subsequence/
 
 
 
-#### 128. Longest Consecutive Sequence
+### 128. Longest Consecutive Sequence
 
 https://leetcode.com/problems/longest-consecutive-sequence/
 
@@ -286,17 +442,68 @@ https://leetcode.com/problems/longest-consecutive-sequence/
 
 
 
-#### 164. Maximum Gap
+
+
+### 164. Maximum Gap
 
 https://leetcode.com/problems/maximum-gap/submissions/
 
-* Solution-bucket sort
+#### Solution-radix sort-$
 
-  
+@21.6.18
+
+```python
+class Solution:
+    def maximumGap(self, nums: List[int]) -> int:
+        if len(nums)<2:
+            return 0
+        maxNum = max(nums)
+        if maxNum==0:
+            return 0
+        
+        radix = 0 # the number of digits we have
+        num = maxNum
+        while num:
+            num=num//10
+            radix+=1
+         
+        for i in range(radix):
+            divisor=10**i
+            temp = [[] for i in range(10)] 
+            for num in nums:
+                index = (num//divisor)%10
+                temp[index].append(num)
+            nums = []
+            for subarray in temp:
+                for num in subarray:
+                    nums.append(num)
+        
+        maxDiff = 0
+        for i in range(1, len(nums)):
+            maxDiff = max(maxDiff, nums[i]-nums[i-1])
+            
+        return maxDiff
+```
+
+
+
+#### Solution-bucket sort
+
+Ref: https://leetcode.com/problems/maximum-gap/discuss/1240543/Python-Bucket-sort-explained
+
+可以看一下cs61b notes里关于bucket sort的理解
+
+Ref: https://leetcode.com/problems/maximum-gap/discuss/50643/bucket-sort-JAVA-solution-with-explanation-O(N)-time-and-space
+
+> Let gap = ceiling[(***max*** - ***min*** ) / (N - 1)]. We divide all numbers in the array into n-1 buckets, where k-th bucket contains all numbers in [***min*** + (k-1)gap, ***min*** + k*gap). Since there are n-2 numbers that are not equal ***min*** or ***max*** and there are n-1 buckets, **at least one of the buckets are empty**. We only need to store the largest number and the smallest number in each bucket.
+
+The key here is that **at least one of the buckets are empty**. Also, I feel like it is needed that we get the ceiling rather than the floor.
+
+
 
 7.30
 
-#### 287. Find the Duplicate Number-similar to 136 Single number
+### 287. Find the Duplicate Number-similar to 136 Single number
 
 https://leetcode.com/problems/find-the-duplicate-number/
 
@@ -313,7 +520,7 @@ https://leetcode.com/problems/find-the-duplicate-number/
 
 
 
-#### 4. Median of Two Sorted Arrays
+### 4. Median of Two Sorted Arrays
 
 https://leetcode.com/problems/median-of-two-sorted-arrays/
 
@@ -329,7 +536,7 @@ https://leetcode.com/problems/median-of-two-sorted-arrays/discuss/2652/Share-one
 
 
 
-#### 289. Game of Life
+### 289. Game of Life
 
 https://leetcode.com/problems/game-of-life/
 
@@ -337,7 +544,7 @@ https://leetcode.com/problems/game-of-life/
 
 
 
-#### 16. 3Sum Closest
+### 16. 3Sum Closest
 
 https://leetcode.com/problems/3sum-closest/
 
@@ -376,7 +583,7 @@ class Solution:
 
 
 
-#### 56. Merge Intervals
+### 56. Merge Intervals
 
 https://leetcode.com/problems/merge-intervals/
 
@@ -386,7 +593,7 @@ https://leetcode.com/problems/merge-intervals/
 
 
 
-#### 57. Insert Interval
+### 57. Insert Interval
 
 https://leetcode.com/problems/insert-interval/
 
@@ -398,13 +605,13 @@ https://leetcode.com/problems/insert-interval/
 
 7.31
 
-#### 253. Meeting Rooms II
+### 253. Meeting Rooms II
 
 https://leetcode.com/problems/meeting-rooms-ii/
 
 
 
-#### 352. Data Stream as Disjoint Intervals
+### 352. Data Stream as Disjoint Intervals
 
 https://leetcode.com/problems/data-stream-as-disjoint-intervals/
 
@@ -418,7 +625,7 @@ https://leetcode.com/problems/data-stream-as-disjoint-intervals/
 
 
 
-#### 53. Maximum subarray
+### 53. Maximum subarray
 
 https://leetcode.com/problems/maximum-subarray/submissions/
 
@@ -444,21 +651,52 @@ https://leetcode.com/problems/maximum-subarray/submissions/
 
 
 
-#### 239. Sliding Window Maximum
+### 239. Sliding Window Maximum
 
 https://leetcode.com/problems/sliding-window-maximum/
 
-* Solution-deque-not done
+#### Solution-pq
 
-  ***worth thinking and doing***
+did@21.6.16
 
-* Solution- dynamic programming-not done
+```python
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        pq = []
+        for i in range(k):
+            pq.append((-nums[i],i))
+        heapq.heapify(pq)
+        res = [-pq[0][0]]
+        
+        for i in range(1, len(nums)-k+1):
+            num = nums[i+k-1]
+            heapq.heappush(pq, (-num, i+k-1))
+            value, index = pq[0]
+            while index<i:
+                heapq.heappop(pq)
+                value, index = pq[0]
+            res.append(-pq[0][0])
+            
+        return res
+```
 
-  dont understand
+
+
+#### Solution-deque-not done
+
+***worth thinking and doing***
+
+Ref: https://leetcode.com/problems/sliding-window-maximum/discuss/65884/Java-O(n)-solution-using-deque-with-explanation
+
+Our current window always keeps the things in the range and keeps in a descending order.
+
+#### Solution- dynamic programming-not done
+
+dont understand
 
 
 
-#### 295. Find Median from Data Stream
+### 295. Find Median from Data Stream
 
 https://leetcode.com/problems/find-median-from-data-stream/
 
@@ -474,7 +712,7 @@ https://leetcode.com/problems/find-median-from-data-stream/
 
 8.2
 
-#### 325. Maximum Size Subarray Sum Equals k
+### 325. Maximum Size Subarray Sum Equals k
 
 https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/
 
@@ -488,7 +726,7 @@ https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/
 
 
 
-#### 209. Minimum Size Subarray Sum
+### 209. Minimum Size Subarray Sum
 
 https://leetcode.com/problems/minimum-size-subarray-sum/
 
@@ -502,7 +740,7 @@ https://leetcode.com/problems/minimum-size-subarray-sum/
 
 
 
-#### 238. Product of Array Except Self
+### 238. Product of Array Except Self
 
 https://leetcode.com/problems/product-of-array-except-self/
 
@@ -512,7 +750,7 @@ https://leetcode.com/problems/product-of-array-except-self/
 
 
 
-#### 228. Summary Ranges-easy
+### 228. Summary Ranges-easy
 
 https://leetcode.com/problems/summary-ranges/
 
@@ -520,7 +758,7 @@ https://leetcode.com/problems/summary-ranges/
 
 
 
-#### 152. Maximum Product Subarray
+### 152. Maximum Product Subarray
 
 https://leetcode.com/problems/maximum-product-subarray/
 
@@ -563,13 +801,13 @@ https://leetcode.com/problems/maximum-product-subarray/
 
 8.4
 
-#### 163. Missing Ranges
+### 163. Missing Ranges
 
 https://leetcode.com/problems/missing-ranges/
 
 * solution
 
-  对upper bound一个很棒的处理：
+  对upper bound一个很常见的处理：
 
   ```python
   def findMissingRanges(self, A, lower, upper):
@@ -587,7 +825,7 @@ https://leetcode.com/problems/missing-ranges/
 
 
 
-#### 88. Merge Sorted Array
+### 88. Merge Sorted Array
 
 https://leetcode.com/problems/merge-sorted-array/
 
@@ -644,7 +882,7 @@ public:
 
 
 
-#### 75. Sort Colors
+### 75. Sort Colors
 
 https://leetcode.com/problems/sort-colors/
 
@@ -706,7 +944,7 @@ https://leetcode.com/problems/sort-colors/
   
   
 
-#### 283. Move Zeroes
+### 283. Move Zeroes
 
 https://leetcode.com/problems/move-zeroes/
 
@@ -718,7 +956,7 @@ https://leetcode.com/problems/move-zeroes/
 
 
 
-#### 376. Wiggle Subsequence
+### 376. Wiggle Subsequence
 
 https://leetcode.com/problems/wiggle-subsequence/
 
@@ -729,7 +967,7 @@ https://leetcode.com/problems/wiggle-subsequence/
 
 8.5
 
-#### 280. Wiggle Sort
+### 280. Wiggle Sort
 
 https://leetcode.com/problems/wiggle-sort/
 
@@ -751,7 +989,7 @@ https://leetcode.com/problems/wiggle-sort/
 
   
 
-#### 324. Wiggle Sort II
+### 324. Wiggle Sort II
 
 https://leetcode.com/problems/wiggle-sort-ii/
 

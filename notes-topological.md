@@ -1,3 +1,7 @@
+First learned topological sort through /leetcode/algorithm-stanford/algo1slides/Part\ 10-\$-topo 
+
+algorithm book by Princeton. In essence, this is a reversed post order traversal.
+
 ### 207. Course Schedule
 
 https://leetcode.com/problems/course-schedule/

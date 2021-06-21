@@ -262,9 +262,101 @@ def findNsum(self, nums, target, N, result, results):
 
 
 
-### 149. Max Points on a Line-$$
+### 149. Max Points on a Line-$$$
 
 https://leetcode.com/problems/max-points-on-a-line/
+
+直线方程的表现形式:
+
+https://zhuanlan.zhihu.com/p/26263309
+
+**摘要**：在平面解析几何中，直线方程有多种形式，在解决不同的问题时，使用适当的方程形式可以使问题简化，本文将列举出这些方程即性质。
+
+1. 一般式：![[公式]](https://www.zhihu.com/equation?tex=Ax%2BBy%2BC%3D0)
+   一般式说明了平面直角坐标系上一个二元一次方程表示一条直线，这是一种一一对应的关系。这里，A、B不同时为0，下面在表达斜率和截距时，分母均不为0，下文不再特殊说明。从直线的一般式中可以知道以下信息：
+   斜率：![[公式]](https://www.zhihu.com/equation?tex=k%3D-%5Cfrac%7BA%7D%7BB%7D)
+   法向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Bn%7D%7D%3D%28A%2CB%29)
+   方向向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Ba%7D%7D%3D%28B%2C-A%29)
+   x轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=-%5Cfrac%7BC%7D%7BA%7D)，y轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=-%5Cfrac%7BC%7D%7BB%7D)
+2. 点斜式：![[公式]](https://www.zhihu.com/equation?tex=y-y_0%3Dk%28x-x_0%29)
+   点斜式是由一个定点![[公式]](https://www.zhihu.com/equation?tex=P%28x_0%2Cy_0%29)和斜率![[公式]](https://www.zhihu.com/equation?tex=k)确定的直线方程。
+   斜率：![[公式]](https://www.zhihu.com/equation?tex=k)
+   法向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Bn%7D%7D%3D%28k%2C-1%29)
+   方向向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Ba%7D%7D%3D%281%2Ck%29)
+   x轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=-%5Cfrac%7By_0%7D%7Bk%7D+%2B+x_0)，y轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=y_0-kx_0)
+3. 斜截式：![[公式]](https://www.zhihu.com/equation?tex=y%3Dkx%2Bb)
+   斜截式是由斜率k和y轴上的截距b确定的直线方程。
+   斜率：![[公式]](https://www.zhihu.com/equation?tex=k)
+   法向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Bn%7D%7D%3D%28k%2C-1%29)
+   方向向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Ba%7D%7D%3D%281%2Ck%29)
+   x轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=-%5Cfrac%7Bb%7D%7Bk%7D)，y轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=b)
+4. 两点式：![[公式]](https://www.zhihu.com/equation?tex=%5Cfrac%7By-y_1%7D%7By_2-y_1%7D+%3D+%5Cfrac%7Bx-x_1%7D%7Bx_2-x_1%7D)
+   两点式是由已知的两个点![[公式]](https://www.zhihu.com/equation?tex=%28x_1%2Cy_1%29)、![[公式]](https://www.zhihu.com/equation?tex=%28x_2%2Cy_2%29)所确定的直线方程。
+   斜率：![[公式]](https://www.zhihu.com/equation?tex=k+%3D+%5Cfrac%7By_2-y_1%7D%7Bx_2-x_1%7D)
+   法向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Bn%7D%7D%3D%28y_2-y_1%2Cx_1-x_2%29)
+   方向向量：![[公式]](https://www.zhihu.com/equation?tex=%5Coverrightarrow%7B%5Ctextbf%7Ba%7D%7D%3D%28x_2-x_1%2Cy_2-y_1%29)
+   x轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=%5Cfrac%7Bx_1y_2-x_2y_1%7D%7By_2-y_1%7D)，y轴上的截距为：![[公式]](https://www.zhihu.com/equation?tex=%5Cfrac%7Bx_1y_1-x_1y_2%7D%7Bx_2-x_1%7D)
+
+
+
+#### Solution-y=kx+b
+
+Intuition: Cuz we wanna know the count of dots on lines, we can easily think of line as a key, and we just use the count of dots on it as value. So how to uniquely identify a line, we can use y=kx+b. But there are a few problems with this:
+
+* k is a float, there can be cases where a nearly parallel lines land to the same slope, so we can just keep the numerator and the denominator and simplify them, and use the 2 as a tuple to identify
+* 2 other special cases, parallel to x and y line, for parallel to x line, the slope is 0, but to y, is infinity, and to represent them, and to be consistent, see the code after. And there is a special case here as well.
+
+```python
+class Solution:
+    def maxPoints(self, points: List[List[int]]) -> int:
+        if len(points)<=2:
+            return len(points)
+        lines = collections.defaultdict(set)
+        for i in range(len(points)-1):
+            x1,y1 = points[i]
+            for j in range(i+1, len(points)):
+                x2,y2 = points[j]
+                slope = self.get_slope(x1,y1,x2,y2)
+                b = 0
+                if slope[0]!=0 and slope[1]!=0:
+                    b = self.get_b(x1,y1,x2,y2)
+                    b = str(b)
+                elif slope[0]==0 and slope[1]==0: # didn't distiguish between x=0 and y=0
+                    b = "s" # as we cannot identify the lines parallel to x and y line with the origin on them.
+                elif slope[0]==0:
+                    b = str(slope[1])
+                else:
+                    b = str(slope[0])
+                key = str(slope[0])+"*"+str(slope[1])+"*"+b
+                lines[key].add((x2,y2))
+                lines[key].add((x1,y1))
+        return max([len(value) for value in lines.values()])
+                    
+                
+    def get_b(self, x1, y1, x2, y2):
+        return (x2*y1-x1*y2)/(x2-x1)
+        
+                
+    def get_slope(self, x1, y1, x2, y2):
+        if x1==x2:
+            return 0,x1
+        elif y1==y2:
+            return y1,0
+        else:
+            divisor = self.gcd(y2-y1, x2-x1)
+            return (y2-y1)//divisor, (x2-x1)//divisor
+            
+            
+    def gcd(self, x, y):
+        if y==0:
+            return x
+        else:
+            return self.gcd(y, x%y)                
+```
+
+
+
+#### Solution-a line with a slope
 
 Ref: https://www.youtube.com/watch?v=7FPL7nAi9aM
 

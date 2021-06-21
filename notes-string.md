@@ -290,26 +290,26 @@ https://leetcode.com/problems/one-edit-distance/
 
 Ref: https://leetcode.com/problems/one-edit-distance/discuss/50095/Python-concise-solution-with-comments.
 
+did@21.6.17
+
 ```python
-def isOneEditDistance(self, s, t):
-    if s == t:
-        return False
-    l1, l2 = len(s), len(t)
-    if l1 > l2: # force s no longer than t
-        return self.isOneEditDistance(t, s)
-    if l2 - l1 > 1:
-        return False
-    for i in xrange(len(s)):
-        if s[i] != t[i]:
-            if l1 == l2:
-                s = s[:i]+t[i]+s[i+1:]  # replacement
-            else:
-                s = s[:i]+t[i]+s[i:]  # insertion
-            break
-    return s == t or s == t[:-1]
+class Solution:
+    def isOneEditDistance(self, s: str, t: str) -> bool:
+        if abs(len(s)-len(t))>1:
+            return False
+        
+        s+="*"
+        t+="*"
+        if len(s)<len(t):
+            return self.isOneEditDistance(t,s)
+            
+        for i in range(len(t)):
+            if s[i]!=t[i]:
+                if len(s)!=len(t):
+                    return s[i+1:]==t[i:]
+                else:
+                    return s[i+1:]==t[i+1:]
 ```
-
-
 
 
 
@@ -464,11 +464,15 @@ https://leetcode.com/problems/encode-and-decode-strings/discuss/70448/1%2B7-line
 
 8.30
 
-### 168. Excel Sheet Column Title-$
+### 168. Excel Sheet Column Title
 
 https://leetcode.com/problems/excel-sheet-column-title/
 
 @20.9.5和进制的转换有点像，但是因为起点不是0会有点不一样
+
+> Ref: https://leetcode.wang/leetcode-168-Excel-Sheet-Column-Title.html
+>
+> 区别就在于题目规定的数字中没有 `0` ，换句话讲，正常的 `26` 进制本应该满 `26` 进 `1`，然后低位补 `0`，但是这里满 `26` 的话就用 `26` 表示。满 `27` 的时候才会向前进 `1`，然后低位补 `1`。所以 `Z(26)` 的下一个数字就是 `A(1)A(1)`，即 `27` 对应 `AA`。
 
 
 
@@ -1271,11 +1275,9 @@ class Solution:
 
 https://leetcode.com/problems/valid-palindrome/
 
-* Solution-easy, Palindrome感觉一般都用two pointers?
+#### Solution-easy, 2 pointers
 
-  我这里为了避免大小写，将大写小写都映射到同一个值。在python里并不需要字典
-  
-* Solution-用re模块, 会很快@12.23
+#### Solution-用re模块, 会很快@12.23
 
 
 
@@ -1612,9 +1614,56 @@ Ref: http://www.allenlipeng47.com/blog/index.php/2016/03/15/palindrome-pairs/
 
 https://leetcode.com/problems/palindrome-partitioning/
 
+#### Solution-recursive-memorization
+
+did@21.6.11
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        
+        return self.helper(s, 0, dict())
+        
+    def helper(self, s, start, dic):
+        if start==len(s):
+            return [[]]
+        if start in dic:
+            return dic[start]
+        res = []
+        for i in range(start+1, len(s)+1):
+            string = s[start:i]
+            if string==string[::-1]:
+                subres = self.helper(s, i, dic)
+                for array in subres:
+                    res.append([string]+array)
+        dic[start] = res            
+        return res
+```
+
+#### Solution-dp
+
+did@21.6.11
+
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        dp = [[] for i in range(len(s)+1)]
+        dp[0].append([])
+        
+        for i in range(1, len(dp)):
+            for j in range(0, i):
+                string = s[j:i]
+                if string==string[::-1]:
+                    for before in dp[j]:
+                        dp[i].append(before+[string])
+        return dp[-1]
+```
+
+
+
 by huahua: 优化的问题通常用dp或dfs
 
-* Solution- divide and conquer-**worth doing and thinking**@12.24
+#### Solution- divide and conquer-**worth doing and thinking**@12.24
 
 @3.16不需要helper函数啦
 
@@ -1638,34 +1687,9 @@ class Solution:
         return res
 ```
 
-加强版，引入动态规划，太强了！
-
-ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
-
-```python
-class Solution:
-    def partition(self, s: str) -> List[List[str]]:
-        if not s:
-            return [[]]
-        
-        dp = {0: [[]], 1: [[s[0]]]}
-        for i in range(1, len(s)):
-            dp[i + 1] = []
-            for j in range(0, i + 1):
-                if self.is_valid(s[j:i + 1]):
-                    for sol in dp[j]:
-                        dp[i + 1].append(sol + [s[j:i + 1]])
-        
-        return dp[len(s)]
-                
-                
-    def is_valid(self, s):
-        return all(s[i] == s[~i] for i in range(len(s) // 2))
-```
 
 
-
-* solution-dfs, backtrack-**worth doing and thinking**@12.24@3.16
+#### solution-dfs, backtrack-**worth doing and thinking**@12.24@3.16
 
 ref: https://leetcode.wang/leetcode-131-Palindrome-Partitioning.html
 
@@ -1887,7 +1911,52 @@ class Solution:
 
 https://leetcode.com/problems/remove-invalid-parentheses/
 
-* solution-DFS- **worth thinking and doing**
+#### Solution-BFS
+
+Ref: https://leetcode.com/problems/remove-invalid-parentheses/discuss/75032/Share-my-Java-BFS-solution
+
+```python
+class Solution:
+    def removeInvalidParentheses(self, s: str) -> List[str]:
+        queue = collections.deque()
+        queue.append(s)
+        seen = set()
+        res = list()
+        temp = self.if_valid("(())()")
+        
+        while queue:
+            string = queue.popleft()
+            if self.if_valid(string):
+                res.append(string)
+                
+            if len(res)!=0:
+                continue
+            for i,char in enumerate(string):
+                if char not in "()":
+                    continue
+                new_string = string[:i]+string[i+1:]
+                if new_string not in seen:
+                    seen.add(new_string)
+                    queue.append(new_string)
+        return res
+        
+        
+        
+    def if_valid(self, s):
+        count = 0
+        for char in s:
+            if char==")":
+                if count==0:
+                    return False
+                count-=1
+            elif char=="(":
+                count+=1
+        return count==0
+```
+
+
+
+#### Solution-DFS- **worth thinking and doing**
 
 Ref: https://www.youtube.com/watch?v=2k_rS_u6EBk
 
@@ -1989,7 +2058,34 @@ class Solution:
 
 https://leetcode.com/problems/distinct-subsequences/
 
-* solution-dynamic programming-**worth thinking and doing**
+#### Solution-recursion
+
+did@21.6.8
+
+```python
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        return self.helper(s, t, 0, 0, dict())
+        
+    def helper(self, s, t, start1, start2, dic):
+        if start2==len(t):
+            return 1
+        if (start1, start2) in dic:
+            return dic[(start1, start2)]
+        
+        remain_len = len(t)-start2
+        temp = 0
+        for i in range(start1, len(s)-remain_len+1):
+            if s[i]==t[start2]:
+                temp+=self.helper(s, t, i+1, start2+1, dic)
+                
+        dic[(start1, start2)] = temp    
+        return temp
+```
+
+
+
+#### solution-dynamic programming-**worth thinking and doing**
 
 @3.19做出来啦
 
@@ -2013,9 +2109,7 @@ class Solution:
         return lastRow[-1]
 ```
 
-https://www.youtube.com/watch?v=mPqqXh8XvWY
 
-计数的题目通常用dp来做，两个string通常就是二维数组
 
 ```python
 # mysolution @ 12.18
@@ -2032,12 +2126,6 @@ class Solution:
                     
         return dp[len(t)][len(s)]
 ```
-
-
-
-<img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gaol4v862dj31c00u0nak.jpg" alt="image-20191225091155062" style="zoom:50%;" />
-
-
 
 
 

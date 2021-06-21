@@ -429,76 +429,36 @@ class Solution:
 
 
 
-#### Solution-bfs-iterative, too complicated....
+#### Solution-bfs-iterative
 
-by myself@2.15
+Ref: https://leetcode.com/problems/clone-graph/discuss/42314/Python-solutions-(BFS-DFS-iteratively-DFS-recursively).e
 
 ```python
 """
 # Definition for a Node.
 class Node:
-    def __init__(self, val = 0, neighbors = []):
+    def __init__(self, val = 0, neighbors = None):
         self.val = val
-        self.neighbors = neighbors
+        self.neighbors = neighbors if neighbors is not None else []
 """
-from collections import deque
+
 class Solution:
     def cloneGraph(self, node: 'Node') -> 'Node':
         if not node:
             return node
+        root = Node(val=node.val)
+        visited = {node.val:root}
+        queue = collections.deque([(node, visited[node.val])])
         
-        origins = deque()
-        copies = deque()
-        origins.append(node)
-        root = Node(val = node.val)
-        copies.append(root)
-        edges = set()# don't need this
-        vertices = {}
-        vertices[root.val] = root
-        
-        while origins:
-            origin = origins.popleft()
-            copy = copies.popleft()
-            
-            for neighbor in origin.neighbors:
-                if (origin.val, neighbor.val) not in edges:# don't need this
-                    edges.add((origin.val, neighbor.val))# don't need this
-
-                    if neighbor.val not in vertices:
-                        copyNeighbor = Node(val=neighbor.val)
-                        vertices[neighbor.val] = copyNeighbor
-                        copy.neighbors.append(copyNeighbor)
-
-                        origins.append(neighbor)
-                        copies.append(copyNeighbor)
-                    else:
-                        copy.neighbors.append(vertices[neighbor.val])
-                        
-        return root                
-```
-
-但其实没必要维护两个queue，用原始的node作为key就好, 而且并不需要对vertix是否visite过做判断，因为queue里面总是存的新建的node
-
-Ref: https://leetcode.com/problems/clone-graph/discuss/42314/Python-solutions-(BFS-DFS-iteratively-DFS-recursively).e
-
-```python
-def cloneGraph1(self, node):
-    if not node:
-        return 
-    nodeCopy = UndirectedGraphNode(node.label)
-    dic = {node: nodeCopy}
-    queue = collections.deque([node])
-    while queue:
-        node = queue.popleft()
-        for neighbor in node.neighbors:
-            if neighbor not in dic: # neighbor is not visited
-                neighborCopy = UndirectedGraphNode(neighbor.label)
-                dic[neighbor] = neighborCopy
-                dic[node].neighbors.append(neighborCopy)
-                queue.append(neighbor)
-            else:
-                dic[node].neighbors.append(dic[neighbor])
-    return nodeCopy
+        while queue:
+            node, cpy_node = queue.popleft()
+            for nbr in node.neighbors:
+                if nbr.val not in visited:
+                    visited[nbr.val] = Node(val=nbr.val)
+                    queue.append((nbr, visited[nbr.val]))
+                visited[node.val].neighbors.append(visited[nbr.val])
+                
+        return root
 ```
 
 

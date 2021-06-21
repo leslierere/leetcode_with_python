@@ -88,11 +88,11 @@ def wallsAndGates(self, rooms):
 
 https://leetcode.com/problems/surrounded-regions/
 
-#### Solution-bfs-recursive-by myself
+#### Solution-dfs-recursive-by myself
 
 Ref: https://leetcode.com/articles/surrounded-regions/
 
-没必要建一个marked表
+没必要建一个marked表, 从边界上开始看！
 
 ```python
 class Solution:
@@ -168,8 +168,6 @@ def solve(self, board):
                 board[r][c] = "X"
             elif board[r][c] == "D":
                 board[r][c] = "O"
-            #这里按照stephan的可以改成
-            # board[r][c] ='OX'[c == 'O']
 ```
 
 
@@ -308,7 +306,7 @@ class Solution:
                 s = w[:i]+'_'+w[i+1:]#不要换成a-z
                 d[s].append(w)
         q = collections.deque([(beginWord,1)])
-        visited = set()
+        visited = set() # different from 126, it is a global var here
         while q:
             w, l = q.popleft()
             for i in range(len(w)):
@@ -420,7 +418,7 @@ class Solution:
         
         while queue:
             length = len(queue)
-            toDelete = set()
+            toDelete = set()## key is here
             
             for _ in range(length):
                 first = queue.popleft()
@@ -660,4 +658,44 @@ https://leetcode.com/problems/n-queens-ii/
 
 https://leetcode.com/problems/critical-connections-in-a-network/
 
+#### Solution
+
 Ref: https://leetcode.com/problems/critical-connections-in-a-network/discuss/382638/No-TarjanDFS-detailed-explanation-O(orEor)-solution-(I-like-this-question)
+
+did@21.6.16
+
+```python
+class Solution:
+    def criticalConnections(self, n: int, connections: List[List[int]]) -> List[List[int]]:
+        neighbors = collections.defaultdict(set)
+        for node1, node2 in connections:
+            neighbors[node1].add(node2)
+            neighbors[node2].add(node1)
+        res = []
+        ranks = [-1 for i in range(n)]
+        self.dfs(0, neighbors, ranks, 0, res)
+        return res
+        
+    def dfs(self, node, neighbors, ranks, rank, res):
+        if ranks[node]!=-1:
+            return ranks[node]
+        
+        ranks[node] = rank
+        min_rank = ranks[node]
+        while neighbors[node]:
+            neighbor = neighbors[node].pop()
+            neighbors[neighbor].remove(node)
+            child_rank = self.dfs(neighbo   hr, neighbors, ranks, rank+1, res)
+            if child_rank>rank:
+                res.append([node, neighbor])
+            min_rank = min(min_rank, child_rank)
+            
+        return min_rank
+```
+
+
+
+#### Solution
+
+我开始用的是想说回到相同的node前都不算，但有问题，下次可以试试princeton的P577(ipad)，我觉得意思是一样的.
+
