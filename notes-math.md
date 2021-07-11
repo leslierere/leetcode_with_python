@@ -165,11 +165,11 @@ class Solution:
 
 
 
-### 204. Count Primes
+### 204. Count Primes-$
 
 https://leetcode.com/problems/count-primes/description/
 
-* Solution- Sieve of Eratosthenes
+#### Solution- Sieve of Eratosthenes
 
 prime number must be larger than 1, 用for循环会更快
 
@@ -182,7 +182,7 @@ class Solution:
         prime[0],prime[1]=0, 0# False for not primes
         divisor = 2
         for divisor in range(2, int(n**0.5)+1):
-            if prime[divisor]:
+            if prime[divisor]: # if divisor is prime
                 #to replace the following
                 # y = 2*divisor
                 # while y<n:

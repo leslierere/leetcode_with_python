@@ -155,190 +155,11 @@ class Solution:
 
 
 
-## 15. 3Sum
-
-Ref: https://leetcode.com/problems/3sum/
-
-#### Solution-2 pointer
-
-https://leetcode.com/problems/3sum/discuss/7380/Concise-O(N2)-Java-solution
-
-Also, unlike 4Sum, the target is just 0, so
-
-> A trick to improve performance: once nums[i] > 0, then break.
-> Since the nums is sorted, if first number is bigger than 0, it is impossible to have a sum of 0.
-
-If target varies, then if nums[i] > target, we can break
-
-
-
-## 18. 4Sum
-
-Ref: https://leetcode.com/problems/4sum/
-
-> #### General Idea
->
-> If you have already read and implement the 3sum and 4sum by using the sorting approach: reduce them into 2sum at the end, you might already got the feeling that, all ksum problem can be divided into two problems:
->
-> 
->
-> 1. 2sum Problem
-> 2. Reduce K sum problem to K – 1 sum Problem
-
-But in the 2sum problem indicated here, it is not the same as the problem1, since in problem 1, it says it only has one valid solution, thus we don't consider duplicates there.
-
-Time complexity: say n numbers in nums, we ask for k sums, first we don't consider the time complexity of sort()
-
-for the most innate 2 sums, we have n-(k-2) numbers when we calculate the 2sum in the subarray, and the time complexity would be O(n-(k-2) ) with 2 pointers, i.e. O(N)
-
-If 3 sum, then we fix one number(O(N))*how_many_sub_results(Maximum is O(numbers in array/2))+O(N) for 2sum, i.e. O(N^2)+O(N)->O(N^2)
-
-if 4 sum, then N* time complexity of 3sum
-
-Time complexity is O(N^(K-1)).
-
-
-
-```java
- public class Solution {
-        int len = 0;
-        public List<List<Integer>> fourSum(int[] nums, int target) {
-            len = nums.length;
-            Arrays.sort(nums);
-            return kSum(nums, target, 4, 0);
-        }
-       private ArrayList<List<Integer>> kSum(int[] nums, int target, int k, int index) {
-            ArrayList<List<Integer>> res = new ArrayList<List<Integer>>();
-            if(index >= len) {
-                return res;
-            }
-            if(k == 2) {
-            	int i = index, j = len - 1;
-            	while(i < j) {
-                    //find a pair
-            	    if(target - nums[i] == nums[j]) {
-            	    	List<Integer> temp = new ArrayList<>();
-                    	temp.add(nums[i]);
-                    	temp.add(target-nums[i]);
-                        res.add(temp);
-                        //skip duplication
-                        while(i<j && nums[i]==nums[i+1]) i++;
-                        while(i<j && nums[j-1]==nums[j]) j--;
-                        i++;
-                        j--;
-                    //move left bound
-            	    } else if (target - nums[i] > nums[j]) {
-            	        i++;
-                    //move right bound
-            	    } else {
-            	        j--;
-            	    }
-            	}
-            } else{
-                for (int i = index; i < len - k + 1; i++) {
-                    //use current number to reduce ksum into k-1sum
-                    ArrayList<List<Integer>> temp = kSum(nums, target - nums[i], k-1, i+1);
-                    if(temp != null){
-                        //add previous results
-                        for (List<Integer> t : temp) {
-                            t.add(0, nums[i]);
-                        }
-                        res.addAll(temp);
-                    }
-                    while (i < len-1 && nums[i] == nums[i+1]) {
-                        //skip duplicated numbers
-                        i++;
-                    }
-                }
-            }
-            return res;
-        }
-    }
-```
-
-
-
-did@21.5.21, not general enough
-
-```python
-class Solution:
-    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
-        if len(nums)<4:
-            return []
-        
-        # fix first number, and the rest becomes 3sum
-        result = []
-        nums.sort()
-        for i in range(len(nums)-3):
-            if i>0 and nums[i]==nums[i-1]:
-                continue
-                
-            sub_target = target-nums[i]
-            
-            for j in range(i+1, len(nums)-2):
-                if j>i+1 and nums[j]==nums[j-1]:
-                    continue
-                left = j+1
-                right = len(nums)-1
-                while left<right:
-                    sub_result = nums[j]+nums[left]+nums[right]
-                    if sub_result == sub_target:
-                        result.append([nums[i], nums[j], nums[left], nums[right]])
-                        left+=1 # we need increase left first
-                        while left<right and nums[left-1]==nums[left]:
-                            left+=1 # make sure no duplicate third number
-                        right-=1
-                        
-                    elif sub_result<sub_target:
-                        left+=1
-                    else:
-                        right-=1
-                        
-        return result
-```
 
 
 
 
 
-## 29. Divide Two Integers
-
-https://leetcode.com/problems/divide-two-integers/
-
-### Solution-binary search
-
-```python
-class Solution:
-    def divide(self, dividend: int, divisor: int) -> int:
-        if dividend==0:
-            return 0
-        elif divisor == 1:
-            return dividend
-        elif divisor == -1:
-            if dividend==-2**31:
-                return 2**31-1
-            return -dividend
-        
-        if dividend>0 and divisor>0:
-            return self.helper(dividend, divisor)
-        elif dividend<0 and divisor<0:
-            return self.helper(-dividend, -divisor)
-        else:
-            return -self.helper(abs(dividend), abs(divisor))
-                
-    def helper(self, dividend, divisor):
-        if dividend<divisor:
-            return 0
-        elif dividend==divisor:
-            return 1
-        origin_divisor = divisor
-        times = 1
-        while dividend>divisor+divisor:
-            divisor+=divisor
-            times+=times
-            
-        return times+self.helper(dividend-divisor, origin_divisor)
-```
 
 
 
@@ -373,68 +194,13 @@ class Solution:
 
 
 
-## 41. First Missing Positive
-
-Ref: https://leetcode.com/problems/first-missing-positive/
-
-### Solution
-
-比较容易想到的
-
-Ref: https://leetcode.wang/leetCode-41-First-Missing-Positive.html
-
-### Solution
-
-很巧妙的, Ref: https://leetcode.com/problems/first-missing-positive/discuss/17080/Python-O(1)-space-O(n)-time-solution-with-explanation
 
 
 
 
 
-## 42. Trapping Rain Water
 
-Ref: https://leetcode.com/problems/trapping-rain-water/
 
-### Solution-stack
-
-My post: https://leetcode.com/problems/trapping-rain-water/discuss/1232796/Very-simple-and-clear-code-with-stack-python-solution
-
-The basic idea is we count the area level by level horizontally. 
-
-To illustrate, in below, the number in shaded area means the order when it is counted. 
-
-Area 1 would be counted at index 6, area 2 will be counted at index 7, area 3 and 4 will be counted at index 9.
-
-<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqwimj7l9wj31400u0he6.jpg" alt="image-20210526160325696" style="zoom:30%;" />
-
-When using stack, we only add the current index to the stack if the stack is empty, or after adding the index, the height of indexes in the stack is still in descending order.
-
-```python
-class Solution:
-    def trap(self, height: List[int]) -> int:
-        area = 0
-        stack = []
-        
-        for i, h in enumerate(height): # stack keeps descending order
-            
-            while stack and h>=height[stack[-1]]: 
-                if len(stack)==1: 
-					# this would only happen when we at the beggining when we have been unable to trap water yet 
-					# or we have counted the water before index i, so when the current height is higher then the 
-					# only one we have, that is the height of stack[-1](stack[-1] will always equal to i-1). We just 
-					# pop it out as stack[-1] won't be used to count at all, and add i in stack.
-                    stack.pop()
-                else:
-                    mid = stack.pop()
-                    left = stack[-1]
-                    area+=(min(height[left], h)-height[mid])*(i-left-1)
-                    
-            stack.append(i)
-                    
-        return area
-```
-
-Side notes: I feel like when we use stack, we should try to think of is under what condition should we add element to it and when to pop.
 
 
 
@@ -476,126 +242,9 @@ class Solution:
 
 
 
-## 89. Gray Code
-
-https://leetcode.com/problems/gray-code/
-
-### Solution-backtrack
-
-did@21.6.4
-
-```python
-class Solution:
-    def grayCode(self, n: int) -> List[int]:
-        path = [0]
-        numbers = set()
-        numbers.add(0)
-        self.helper(n, path, 0, numbers)
-        return path
-        
-    def helper(self, n, path, number, seen):
-        if len(path)==1<<n:
-            return True
-        
-        for i in range(n):
-            if number&(1<<i)==0: # the bit is 0
-                next_num = number|(1<<i)
-                if next_num not in seen:
-                    seen.add(next_num)
-                    path.append(next_num)
-                    if self.helper(n, path, next_num, seen):
-                        return True
-                    path.pop()
-                    seen.remove(next_num)
-            else:
-                next_num = number&(~(1<<i))
-                if next_num not in seen:
-                    seen.add(next_num)
-                    path.append(next_num)
-                    if self.helper(n, path, next_num, seen):
-                        return True
-                    path.pop()
-                    seen.remove(next_num)
-                
-                    
-        return False
-```
 
 
 
-
-
-### Solution-$-递推，找规律？
-
-Ref: https://leetcode.com/problems/gray-code/discuss/29891/Share-my-solution
-
-
-
-### Solution-formula
-
-
-
-
-
-## 106. Construct Binary Tree from Inorder and Postorder Traversal
-
-https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
-
-### Solution
-
-模拟递归这个我觉得很妙
-
-让右边先recurse, 不然像我的每次还要在postorder里面找
-
-Ref: [https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/221681/Don't-use-top-voted-Python-solution-for-interview-here-is-why.](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/221681/Don't-use-top-voted-Python-solution-for-interview-here-is-why.)
-
-```python
-class Solution:
-    def buildTree(self, inorder, postorder):
-        map_inorder = {}
-        for i, val in enumerate(inorder): map_inorder[val] = i
-        def recur(low, high):
-            if low > high: return None
-            x = TreeNode(postorder.pop())
-            mid = map_inorder[x.val]
-            x.right = recur(mid+1, high)
-            x.left = recur(low, mid-1)
-            return x
-        return recur(0, len(inorder)-1)
-```
-
-
-
-did@21.6.7
-
-```python
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-class Solution:
-    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
-        dic = dict()
-        for i,val in enumerate(inorder):
-            dic[val] = i
-        return self.helper(inorder, postorder, len(inorder), 0, 0, dic)
-            
-            
-    def helper(self, inorder, postorder, length, start1, start2, dic):
-        if length==0:
-            return None
-        
-        root_val = postorder[start2+length-1]
-        index = dic[root_val]
-        root = TreeNode(val=root_val)
-        left_len = index-start1
-        right_len = length-left_len-1
-        root.left = self.helper(inorder, postorder, left_len, start1, start2, dic)
-        root.right = self.helper(inorder, postorder, right_len, index+1, start2+left_len, dic)
-        return root
-```
 
 
 
@@ -690,52 +339,6 @@ https://leetcode.com/problems/candy/
 Ref: https://leetcode.com/problems/candy/discuss/135698/Simple-solution-with-one-pass-using-O(1)-space
 
 
-
-
-
-## 137. Single Number II
-
-https://leetcode.com/problems/single-number-ii/
-
-#### Solution-tricky
-
-Ref: https://leetcode.com/problems/single-number-ii/discuss/156957/Python
-
-```python
-def singleNumber(self, nums):
-    """
-    :type nums: List[int]
-    :rtype: int
-    """
-    return (sum(set(nums)) *  3 - sum(nums)) // 2
-```
-
-
-
-#### Solution-bit
-
-Ref: https://leetcode.com/problems/single-number-ii/discuss/43385/Python-bitwise-solution
-
-Cuz at i==31, this is used for sign bit except for python, thus we need deduct that if we get a number larger than 2**31-1.
-
-```python
-class Solution:
-    def singleNumber(self, nums: List[int]) -> int:
-        res = 0
-        
-        for i in range(32):
-            count = 0
-            mask = 1<<i
-            for num in nums:
-                if num&mask:
-                    count+=1
-                    
-            if count%3!=0:
-                res = res|mask
-        if res>=(1<<31):
-            return res-(1<<32)
-        return res
-```
 
 
 
@@ -872,13 +475,7 @@ class Solution:
 
 
 
-## 179. Largest Number
 
-https://leetcode.com/problems/largest-number/
-
-Ref: https://leetcode.com/problems/largest-number/discuss/53298/Python-different-solutions-(bubble-insertion-selection-merge-quick-sorts).
-
-multiple sort here, all in-place
 
 
 

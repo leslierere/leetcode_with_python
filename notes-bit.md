@@ -20,6 +20,54 @@ https://leetcode.com/problems/single-number/
 
 
 
+### 137. Single Number II
+
+https://leetcode.com/problems/single-number-ii/
+
+#### Solution-tricky
+
+Ref: https://leetcode.com/problems/single-number-ii/discuss/156957/Python
+
+```python
+def singleNumber(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    return (sum(set(nums)) *  3 - sum(nums)) // 2
+```
+
+
+
+#### Solution-bit
+
+Ref: https://leetcode.com/problems/single-number-ii/discuss/43385/Python-bitwise-solution
+
+Cuz at i = 31(which is also the 32th from right to left starting from index1) this is used for sign bit except for python, thus we need deduct that if we get a number larger than 2**31-1.
+
+```python
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        res = 0
+        
+        for i in range(32):
+            count = 0
+            mask = 1<<i
+            for num in nums:
+                if num&mask:
+                    count+=1
+                    
+            if count%3!=0:
+                res = res|mask
+        if res>=(1<<31): # we need deduct that if we get a number larger than 2**31-1,1<<31==2**31
+            return res-(1<<32)
+        return res
+```
+
+
+
+
+
 ### 318. Maximum Product of Word Lengths-$
 
 https://leetcode.com/problems/maximum-product-of-word-lengths/description/
@@ -51,6 +99,25 @@ https://leetcode.com/articles/majority-element/
 https://leetcode.com/articles/majority-element/
 
 太强了
+
+```python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        group = nums[0]
+        count = 1
+        
+        for i in range(1, len(nums)):
+            if nums[i]==group:
+                count+=1
+            elif count==1:
+                group = nums[i]
+            else:
+                count-=1
+                
+        return group
+```
+
+
 
 
 

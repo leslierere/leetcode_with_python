@@ -237,8 +237,6 @@ https://leetcode.com/problems/burst-balloons/
 
 #### Solution-recursive-worth
 
-https://leetcode.com/articles/burst-balloons/
-
 https://www.youtube.com/watch?v=z3hu2Be92UA
 
 关键没有想通边界的处理，亦即code这里`nums[left] * nums[i] * nums[right]`中`nums[left]`和`nums[left]`的部分，因为我一直想的是先爆哪个，其实应该考虑的是先保留哪个
@@ -257,6 +255,33 @@ class Solution:
         
         return dp(0, len(nums)-1)
 ```
+
+```python
+class Solution:
+    def maxCoins(self, nums: List[int]) -> int:
+        temp = dict()
+        nums = [1]+nums+[1]
+        return self.helper(0, len(nums)-1, nums, temp)
+            
+            
+    def helper(self, start, end, nums, temp):# start and end is the outside boarder
+        if start>=end-1:
+            return 0    
+        # if start==end:
+        #     return nums[start]
+        # if start+1==end:
+        #     return nums[start]*nums[end]
+        if (start, end) in temp:
+            return temp[(start,end)]
+        
+        localMax = max([self.helper(start, i, nums, temp) + nums[start]*nums[i]*nums[end]+  self.helper(i, end, nums, temp) for i in range(start+1, end)]) # key is nums[start]*nums[i]*nums[end]
+          
+        temp[(start, end)] = localMax
+        
+        return localMax
+```
+
+
 
 
 
@@ -524,6 +549,10 @@ Ref: https://leetcode.com/problems/dungeon-game/discuss/52774/C%2B%2B-DP-solutio
 
 A natural way to understand why we could only solve the problem from bottom right to top left is just remember dp is a bottom-up solution, and in this case, top left is where our final state(the maximum subproblem) is located because our result should be the minimum hp at top left. Rather than other dp problems our final state would always end at the bottom right.
 
+Suppose dp\[i][j] - dungeon\[i][j] >= min(dp\[i+1][j], dp\[i][j+1]), so dp\[i][j] = dungeon\[i][j] + min(dp\[i+1][j], dp\[i][j+1])
+
+but for some i, j where dungeon\[i][j]>0, dp\[i][j] can be less than 1.
+
 ```python
 class Solution:
     def calculateMinimumHP(self, dungeon: List[List[int]]) -> int:
@@ -547,6 +576,28 @@ class Solution:
         return dp[0][0]
 ```
 
+```python
+class Solution:
+    def calculateMinimumHP(self, dungeon: List[List[int]]) -> int:
+        dp = [[float("inf") for i in range(len(dungeon[0])+1)] for j in range(len(dungeon)+1)]
+        
+        rows = len(dungeon)
+        cols = len(dungeon[0])
+        # if we don't set these 2, alternatively we would need deal with the bottom right seperately as below
+        dp[rows][cols-1]=1
+        dp[rows-1][cols]=1
+        
+        for i in range(rows-1, -1, -1):
+            for j in range(cols-1, -1, -1):
+                #if i==rows-1 and j==cols-1:
+                #    dp[i][j] = max(1, -dungeon[rows-1][cols-1]+1)
+                dp[i][j] = max(1, -dungeon[i][j]+min(dp[i+1][j], dp[i][j+1]))
+                
+        return dp[0][0]
+```
+
+
+
 #### Solution-recursion
 
 did@21.6.20
@@ -567,7 +618,6 @@ class Solution:
         elif i==len(dungeon)-1 and j==len(dungeon[0])-1:
             dic[(i,j)] = 1 if dungeon[i][j]>=0 else -dungeon[i][j]+1
             return dic[(i,j)]
-        
         
         right = self.helper(dungeon, i, j+1, dic)
         bottom = self.helper(dungeon, i+1, j, dic)
@@ -977,6 +1027,8 @@ Ref: https://leetcode.com/problems/regular-expression-matching/discuss/5684/C%2B
 First let's forget about the fact that we will use dp for the solution.
 Naturally, we would think try to match chars in pattern and string one by one, for string, there is not a lot to think about, as they are all letters, but for the pattern, there are 3 different situations when checking one specific char in pattern and string.
 
+@ I feel like what I did on July 5 is better
+
 * Char in pattern is plain letter
 
   The only matching situations lies in, the previous chars in string and the ones in pattern is the same, and the current letter we are checking in pattern should be the same as the one in string.
@@ -1003,13 +1055,13 @@ class Solution:
         dp = [[False for _ in range(len(s)+1)] for _ in range(len(p)+1)]
         dp[0][0] = True
             
-        for i in range(1, len(dp)):
-            for j in range(0, len(dp[0])):
+        for i in range(1, len(dp)): # start from 1
+            for j in range(0, len(dp[0])): # start from 0
                 char_s = s[j-1] if j-1>=0 else ""
                 char_p = p[i-1]
                 
                 if char_p == "*": 
-                    dp[i][j] = dp[i-2][j] or (p[i-2] in [".", char_s] and dp[i][j-1])
+                    dp[i][j] = dp[i-2][j] or (p[i-2] in [".", char_s] and dp[i][j-1]) # at first, I always think it should not be dp[i][j-1], rather, dp[i-2][j-1], but I found out later dp[i][j-1] is actually derived from dp[i-2][j-1]
                 elif char_p == ".":
                     if j-1>=0:
                         dp[i][j] = dp[i-1][j-1]
@@ -1019,6 +1071,35 @@ class Solution:
                     
         return dp[-1][-1]
 ```
+
+
+
+did@21.7.5
+
+```python
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        dp = [[False for i in range(len(s)+1)] for j in range(len(p)+1)]
+        
+        dp[0][0]=True
+        
+        for i in range(1, len(dp)): # start from 1
+            p_char = p[i-1]
+            if p_char=="*":
+                dp[i][0] = dp[i-2][0]
+            for j in range(1, len(dp[0])): # start from 0
+                s_char = s[j-1]
+                if p_char==".":
+                    dp[i][j] = dp[i-1][j-1]
+                elif p_char=="*":
+                    dp[i][j] = dp[i-2][j] or (p[i-2] in [s_char, "."] and dp[i][j-1]) # at first, I always think it should not be dp[i][j-1], rather, dp[i-2][j-1], but I found out later dp[i][j-1] is actually derived from dp[i-2][j-1]. Use example "aab" and "c*a*b" , and consider the position where we are at the second asterisk in pattern and first "a" in string
+                else:
+                    dp[i][j] = dp[i-1][j-1] and p_char==s_char
+                    
+        return dp[-1][-1]
+```
+
+
 
 
 
@@ -1148,3 +1229,57 @@ https://leetcode.com/problems/minimum-distance-to-type-a-word-using-two-fingers/
 https://leetcode.com/problems/minimum-distance-to-type-a-word-using-two-fingers/discuss/477652/JavaC%2B%2BPython-1D-DP-O(1)-Space
 
 2d的思路跟956很像，1d还没看 
+
+
+
+### 300. Longest Increasing Subsequence
+
+https://leetcode.com/problems/longest-increasing-subsequence/
+
+#### Solution-recursive
+
+did@21.7.4
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        nums.append(float("inf"))
+        return self.helper(nums, len(nums)-1, dict())-1
+        
+    def helper(self, nums, end, dic):
+        if end==0:
+            return 1
+        elif end in dic:
+            return dic[end]
+        
+        length = 0
+        for i in range(0, end):
+            if nums[i]<nums[end]:
+                temp_len = self.helper(nums, i, dic)
+                length = max(length, temp_len)
+                
+        dic[end] = length+1
+        return dic[end]
+```
+
+
+
+#### Solution-iterative
+
+did@21.7.4
+
+```python
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        nums.append(float("inf"))
+        dp = [1 for i in range(len(nums))]
+        
+        
+        for i in range(1, len(dp)):
+            for j in range(i):
+                if nums[j]<nums[i]:
+                    dp[i] = max(dp[i], dp[j]+1)
+                    
+        return dp[-1]-1
+```
+

@@ -2540,3 +2540,164 @@ Ref: https://leetcode.wang/leetCode-96-Unique-Binary-Search-Trees.html
 
 
 
+### 105. Construct Binary Tree from Preorder and Inorder Traversal
+
+https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+
+#### Solution
+
+did@21.7.3
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        return self.helper(preorder, inorder, 0, len(preorder)-1, 0, len(preorder)-1)
+        
+        
+    def helper(self, preorder, inorder, start1, end1, start2, end2):
+        if start1>end1:
+            return None
+        elif start1==end1:
+            return TreeNode(val = preorder[start1])
+        
+        root = TreeNode(val = preorder[start1])
+        root_idx = start2
+        for i in range(start2, end2+1):
+            if inorder[i]==preorder[start1]:
+                root_idx = i
+                break
+                
+        left_len = root_idx-start2
+        root.left = self.helper(preorder, inorder, start1+1, start1+left_len, start2, root_idx-1)
+        root.right = self.helper(preorder, inorder, start1+left_len+1, end1, root_idx+1, end2)
+        
+        return root
+```
+
+
+
+
+
+
+
+### 106. Construct Binary Tree from Inorder and Postorder Traversal
+
+https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+
+#### Solution
+
+模拟递归这个我觉得很妙
+
+让右边先recurse, 不然像我的每次还要在postorder里面找
+
+Ref: [https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/221681/Don't-use-top-voted-Python-solution-for-interview-here-is-why.](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/discuss/221681/Don't-use-top-voted-Python-solution-for-interview-here-is-why.)
+
+```python
+class Solution:
+    def buildTree(self, inorder, postorder):
+        map_inorder = {}
+        for i, val in enumerate(inorder): map_inorder[val] = i
+        def recur(low, high):
+            if low > high: return None
+            x = TreeNode(postorder.pop())
+            mid = map_inorder[x.val]
+            x.right = recur(mid+1, high)
+            x.left = recur(low, mid-1)
+            return x
+        return recur(0, len(inorder)-1)
+```
+
+
+
+did@21.6.7
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        dic = dict()
+        for i,val in enumerate(inorder):
+            dic[val] = i
+        return self.helper(inorder, postorder, len(inorder), 0, 0, dic)
+            
+            
+    def helper(self, inorder, postorder, length, start1, start2, dic):
+        if length==0:
+            return None
+        
+        root_val = postorder[start2+length-1]
+        index = dic[root_val]
+        root = TreeNode(val=root_val)
+        left_len = index-start1
+        right_len = length-left_len-1
+        root.left = self.helper(inorder, postorder, left_len, start1, start2, dic)
+        root.right = self.helper(inorder, postorder, right_len, index+1, start2+left_len, dic)
+        return root
+```
+
+
+
+
+
+### 863. All Nodes Distance K in Binary Tree-$$
+
+https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/
+
+#### Solution
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        distances = dict() # this will store the ancestors of target
+        self.find_target(root, target, distances)
+        res = []
+        self.dfs(root, distances, res, k, distances[root])
+        return res
+        
+    def find_target(self, root, target, distances):
+        if not root:
+            return -1
+        if root == target:
+            distances[root] = 0
+            return 0
+        left = self.find_target(root.left, target, distances)
+        if left != -1:
+            distances[root] = left+1
+            return distances[root]
+        right = self.find_target(root.right, target, distances)
+        if right != -1:
+            distances[root] = right+1
+            return distances[root]
+        
+        return -1
+    
+    def dfs(self, root, distances, res, k, distance):
+        if not root:
+            return
+        if root in distances:
+            distance = distances[root]
+        if distance==k:
+            res.append(root.val)
+        
+        self.dfs(root.left, distances, res, k, distance+1)
+        self.dfs(root.right, distances, res, k, distance+1)
+```
+

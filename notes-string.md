@@ -1013,40 +1013,37 @@ class Solution:
 
 
 
-@3.11
+did@21.7.10
 
 ```python
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        if not s or not t:
-            return ""
+        counter_t = collections.Counter(t)
+        counter_s = collections.defaultdict(int)
         
-        counterT = collections.Counter(t)
-        res = [float("inf"),0,0]
-        uniques = len(counterT)
+        left = 0
+        satisfied = 0
+        result = ""
         
-        start = end = 0
-        while end<len(s):
-            while end<len(s) and uniques!=0:
-                character = s[end]
-                if character in t:
-                    counterT[character]-=1
-                    if counterT[character]==0:
-                        uniques-=1
-                end+=1
-            while uniques==0:
-                if end-start<res[0]:
-                    res = [end-start, start, end]
+        
+        for right in range(len(s)):
+            char = s[right]
+            if char in counter_t:
+                counter_s[char] += 1
+                if counter_s[char] == counter_t[char]:
+                    satisfied += 1
+                        
+                            
+            while satisfied == len(counter_t):
+                if not result or (right - left + 1) < len(result):
+                    result = s[left:right+1]
+                left_char = s[left]
+                if left_char in counter_t and counter_s[left_char] == counter_t[left_char]:
+                    satisfied -= 1
+                counter_s[left_char] -= 1
+                left+=1
                 
-                character = s[start]
-                if character in t:
-                    counterT[character]+=1
-                    if counterT[character]==1:
-                        uniques+=1
-                start+=1
-            
-            
-        return s[res[1]:res[2]]
+        return result
 ```
 
 
@@ -1907,7 +1904,7 @@ class Solution:
 
 
 
-### 301. Remove Invalid Parentheses-$
+### 301. Remove Invalid Parentheses-$$
 
 https://leetcode.com/problems/remove-invalid-parentheses/
 
@@ -1942,17 +1939,27 @@ class Solution:
         
         
         
-    def if_valid(self, s):
+    def if_valid(self, string):
         count = 0
-        for char in s:
-            if char==")":
-                if count==0:
-                    return False
-                count-=1
-            elif char=="(":
+        
+        for char in string:
+            if char=="(":
                 count+=1
+            elif char==")":
+                count-=1
+            if count<0:
+                return False
+            
         return count==0
 ```
+
+ Time complexity, suppose the original length of the string is N, at level 0, we have one string with length N, we have 1\*N = N, at level 1, we can have at most N candidates with length N-1, at level 2, we can have at most N\*(N-1) candidates with length N-2
+
+So at level i, we at most have  C(N, i)  candidates, and (N-i) length for each candidate, which gives us a C(N, i+1) time complexity at each level, and i ranges from 0 to N in worst case. So in total, time complexity is 2 to the power of N.
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1grynr5es7lj308u052glo.jpg" alt="image-20210628155236184" style="zoom:50%;" />
+
+Ref of sum computation: https://stats.stackexchange.com/questions/27266/simplify-sum-of-combinations-with-same-n-all-possible-values-of-k
 
 
 
@@ -1999,7 +2006,7 @@ class Solution:
                     continue
                 if s[i]=='(' or s[i]==')':
                     curr = s[:i]+s[i+1:]
-                # 一定要先移除右括号再移除左括号
+                # 随便先移除谁都行其实！！！！！@21.6.28
                 if r>0 and s[i]==')':
                     dfs(curr, i, l, r-1, ans)
                 elif l>0 and s[i]=='(':

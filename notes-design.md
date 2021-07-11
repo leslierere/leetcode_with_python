@@ -343,6 +343,81 @@ https://leetcode.com/problems/lru-cache/description/
 
 Ref: https://leetcode.com/problems/lru-cache/discuss/45926/Python-Dict-%2B-Double-LinkedList
 
+did@21.7.6
+
+```python
+class TreeNode:
+    def __init__(self, key, val):
+        self.key = key
+        self.val = val
+        self.pre = None
+        self.next = None
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.head = TreeNode(0,0)
+        self.tail = TreeNode(0,0)
+        self.head.next = self.tail
+        self.tail.pre = self.head
+        self.dic = dict()
+
+    def get(self, key: int) -> int:
+        if key not in self.dic:
+            return -1
+        node = self.dic[key]
+        if node!=self.head.next:
+            self.remove_in_list(node)
+            self.insert_at_front(node)
+        return node.val
+            
+    def put(self, key: int, value: int) -> None:
+        if self.capacity==0 and key not in self.dic: # didn't notice this at first
+            tail = self.tail.pre
+            self.dic.pop(tail.key)
+            self.capacity+=1
+            self.remove_in_list(tail)
+        if key not in self.dic:
+            node = TreeNode(key, value)
+            self.dic[key] = node
+            self.insert_at_front(node)
+            self.capacity-=1
+        else:
+            node = self.dic[key]
+            node.val = value
+            self.remove_in_list(node)
+            self.insert_at_front(node)
+        
+    def remove_in_list(self, node):
+        pre_node = node.pre
+        next_node = node.next
+        pre_node.next = next_node
+        next_node.pre = pre_node
+            
+    def insert_at_front(self, node):
+        cur_head = self.head.next
+        node.next = cur_head
+        cur_head.pre = node
+        self.head.next = node
+        node.pre = self.head
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
+```
+
+
+
+### 460. LFU Cache
+
+https://leetcode.com/problems/lfu-cache/
+
+#### Solution
+
+[https://leetcode.com/problems/lfu-cache/discuss/207673/Python-concise-solution-**detailed**-explanation%3A-Two-dict-%2B-Doubly-linked-list](https://leetcode.com/problems/lfu-cache/discuss/207673/Python-concise-solution-**detailed**-explanation%3A-Two-dict-%2B-Doubly-linked-list)
+
 
 
 ### 355. Design Twitter

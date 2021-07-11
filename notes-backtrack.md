@@ -118,7 +118,7 @@ public List<List<Integer>> subsets(int[] nums) {
 
 
 
-### 90. Subsets II-$
+### 90. Subsets II-$$
 
 https://leetcode.com/problems/subsets-ii/description/
 
@@ -152,7 +152,48 @@ class Solution:
 
 
 
-#### Solution-recursive-在上一道上改
+#### Solution-recursive-$$$
+
+```python
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        
+        res = []
+        nums.sort()
+        self.dfs(nums, 0, res, [])
+        return res
+        
+    def dfs(self, nums, start, res, path):
+        
+        for i in range(start, len(nums)):
+            if i==start or i>start and nums[i]!=nums[i-1]:
+                self.dfs(nums, i+1, res, path+[nums[i]])
+        res.append(path)
+            
+```
+
+错误做法, 因为如果有重复，那树就不要继续长了，可以画个树图理解
+
+```python
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        self.helper(nums, 0, [], res)
+        return res
+        
+        
+    def helper(self, nums, start, path, res):
+        if start==len(nums):
+            res.append(path)
+            return
+        
+        for i in range(start, len(nums)):
+            if i!=start and nums[i]==nums[i-1]:
+                self.helper(nums, i+1, path, res)
+            else:
+                self.helper(nums, i+1, path, res)
+                self.helper(nums, i+1, path+[nums[i]], res)
+```
 
 
 
@@ -164,7 +205,7 @@ https://leetcode.com/problems/combinations/description/
 
 Thinking process: 
 
-backtrack is easy to think of, which is a recursive solution, since this is like DFS, so of course we can have an according iterative solution as well. As there is a DFS solution, ofcourse we can have a BFS solution as well, which can be implemented iteratively.
+backtrack is easy to think of, which is a recursive solution, since this is like DFS, so of course we can have an according iterative solution as well. As there is a DFS solution, of course we can have a BFS solution as well, which can be implemented iteratively.
 
 Since this is in essence a math problem,  C ( n, k ) = C ( n - 1, k - 1) + C ( n - 1, k ) , and from this formula we can see that a problem can be solved by solving subproblems first, thus we can implement recursively or using dp.
 
@@ -243,46 +284,33 @@ class Solution:
 
 
 
-#### Solution3-iterative based on backtrack
+#### Solution3-iterative-bfs
 
+did@21.6.27
 
-
-#### Solution4-the other iterative
-
-Ref: https://leetcode.wang/leetCode-77-Combinations.html#%E8%A7%A3%E6%B3%95%E4%B8%89-%E8%BF%AD%E4%BB%A3%E6%B3%952
-
-> 解法三 迭代法2
-
-```java
-public List<List<Integer>> combine(int n, int k) {
-    if (n == 0 || k == 0 || k > n) return Collections.emptyList();
-    List<List<Integer>> res = new ArrayList<List<Integer>>();
-    //个数为 1 的所有可能
-    for (int i = 1; i <= n + 1 - k; i++) res.add(Arrays.asList(i));
-    //第一层循环，从 2 到 k
-    for (int i = 2; i <= k; i++) {
-        List<List<Integer>> tmp = new ArrayList<List<Integer>>();
-        //第二层循环，遍历之前所有的结果
-        for (List<Integer> list : res) {
-            //第三次循环，对每个结果进行扩展
-            //从最后一个元素加 1 开始，然后不是到 n ，而是和解法一的优化一样
-            //(k - (i - 1） 代表当前已经有的个数，最后再加 1 是因为取了 n
-            for (int m = list.get(list.size() - 1) + 1; m <= n - (k - (i - 1)) + 1; m++) {
-                List<Integer> newList = new ArrayList<Integer>(list);
-                newList.add(m);
-                tmp.add(newList);
-            }
-        }
-        res = tmp;
-    }
-    return res;
-}
-
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        res = []
+        queue = collections.deque()
+        for i in range(1, n+1):
+            queue.append([i])
+        
+        while queue:
+            path = queue.popleft()
+            if len(path)==k:
+                res.append(path)
+            else:
+                last_no = path[-1]
+                for i in range(last_no+1, n-k+len(path)+2):
+                    queue.append(path+[i])
+                    
+        return res
 ```
 
 
 
-#### Solution5-recursive
+#### Solution4-recursive
 
 Ref: https://leetcode.wang/leetCode-77-Combinations.html
 
@@ -318,9 +346,27 @@ class Solution:
 
 
 
-#### Solution4-dynamic programming
+#### Solution5-dynamic programming
 
-根据solution3来写, not done
+did@21.6.27
+
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        dp = [[[] for i in range(k+1)] for j in range(n+1)]
+        
+        for n in range(1, len(dp)):
+            dp[n][1] = [[i] for i in range(1, n+1)]
+            for k in range(2, len(dp[0])):
+                for sub in dp[n-1][k]:
+                    dp[n][k].append(sub)
+                for sub in dp[n-1][k-1]:
+                    dp[n][k].append(sub+[n])
+                    
+        return dp[-1][-1]
+```
+
+
 
 
 
@@ -371,24 +417,20 @@ class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
         candidates.sort()
         res = []
-        self.backtrack(candidates, target, res, [], 0)
+        self.helper(0, candidates, res, target, [])
         return res
-        
-        
-        
-    def backtrack(self, candidates, target, res, path, start):
-        
-        if target==0:
+            
+    def helper(self, start, nums, res, remain, path):
+        if remain==0:
             res.append(path)
             return
-        elif target<0 or start>=len(candidates) or candidates[start]>target:# candidates[start]>target 这个很重要，避免不可能的继续操作，speed up!
-            return
-            
-        for i in range(start, len(candidates)):
-            if i>start and candidates[i]==candidates[i-1]:
+        
+        for i in range(start, len(nums)):
+            if i!=start and nums[i]==nums[i-1]:
                 continue
-            number = candidates[i]
-            self.backtrack(candidates, target-number, res, path+[number], i+1)
+            if nums[i]>remain:
+                break
+            self.helper(i+1, nums, res, remain-nums[i], path+[nums[i]])
 ```
 
 
@@ -1152,4 +1194,82 @@ Ref: https://www.cnblogs.com/grandyang/p/5541012.html
 https://leetcode.com/problems/restore-ip-addresses/
 
 
+
+
+
+### 89. Gray Code
+
+https://leetcode.com/problems/gray-code/
+
+#### Solution-backtrack
+
+did@21.6.4
+
+```python
+class Solution:
+    def grayCode(self, n: int) -> List[int]:
+        path = [0]
+        numbers = set()
+        numbers.add(0)
+        self.helper(n, path, 0, numbers)
+        return path
+        
+    def helper(self, n, path, number, seen):
+        if len(path)==1<<n:
+            return True
+        
+        for i in range(n):
+            if number&(1<<i)==0: # the bit is 0
+                next_num = number|(1<<i)
+                if next_num not in seen:
+                    seen.add(next_num)
+                    path.append(next_num)
+                    if self.helper(n, path, next_num, seen):
+                        return True
+                    path.pop()
+                    seen.remove(next_num)
+            else:
+                next_num = number&(~(1<<i))
+                if next_num not in seen:
+                    seen.add(next_num)
+                    path.append(next_num)
+                    if self.helper(n, path, next_num, seen):
+                        return True
+                    path.pop()
+                    seen.remove(next_num)
+                
+                    
+        return False
+```
+
+
+
+
+
+#### Solution-$-递推，找规律
+
+Ref: https://leetcode.com/problems/gray-code/discuss/29891/Share-my-solution
+
+did@21.6.27
+
+```python
+class Solution:
+    def grayCode(self, n: int) -> List[int]:
+        res = [0, 1]
+        
+        for i in range(2, n+1):
+            temp = []
+            for num in res:
+                temp.append(num)
+            for j in range(len(res)-1, -1, -1):
+                num = res[j]
+                temp.append(1<<(i-1)|num)
+            res = temp
+            
+        return res
+```
+
+
+
+#### Solution-formula
 
