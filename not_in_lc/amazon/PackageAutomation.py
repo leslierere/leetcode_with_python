@@ -1,6 +1,12 @@
 class Solution:
     def package(self, numGroups, arr):
-        return min(numGroups, max(arr))
+        arr.sort()
+        arr[0] = 1
+
+        for i in range(1, len(arr)):
+            arr[i] = min(arr[i-1]+1, arr[i])
+
+        return arr[-1]
 
 if __name__ == '__main__':
     solution = Solution()
