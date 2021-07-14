@@ -13,10 +13,14 @@ class Solution:
                 dp[i][end_box] = boxSizes[end_box]
             for end_box in range(day-1, len(dp[0])):
                 dp[i][end_box] = dp[i-1][end_box-1] + boxSizes[end_box]
-                for start_box in range(day-1, end_box+1):
-                    right_max = max(boxSizes[start_box:end_box+1])
+                # for start_box in range(day-1, end_box+1):
+                #     right_max = max(boxSizes[start_box:end_box+1])
+                #     dp[i][end_box] = min(dp[i][end_box], dp[i-1][start_box-1] + right_max)
+                # refinement of the above:
+                right_max = boxSizes[end_box]
+                for start_box in range(end_box, day-2, -1):
+                    right_max = max(right_max, boxSizes[start_box])
                     dp[i][end_box] = min(dp[i][end_box], dp[i-1][start_box-1] + right_max)
-
 
         return dp[-1][-1]
 
