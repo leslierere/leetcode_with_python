@@ -1,5 +1,7 @@
 class Solution:
     def minContainerSize(self, boxSizes, days):
+        if len(boxSizes) < days:
+            return -1
         dp = [[0 for i in range(len(boxSizes))] for j in range(days)]
         dp[0][0] = boxSizes[0]
         for j in range(1, len(dp[0])):
