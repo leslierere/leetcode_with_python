@@ -1,69 +1,60 @@
 import collections
-import heapq
 class Solution:
     def getTimes(self, time, direction):
         n = len(time)
-        time_dic = dict()
 
-        for index in range(n):
-            start = time[index]
-            turn = direction[index]
-            if start not in time_dic:
-                time_dic[start] = []
-                heapq.heapify(time_dic[start])
-            heapq.heappush(time_dic[start], (turn, index))
+        exit_queue = collections.deque()
+        enter_queue = collections.deque()
 
-        max_time = time[-1]
-        res = [0 for i in range(n)]
-        last_action = 1
-        i = 0
-        while len(time_dic) != 0:
-
-            if i not in time_dic:
-                last_action = 1
+        for i in range(n):
+            if direction[i] == 1:
+                exit_queue.append((time[i], i))
             else:
-                cur_heap = time_dic[i]
-                if len(cur_heap) == 1:
-                    turn, index = heapq.heappop(cur_heap)
-                    res[index] = i
-                    last_action = turn
+                enter_queue.append((time[i], i))
+
+        last_action = 1
+        res = [0 for i in range(n)]
+
+        cur_time = 0
+        while exit_queue and enter_queue:
+            exit_time = exit_queue[0][0]
+            enter_time = enter_queue[0][0]
+
+            if exit_time <= cur_time and enter_time <= cur_time:
+                if last_action == 1:
+                    exit_time, idx = exit_queue.popleft()
+                    res[idx] = cur_time
                 else:
-                    if i+1 not in time_dic:
-                        time_dic[i+1] = []
-                        heapq.heapify(time_dic[i+1])
-                    if last_action == 1: # exit or not used last time
-                        while len(cur_heap)!=0:
-                            turn, index = heapq.heappop(cur_heap)
-                            if turn == 1:
-                                res[index] = i
-                                last_action = 1
-                                while len(cur_heap) != 0:
-                                    turn, index = heapq.heappop(cur_heap)
-                                    heapq.heappush(time_dic[i+1], (turn, index))
-                            else:
-                                heapq.heappush(time_dic[i + 1], (turn, index))
-                    else:
-                        while len(cur_heap) != 0:
-                            turn, index = heapq.heappop(cur_heap)
-                            if turn == 0:
-                                res[index] = i
-                                last_action = 0
-                                while len(cur_heap) != 0:
-                                    turn, index = heapq.heappop(cur_heap)
-                                    heapq.heappush(time_dic[i+1], (turn, index))
-                            else:
-                                res[index] = i
-                                last_action = 1
-                                while len(cur_heap) != 0:
-                                    turn, index = heapq.heappop(cur_heap)
-                                    heapq.heappush(time_dic[i + 1], (turn, index))
+                    enter_time, idx = enter_queue.popleft()
+                    res[idx] = cur_time
+            elif exit_time <= cur_time:
+                exit_time, idx = exit_queue.popleft()
+                res[idx] = cur_time
+                last_action = 1
+            elif enter_time <= cur_time:
+                enter_time, idx = enter_queue.popleft()
+                res[idx] = cur_time
+                last_action = 0
+            else:
+                last_action = 1
 
-                time_dic.pop(i)
-            i += 1
+            cur_time += 1
 
+        while exit_queue:
+            exit_time = exit_queue[0][0]
+            if exit_time <= cur_time:
+                exit_time, idx = exit_queue.popleft()
+                res[idx] = cur_time
+            cur_time += 1
+
+        while enter_queue:
+            enter_time = enter_queue[0][0]
+            if enter_time <= cur_time:
+                enter_time, idx = enter_queue.popleft()
+                res[idx] = cur_time
+            cur_time += 1
 
         return res
-
 
 if __name__ == '__main__':
     solution = Solution()
