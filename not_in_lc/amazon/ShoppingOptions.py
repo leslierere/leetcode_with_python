@@ -1,29 +1,34 @@
 class Solution:
     def getNumberOfOptions(self, priceOfJeans, priceOfShoes, priceOfSkirts, priceOfTops, dollars):
-        priceOfJeans.sort()
-        priceOfShoes.sort()
-        priceOfSkirts.sort()
-        priceOfTops.sort()
+        jeansShoes = self.combine(priceOfJeans, priceOfShoes, dollars)
+        skirtsTops = self.combine(priceOfSkirts, priceOfTops, dollars)
         options = 0
 
-        for jean in priceOfJeans:
-            if jean > dollars:
-                break
-            value1 = dollars - jean
-            for shoe in priceOfShoes:
-                if shoe > value1:
-                    break
-                value2 = value1 - shoe
-                for skirt in priceOfSkirts:
-                    if skirt > value2:
-                        break
-                    value3 = value2 - skirt
-                    for top in priceOfTops:
-                        if top > value3:
-                            break
-                        options += 1
+        jeansShoes.sort()
+        skirtsTops.sort()
+
+        left = 0
+        right = len(skirtsTops) - 1
+        while left < len(jeansShoes) and right >= 0:
+            left_price = jeansShoes[left]
+            right_price = skirtsTops[right]
+            if left_price + right_price <= dollars:
+                options += right + 1
+                left += 1
+            else:
+                right -= 1
 
         return options
+
+    def combine(self, list1, list2, dollar):
+        result = []
+        for price1 in list1:
+            for price2 in list2:
+                if price1 + price2 < dollar: # I think we don't need equal here?
+                    result.append(price1+price2)
+
+        return result
+
 
 if __name__ == '__main__':
     solution = Solution()
