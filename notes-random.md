@@ -105,7 +105,7 @@ class Solution:
 
 
 
-### 380. Insert Delete GetRandom O(1)
+### 380. Insert Delete GetRandom O(1)-$
 
 https://leetcode.com/problems/insert-delete-getrandom-o1/
 
@@ -146,7 +146,7 @@ class RandomizedSet:
             index = self.dic[val]
             lastItem = self.array[-1]
             self.dic[lastItem] = index
-            self.array[index]= lastItem
+            self.array[index]= lastItem # the thought of swapping the 2 values are great
             self.array.pop()
             self.dic.pop(val)
             return True

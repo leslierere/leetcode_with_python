@@ -1581,7 +1581,11 @@ To answer this question, we begin by deﬁning the weighted external path length
 
 
 
+#### Prime number
 
+> Ref: https://en.wikipedia.org/wiki/Prime_number
+>
+> A **prime number** (or a **prime**) is a [natural number](https://en.wikipedia.org/wiki/Natural_number) greater than 1 that is not a [product](https://en.wikipedia.org/wiki/Product_(mathematics)) of two smaller natural numbers.
 
 
 

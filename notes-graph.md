@@ -921,3 +921,13 @@ class TrieNode:
 
 
 
+
+
+### 1761. Minimum Degree of a Connected Trio in a Graph
+
+https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/
+
+#### Solution
+
+Ref: https://leetcode.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/discuss/1064616/Python-3-simple-brute-force-solution
+

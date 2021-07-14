@@ -584,6 +584,63 @@ class Solution:
 
 
 
+### 42. Trapping Rain Water
+
+Ref: https://leetcode.com/problems/trapping-rain-water/
+
+#### Solution-stack
+
+My post: https://leetcode.com/problems/trapping-rain-water/discuss/1232796/Very-simple-and-clear-code-with-stack-python-solution
+
+The basic idea is we count the area level by level horizontally. 
+
+To illustrate, in below, the number in shaded area means the order when it is counted. 
+
+Area 1 would be counted at index 6, area 2 will be counted at index 7, area 3 and 4 will be counted at index 9.
+
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqwimj7l9wj31400u0he6.jpg" alt="image-20210526160325696" style="zoom:30%;" />
+
+When using stack, we only add the current index to the stack if the stack is empty, or after adding the index, the height of indexes in the stack is still in descending order.
+
+```python
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        area = 0
+        stack = []
+        
+        for i, h in enumerate(height): # stack keeps strictly descending order
+            
+            while stack and h>=height[stack[-1]]: 
+                if len(stack)==1: 
+					# this would only happen when we at the beggining when we have been unable to trap water yet 
+					# or we have counted the water before index i, so when the current height is higher then the 
+					# only one we have, that is the height of stack[-1](stack[-1] will always equal to i-1). We just 
+					# pop it out as stack[-1] won't be used to count at all, and add i in stack.
+                    stack.pop()
+                else:
+                    mid = stack.pop()
+                    left = stack[-1]
+                    area+=(min(height[left], h)-height[mid])*(i-left-1)
+                    
+            stack.append(i)
+                    
+        return area
+```
+
+
+
+
+
+Side notes: I feel like when we use stack, we should try to think of is under what condition should we add element to it and when to pop.
+
+#### Solution-two pointers
+
+***worth thinking and doing***
+
+similar to problem 11
+
+
+
 
 
 ### 215. Kth Largest Element in an Array

@@ -724,61 +724,6 @@ https://leetcode.com/problems/increasing-triplet-subsequence/
 
 
 
-### 42. Trapping Rain Water
-
-Ref: https://leetcode.com/problems/trapping-rain-water/
-
-#### Solution-stack
-
-My post: https://leetcode.com/problems/trapping-rain-water/discuss/1232796/Very-simple-and-clear-code-with-stack-python-solution
-
-The basic idea is we count the area level by level horizontally. 
-
-To illustrate, in below, the number in shaded area means the order when it is counted. 
-
-Area 1 would be counted at index 6, area 2 will be counted at index 7, area 3 and 4 will be counted at index 9.
-
-<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqwimj7l9wj31400u0he6.jpg" alt="image-20210526160325696" style="zoom:30%;" />
-
-When using stack, we only add the current index to the stack if the stack is empty, or after adding the index, the height of indexes in the stack is still in descending order.
-
-```python
-class Solution:
-    def trap(self, height: List[int]) -> int:
-        area = 0
-        stack = []
-        
-        for i, h in enumerate(height): # stack keeps descending order
-            
-            while stack and h>=height[stack[-1]]: 
-                if len(stack)==1: 
-					# this would only happen when we at the beggining when we have been unable to trap water yet 
-					# or we have counted the water before index i, so when the current height is higher then the 
-					# only one we have, that is the height of stack[-1](stack[-1] will always equal to i-1). We just 
-					# pop it out as stack[-1] won't be used to count at all, and add i in stack.
-                    stack.pop()
-                else:
-                    mid = stack.pop()
-                    left = stack[-1]
-                    area+=(min(height[left], h)-height[mid])*(i-left-1)
-                    
-            stack.append(i)
-                    
-        return area
-```
-
-
-
-
-
-Side notes: I feel like when we use stack, we should try to think of is under what condition should we add element to it and when to pop.
-
-#### Solution-two pointers
-
-***worth thinking and doing***
-
-similar to problem 11
-
 
 
 ### 128. Longest Consecutive Sequence
@@ -997,6 +942,56 @@ class Solution:
 ### 253. Meeting Rooms II
 
 https://leetcode.com/problems/meeting-rooms-ii/
+
+#### Solution-heap
+
+did@21.7.12
+
+```python
+class Solution:
+    def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+        intervals.sort(key = lambda x: x[0])
+        
+        room = 1
+        queue = []
+        heapq.heapify(queue)
+        interval = intervals[0]
+        heapq.heappush(queue, (interval[1], interval[0]))
+        
+        for i in range(1, len(intervals)):
+            interval = intervals[i]
+            while len(queue) != 0 and interval[0]>=queue[0][0]:
+                heapq.heappop(queue)
+            heapq.heappush(queue, (interval[1], interval[0]))
+            room = max(room, len(queue))          
+            
+        return room
+```
+
+But, we don't need while here, as we don't need pop out all the rooms that ends before the current room starts, since as long as we pop one out and add new one, it will never exceeds current max number of rooms.
+
+So, we can just do this
+
+```python
+class Solution:
+    def minMeetingRooms(self, intervals: List[List[int]]) -> int:
+        #[[0,30],[5,10],[15,20]]
+        intervals.sort(key = lambda x: x[0])
+        res = 0
+        heap = []
+        
+        for i in intervals:
+            if len(heap)!=0 and i[0]>=heap[0]:
+                heapq.heappop(heap)
+            heapq.heappush(heap, i[1])
+            res = max(res, len(heap))
+            
+        return res
+```
+
+
+
+
 
 
 
@@ -1435,5 +1430,39 @@ def findLeastNumOfUniqueInts(self, arr: List[int], k: int) -> int:
         c = Counter(arr)
         s = sorted(arr,key = lambda x:(c[x],x))
         return len(set(s[k:]))
+```
+
+
+
+### 937. Reorder Data in Log Files
+
+https://leetcode.com/problems/reorder-data-in-log-files/
+
+#### Solution
+
+Ref: https://leetcode.com/problems/reorder-data-in-log-files/discuss/198197/simple-Python3-solution-beats-99
+
+```python
+class Solution:
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        left = 0
+        right = len(logs) - 1
+        letter_logs = []
+        digit_logs = []
+        
+        for log in logs:
+            if self.ifLetterLog(log):
+                letter_logs.append(log)
+            else:
+                digit_logs.append(log)
+                
+        letter_logs.sort(key = lambda x: (x.split()[1:], x.split()[0]))
+                
+        return letter_logs + digit_logs
+            
+    def ifLetterLog(self, log):
+        first_space = log.find(" ")
+        first_char = log[first_space+1]
+        return first_char.isalpha()
 ```
 
