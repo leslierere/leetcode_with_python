@@ -409,4 +409,41 @@ class Solution:
 
 
 
-### 
+### 1071. Greatest Common Divisor of Strings
+
+https://leetcode.com/problems/greatest-common-divisor-of-strings/
+
+#### Solution
+
+Ref: https://leetcode.com/problems/greatest-common-divisor-of-strings/discuss/303781/JavaPython-3-3-codes-each%3A-Recursive-iterative-and-regex-w-brief-comments-and-analysis.
+
+```python
+def gcdOfStrings(self, str1: str, str2: str) -> str:
+    if not str1 or not str2:
+      return str1 if str1 else str2
+    elif len(str1) < len(str2):
+      return self.gcdOfStrings(str2, str1)
+    elif str1[: len(str2)] == str2:
+      return self.gcdOfStrings(str1[len(str2) :], str2)
+    else:
+      return ''
+```
+
+
+
+#### Solution
+
+Ref: https://leetcode.com/problems/greatest-common-divisor-of-strings/discuss/307242/C%2B%2B-3-lines
+
+```c++
+class Solution {
+public:
+    string gcdOfStrings(const string& s1, const string& s2)
+    {
+        return (s1 + s2 == s2 + s1)  
+		    ? s1.substr(0, gcd(size(s1), size(s2)))
+			: "";
+    }
+};
+```
+

@@ -453,6 +453,47 @@ https://leetcode.wang/leetCode-72-Edit-Distance.html
 
 
 
+#### Solution-recursive
+
+did@21.7.15
+
+```python
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        return self.helper(0, 0, word1, word2, dict())
+        
+    def helper(self, idx1, idx2, word1, word2, dic):
+        if idx1==len(word1) and idx2==len(word2):
+            return 0
+        elif idx1==len(word1):
+            return len(word2) - idx2
+        elif idx2==len(word2):
+            return len(word1) - idx1
+        elif (idx1, idx2) in dic:
+            return dic[(idx1, idx2)]
+        
+        remain1 = len(word1) - idx1
+        remain2 = len(word2) - idx2
+        distance = max(remain1, remain2)
+        breaked = False
+        for i in range(min(remain1, remain2)):
+            if word1[idx1+i]!=word2[idx2+i]:
+                rep_step = 1 + self.helper(idx1+i+1, idx2+i+1, word1, word2, dic)
+                del_step = 1 + self.helper(idx1+i, idx2+i+1, word1, word2, dic)
+                add_step = 1 + self.helper(idx1+i+1, idx2+i, word1, word2, dic)
+                distance = min([rep_step, del_step, add_step])
+                breaked = True
+                break
+        
+        if not breaked:
+            dic[(idx1, idx2)] = distance - min(remain1, remain2)
+        else:
+            dic[(idx1, idx2)] = distance
+        return dic[(idx1, idx2)]
+```
+
+
+
 
 
 ### 97. Interleaving String-$
