@@ -204,41 +204,6 @@ class Solution:
 
 
 
-## 43. Multiply Strings
-
-https://leetcode.com/problems/multiply-strings/
-
-### Solution-like count on paper
-
-Ref: https://leetcode.com/problems/multiply-strings/discuss/17605/Easiest-JAVA-Solution-with-Graph-Explanation
-
-### Solution-cool
-
-from sample 32 ms submission
-
-```python
-class Solution:
-    def multiply(self, num1: str, num2: str) -> str:
-        def stringToInt(num: str) -> int:
-            value_map = {
-                "0": 0,
-                "1": 1,
-                "2": 2,
-                "3": 3,
-                "4": 4,
-                "5": 5,
-                "6": 6,
-                "7": 7,
-                "8": 8,
-                "9": 9,
-            }
-            value: int = 0
-            for index, digit in enumerate(num[::-1]):
-                value += value_map[digit] * 10**index
-            return value
-
-        return str(stringToInt(num1) * stringToInt(num2))   
-```
 
 
 
@@ -246,87 +211,6 @@ class Solution:
 
 
 
-
-
-
-
-## 114. Flatten Binary Tree to Linked List
-
-https://leetcode.com/problems/flatten-binary-tree-to-linked-list/
-
-### recursive-$
-
-Ref: https://leetcode.com/problems/flatten-binary-tree-to-linked-list/discuss/36977/My-short-post-order-traversal-Java-solution-for-share
-
-也可以用iterative的形式来做，也就是[这里](https://leetcode.wang/leetcode-114-Flatten-Binary-Tree-to-Linked-List.html#%E8%A7%A3%E6%B3%95%E4%B8%89)的解法三
-
-```java
-private TreeNode prev = null;
-
-public void flatten(TreeNode root) {
-    if (root == null)
-        return;
-    flatten(root.right);
-    flatten(root.left);
-    root.right = prev;
-    root.left = null;
-    prev = root;
-}
-```
-
-
-
-did by myself@21.6.8
-
-其实看看我自己的code其实是可以想到怎么把他改装成上面那样的, 反正面对tree，先可以有一些比较straightforward递归的形式，然后可以把它改装成普通的traversal, like 106,109, here
-
-```python
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-class Solution:
-    def flatten(self, root: TreeNode) -> None:
-        """
-        Do not return anything, modify root in-place instead.
-        """
-        self.dfs(root)
-        
-    def dfs(self, node):
-        if not node:
-            return None, None
-        
-        left_head, left_tail = self.dfs(node.left)
-        right_head, right_tail = self.dfs(node.right)
-        node.left = None
-             
-        if left_head and right_head:
-            node.right = left_head
-            left_tail.right = right_head
-            return node, right_tail
-        elif right_head:
-            node.right = right_head
-            return node, right_tail
-        elif left_head:
-            node.right = left_head
-            return node, left_tail
-        else:
-            return node, node
-```
-
-
-
-
-
-## 120. Triangle
-
-https://leetcode.com/problems/triangle/
-
-### solution-dp
-
-但这里不需要一定按照从上到下向杨辉三角那样，从下至上更方便
 
 
 
@@ -334,7 +218,13 @@ https://leetcode.com/problems/triangle/
 
 https://leetcode.com/problems/candy/
 
-### Solution
+### Solution1
+
+Ref: https://leetcode.wang/leetcode-135-Candy.html
+
+
+
+### Solution2
 
 Ref: https://leetcode.com/problems/candy/discuss/135698/Simple-solution-with-one-pass-using-O(1)-space
 
@@ -446,32 +336,6 @@ class Solution:
 ```
 
 
-
-
-
-## 172. Factorial Trailing Zeroes
-
-https://leetcode.com/problems/factorial-trailing-zeroes/
-
-Ref: https://leetcode.wang/leetcode-172-Factorial-Trailing-Zeroes.html
-
-> 综上，规律就是每隔 `5` 个数，出现一个 `5`，每隔 `25` 个数，出现 `2` 个 `5`，每隔 `125` 个数，出现 `3` 个 `5`... 以此类推。
->
-> 最终 `5` 的个数就是 `n / 5 + n / 25 + n / 125 ...`
->
-> 写程序的话，如果直接按照上边的式子计算，分母可能会造成溢出。所以算 `n / 25` 的时候，我们先把 `n`更新，`n = n / 5`，然后再计算 `n / 5` 即可。后边的同理。
-
-```python
-class Solution:
-    def trailingZeroes(self, n: int) -> int:
-        res = 0
-        
-        while n:
-            res+=n//5
-            n = n//5
-            
-        return res
-```
 
 
 

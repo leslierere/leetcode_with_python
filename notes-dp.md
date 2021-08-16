@@ -505,23 +505,31 @@ https://leetcode.com/problems/interleaving-string/description/
 ```python
 class Solution:
     def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
-        if len(s1)+len(s2)!=len(s3):
+        if len(s1) + len(s2) != len(s3):
             return False
-        notwork = set()
-        return self.helper(s1,s2,s3, notwork)
         
-    def helper(self, s1, s2, s3, notwork):
-        if (s1,s2,s3) in notwork:
+        return self.backtrack(s1, s2, s3, 0, 0, 0, set())
+        
+    def backtrack(self, s1, s2, s3, i1, i2, i3, not_work):
+        if i3 == len(s3):
+            return True
+        if i1 == len(s1):
+            return s2[i2:] == s3[i3:]
+        elif i2 == len(s2):
+            return s1[i1:] == s3[i3:]
+        elif (i1, i2) in not_work:
             return False
-        if len(s3)==0:
-            return True
-        if s1 and s1[0]==s3[0] and self.helper(s1[1:], s2, s3[1:], notwork):
-            return True
-        elif s2 and s2[0]==s3[0] and self.helper(s1, s2[1:], s3[1:], notwork):
-            return True
-        else:
-            notwork.add((s1, s2,s3))
-            return False
+        
+        
+        if s1[i1] == s3[i3]:
+            if self.backtrack(s1, s2, s3, i1+1, i2, i3+1, not_work):
+                return True
+        if s2[i2] == s3[i3]:
+            if self.backtrack(s1, s2, s3, i1, i2+1, i3+1, not_work):
+                return True
+            
+        not_work.add((i1, i2))
+        return False
 ```
 
 #### Solution-dp-bottom up
@@ -696,9 +704,23 @@ https://leetcode.com/problems/maximal-rectangle/description/
 
 #### Solution1-the solution1 in 84.
 
-#### Solution2-dp
+#### Solution2-dp-$$
 
 https://leetcode.com/problems/maximal-rectangle/discuss/29054/Share-my-DP-solution
+
+> All the 3 variables left, right, and height can be determined by the information from previous row, and also information from the current row. So it can be regarded as a DP solution. The transition equations are:
+>
+> 
+>
+> left(i,j) = max(left(i-1,j), cur_left), cur_left can be determined from the current row
+>
+> right(i,j) = min(right(i-1,j), cur_right), cur_right can be determined from the current row
+>
+> height(i,j) = height(i-1,j) + 1, if matrix[i][j]=='1';
+>
+> height(i,j) = 0, if matrix[i][j]=='0'
+
+Left array means that using current bar at j, what is the left boundary, likewise for right array.
 
 It would be easier to understand how to calculate the right and left if you rotate the matrix 90 degrees, clockwise and counter clockwise.
 
@@ -707,40 +729,48 @@ Why this is an exhausted solution is that it actually calculates the maximum are
 ```python
 class Solution:
     def maximalRectangle(self, matrix: List[List[str]]) -> int:
-        if not matrix or not matrix[0]:
+        if len(matrix) == 0 or len(matrix[0]) == 0:
             return 0
-        res = 0
-        height = [0]*len(matrix[0])
-        right = [len(matrix[0])-1]*len(matrix[0])
-        left = [-1]*len(matrix[0])
+        m = len(matrix)
+        n = len(matrix[0])
         
+        height = [0 for i in range(n)]
+        left = [0 for i in range(n)]
+        right = [n for i in range(n)]
+        max_area = 0
         
-        for i in range(len(matrix)):
-            curLeft = -1
-            curRight = len(matrix[0])-1
-            
-            for j in range(len(matrix[0])-1, -1, -1):
-                if matrix[i][j] =='1':
-                    right[j] = min(curRight, right[j])
-                else:
-                    curRight = j-1
-                    right[j] = len(matrix[0])-1 # This should be changed to this value, rather than (j-1), think of why
-                    
-            for j in range(len(matrix[0])):
-                if matrix[i][j] =='1':
-                    height[j] = height[j]+1
-                    left[j] = max(curLeft, left[j])
+        for i in range(m):
+            for j in range(n):
+                if matrix[i][j] == "1":
+                    height[j] = height[j] + 1
                 else:
                     height[j] = 0
-                    curLeft = j
-                    left[j] = -1
+                    
+            cur_left = 0 
+            for j in range(n):
+                if matrix[i][j] == "1":
+                    left[j] = max(left[j], cur_left) # curLeft records the left border for the current row, but at bar at the current cell, it is always limited the left boarders of its above cells
+                else:
+                    left[j] = 0 # as for its below cell, if it is "0", we just don't care, if it is "1", what really take effects is just the cur_left.
+                    cur_left = j + 1
             
-                res = max((right[j]-left[j])*height[j], res)
-            
-        return res
+            cur_right = n - 1
+            for j in range(n-1, -1, -1):
+                if matrix[i][j] == "1":
+                    right[j] = min(right[j], cur_right)
+                else:
+                    right[j] = n - 1
+                    cur_right = j - 1
+                    
+            for j in range(n):
+                max_area = max(max_area, height[j]*(right[j]-left[j]+1))
+                
+        return max_area
 ```
 
+#### Solution3-扩展边界
 
+这个比较容易想
 
 
 
@@ -1324,3 +1354,76 @@ class Solution:
         return dp[-1]-1
 ```
 
+
+
+
+
+### 718. Maximum Length of Repeated Subarray
+
+https://leetcode.com/problems/maximum-length-of-repeated-subarray/
+
+#### Solution-dp
+
+```python
+class Solution:
+    def findLength(self, nums1: List[int], nums2: List[int]) -> int:
+        dp = [0 for i in range(len(nums1)+1)]
+        max_len = 0
+        
+        for i in range(1, len(nums2)+1):
+            temp = [0]
+            for j in range(1, len(dp)):
+                if nums2[i-1] == nums1[j-1]:
+                    temp.append(dp[j-1] + 1)
+                else:
+                    temp.append(0)
+                max_len = max(max_len, temp[-1])
+            dp = temp
+        return max_len
+```
+
+#### Solution-dp-O(1) space-$
+
+Ref: https://leetcode.com/problems/maximum-length-of-repeated-subarray/discuss/109040/Java-O(mn)-time-O(1)-space
+
+```java
+public int findLength(int[] A, int[] B) {
+        
+        int maxLen = 0;
+        
+        
+        for (int j = 0; j < B.length; j++) {
+            int maxLenEnding = 0;
+            for (int i = 0, k = j; i < A.length && k < B.length; i++, k++) {
+                if (A[i] != B[k]) maxLenEnding = 0;
+                else {
+                    maxLenEnding++;
+                    maxLen = Math.max(maxLen, maxLenEnding);
+                }
+            }
+        }
+        
+        for (int i =1; i < A.length; i++) {
+            int maxLenEnding = 0;
+            for (int j = 0, k = i; k < A.length && j < B.length; j++, k++) {
+                if (A[k] != B[j]) maxLenEnding = 0;
+                else {
+                    maxLenEnding++;
+                    maxLen = Math.max(maxLen, maxLenEnding);
+                }
+            }
+        }
+        
+        return maxLen;
+}
+```
+
+
+
+### 120. Triangle
+
+https://leetcode.com/problems/triangle/
+
+#### solution-dp
+
+但这里不需要一定按照从上到下向杨辉三角那样，从下至上更方便

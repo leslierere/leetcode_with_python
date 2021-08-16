@@ -251,6 +251,8 @@ https://leetcode.com/problems/basic-calculator/description/
 
 这里对+-符号的处理特别好，思想还是跟上一题stack一样
 
+通过加0还有sign进行简化
+
 @6.7这次比较好, 真延续上面做法
 
 ```python

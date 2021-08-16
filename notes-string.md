@@ -18,6 +18,8 @@ See details on problem214 in this note
 
 
 
+
+
 ### 14. Longest Common Prefix
 
 https://leetcode.com/problems/longest-common-prefix/
@@ -754,42 +756,42 @@ https://leetcode.com/problems/text-justification/
 
 Ref: https://leetcode.com/problems/text-justification/discuss/24891/Concise-python-solution-10-lines.
 
+did@21.7.19
+
 ```python
 class Solution:
     def fullJustify(self, words: List[str], maxWidth: int) -> List[str]:
-        remain = maxWidth
+        texts = []
         line = []
-        res = []
-        i = 0
-        
-        def helper(line, res):
-            if len(line)==1:
-                res.append(line[0]+" "*(maxWidth-len(line[0])))
-                return
-            spaces = len(line)+remain
-            basicSpaces = spaces//(len(line)-1)
-            extraNo = spaces%(len(line)-1)
-            space = " "*basicSpaces
-            
-            for i in range(extraNo):#这个处理不错
-                line[i]+=" "
-            res.append(space.join(line))
-            
-        
+        remain_len = maxWidth
         for word in words:
-            if remain-len(word)>=0:
-                remain-=len(word)+1
+            if len(word) + len(line) <= remain_len:
                 line.append(word)
-                i+=1
+                remain_len -= len(word)
             else:
-                helper(line, res)
-                remain = maxWidth-len(word)-1
-                line = [word]
+                if len(line) == 1:
+                    texts.append(line[0] + " " * (maxWidth - len(line[0])))
+                else:
+                    pad_count = len(line) - 1
+                    extra_space = remain_len % pad_count
+                    normal_space = remain_len // pad_count
+                    sentence = ""
+                    for i in range(extra_space):
+                        sentence += line[i] + (normal_space + 1) * " "
+                    for i in range(extra_space, len(line)-1):
+                        sentence += line[i] + normal_space * " "
+                    sentence += line[-1]
+                    texts.append(sentence)
+                line.clear()
+                remain_len = maxWidth
+                line.append(word)
+                remain_len -= len(word)
                 
-        lastLine = " ".join(line)
-        res.append(lastLine+" "*(maxWidth-len(lastLine)))
+        prefix = " ".join(line)
+        prefix += (maxWidth - len(prefix)) * " "
+        texts.append(prefix)
         
-        return res
+        return texts
 ```
 
 
@@ -934,6 +936,48 @@ class Solution:
             
         return "".join(rows)
 ```
+
+
+
+### 43. Multiply Strings
+
+https://leetcode.com/problems/multiply-strings/
+
+#### Solution-like count on paper
+
+Ref: https://leetcode.com/problems/multiply-strings/discuss/17605/Easiest-JAVA-Solution-with-Graph-Explanation
+
+#### Solution-cool
+
+from sample 32 ms submission
+
+```python
+class Solution:
+    def multiply(self, num1: str, num2: str) -> str:
+        def stringToInt(num: str) -> int:
+            value_map = {
+                "0": 0,
+                "1": 1,
+                "2": 2,
+                "3": 3,
+                "4": 4,
+                "5": 5,
+                "6": 6,
+                "7": 7,
+                "8": 8,
+                "9": 9,
+            }
+            value: int = 0
+            for index, digit in enumerate(num[::-1]):
+                value += value_map[digit] * 10**index
+            return value
+
+        return str(stringToInt(num1) * stringToInt(num2))   
+```
+
+
+
+
 
 
 
@@ -1145,25 +1189,25 @@ https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
 #### Solution
 
-Nice!
+did@21.8.8
 
 ```python
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
+        right = left = 0
+        letters = set()
+        max_len = 0
         
-        seen = {}
-        start = end = 0
-        max_length = 0
-        
-        for end in range(len(s)):
-            if s[end] in seen:
-                start = max(seen[s[end]]+1, start)
-                # start = seen[s[end]]+1
-            
-            seen[s[end]] = end
-            max_length = max(max_length, end-start+1)
-        
-        return max_length
+        while right < len(s):
+            char = s[right]
+            while char in letters:
+                letters.remove(s[left])
+                left += 1
+            letters.add(char)
+            max_len = max(max_len, right-left+1)
+            right += 1
+                
+        return max_len
 ```
 
 
@@ -1284,7 +1328,7 @@ https://leetcode.com/problems/longest-palindromic-substring/
 
 #### Solution-dynamic programming- **worth doing and thinking**
 
-
+尤其是reverse那里！！！！
 
 Ref：https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html
 
@@ -1502,7 +1546,7 @@ Ref: https://leetcode.wang/leetCode-9-Palindrome-Number.html
 
 https://leetcode.com/problems/shortest-palindrome/
 
-* Solution-Brute force-O(N2)-可以想想
+#### Solution-Brute force-O(N2)-可以想想
 
 另一种暴力破解, ref: https://leetcode.wang/leetcode-214-Shortest-Palindrome.html
 
@@ -1524,11 +1568,11 @@ def shortestPalindrome(self, s):
             return r[:i] + s
 ```
 
-* Solution-Manacher Algorithm-worth doing and thinking
+#### Solution-Manacher Algorithm-worth doing and thinking
 
 https://leetcode.wang/leetcode-214-Shortest-Palindrome.html
 
-* Solution-recursive-***worth thinking and doing*** @12.23
+#### Solution-recursive-***worth thinking and doing*** @12.23
 
 Ref: https://leetcode.com/problems/shortest-palindrome/discuss/60250/My-recursive-Python-solution
 
@@ -1546,21 +1590,61 @@ https://leetcode.wang/leetcode-214-Shortest-Palindrome.html.  解法2
 
 j一定可以走出最长回文串
 
-* Solution-KMP, Knuth–Morris–Pratt, **worth doing and thinking**
+#### Solution-KMP, Knuth–Morris–Pratt, **worth doing and thinking**
 
-[Here](http://jakeboxer.com/blog/2009/12/13/the-knuth-morris-pratt-algorithm-in-my-own-words/) is a good explaination on what The Partial Match Table is and how to use the table
+[Here](http://jakeboxer.com/blog/2009/12/13/the-knuth-morris-pratt-algorithm-in-my-own-words/) is a good explaination on what The Partial Match Table is and how to use the table.
+
+The Partial Match Table is generated based on the pattern, and it stores the value of **The length of the longest proper prefix in the (sub)pattern that matches a proper suffix in the same (sub)pattern.** And we can use the values in the partial match table to skip ahead, *if a partial match of length **partial_match_length** is found and `table[partial_match_length] > 1`, we may skip ahead `partial_match_length - table[partial_match_length - 1]` characters.*
 
 Why would this work?
 
-As we move right, all we care about is if we would miss any substring that will match, see the following for example
+As we move right, all we care about is if we would miss any substring that will match.
 
-The string is XXXXOOO, and pattern is XXXX&
+Let’s say we’re matching the pattern “abababca” against the text “bacbababaabcbab”. Here’s our partial match table again for easy reference:
 
-X are the substring that matches between string and pattern, each X can represent different letters, and O in string are the and & in pattern that don't match, which can also be any letters.
+```
+char:  | a | b | a | b | a | b | c | a |
+index: | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 
+value: | 0 | 0 | 1 | 2 | 3 | 4 | 0 | 1 |
+```
 
-When we at index 4, we didn't match anymore. 
+The first time we get a partial match is here:
 
-The matched letters are in bold from here to illustrate. For string **XXXX**OOO, for pattern, **XXXX**&, when we move pattern forward, what we want to prevent is that we will miss subffixes in "XXXX" in string that matches prefixes in pattern. Right now, the partial_match_length is 4 which gives us a maximum steps we will move. And let's see one by one, if we just move one step and there is a match, what we have is the X**XXX**OOO matches **XXX**X&,  in this way, **XXX**X& matches X**XXX**&, and the length of current mapping substring is exactly the table[partial_match_length - 1] which is 3, and we will only move partial_match_length - table[partial_match_length - 1] steps, that is one step.
+```
+bacbababaabcbab
+ |
+ abababca
+```
+
+This is a partial_match_length of 1. The value at `table[partial_match_length - 1]` (or `table[0]`) is 0, so we don’t get to skip ahead any. The next partial match we get is here:
+
+```
+bacbababaabcbab
+    |||||
+    abababca
+```
+
+This is a partial_match_length of 5. The value at `table[partial_match_length - 1]` (or `table[4]`) is 3. That means we get to skip ahead `partial_match_length - table[partial_match_length - 1]` (or `5 - table[4]` or `5 - 3` or `2`) characters: (partial_match_length is like the maximum length we should move forward, and since we at least move 1 step forward, we need see how much it matches for string[: partial_match_length - 1])
+
+```
+// x denotes a skip
+
+bacbababaabcbab
+    xx|||
+      abababca
+```
+
+This is a partial_match_length of 3. The value at `table[partial_match_length - 1]` (or `table[2]`) is 1. That means we get to skip ahead `partial_match_length - table[partial_match_length - 1]` (or `3 - table[2]` or `3 - 1` or `2`) characters:
+
+```
+// x denotes a skip
+
+bacbababaabcbab
+      xx|
+        abababca
+```
+
+At this point, our pattern is longer than the remaining characters in the text, so we know there’s no match.
 
 
 
@@ -1792,25 +1876,26 @@ https://leetcode.com/problems/valid-parentheses/
 
 https://leetcode.com/problems/generate-parentheses/
 
-* Solution-backtrack
+#### Solution-backtrack
+
+did@21.8.9
 
 ```python
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
-        res = []
-        self.helper(n,n,"",res)
-        return res
+        result = []
+        self.helper("", 0, n, result)
+        return result
         
-    def helper(self, left, right, string, res):
-        if left==0 and right ==0:
-            res.append(string)
-        
-        if left>0:
-            self.helper(left-1, right, string+"(", res)
-        if left==0: # optimised
-            res.append(string+right*")")
-        elif right>left:
-            self.helper(left, right-1, string+")", res)
+    def helper(self, s, left, n, result):
+        if left == n*2 - len(s):
+            result.append(s + ")"*left)
+            return
+        # if left > n:
+        #     return
+        self.helper(s+"(", left+1, n, result)
+        if left > 0:
+            self.helper(s+")", left-1, n, result)
 ```
 
 
@@ -1821,9 +1906,11 @@ class Solution:
 
 https://leetcode.com/problems/longest-valid-parentheses/
 
-* solution normal dp
+#### solution normal dp
 
-* Solution-dynamic programming
+
+
+#### Solution-dynamic programming
 
 @3.18做出来了，但我也还没想特别清楚
 
@@ -1856,7 +1943,7 @@ Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 
 dp [ i ] 代表以下标 i 结尾的合法序列的最长长度
 
-* solution-stack with dp-**worth thinking and doing**, 想明白了@1.2
+#### solution-stack with dp-**worth thinking and doing**, 想明白了@1.2
 
 Ref: https://leetcode.wang/leetCode-32-Longest-Valid-Parentheses.html
 

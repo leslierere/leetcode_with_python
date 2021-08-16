@@ -410,7 +410,42 @@ https://leetcode.com/problems/shortest-word-distance-iii/
 
 https://leetcode.com/problems/jump-game/
 
-* Solution-greedy method
+#### Solution-greedy method-$
+
+Ref: https://leetcode.com/problems/jump-game/discuss/20907/1-6-lines-O(n)-time-O(1)-space
+
+```python
+def canJump(self, nums):
+    m = 0
+    for i, n in enumerate(nums):
+        if i > m:
+            return False
+        m = max(m, i+n)
+    return True
+```
+
+#### Solution-dp
+
+slow
+
+```python
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        dp = [False for i in range(len(nums))]
+        dp[0] = True
+        
+        for i in range(len(nums)):
+            if dp[-1]:
+                return True
+            if dp[i]:
+                for j in range(1, nums[i]+1):
+                    if i+j < len(nums):
+                        dp[i+j] = True
+                    else:
+                        break
+                        
+        return dp[-1]
+```
 
 
 

@@ -276,7 +276,7 @@ class Solution:
 
                 pre = stack.pop()
                 result.append(pre.val)
-            else:   
+            else:
                 if top.right:
                     stack.append(top.right)
                 if top.left:
@@ -900,6 +900,78 @@ class Solution:
 
 
 
+### 114. Flatten Binary Tree to Linked List
+
+https://leetcode.com/problems/flatten-binary-tree-to-linked-list/
+
+#### recursive-$$
+
+Ref: https://leetcode.com/problems/flatten-binary-tree-to-linked-list/discuss/36977/My-short-post-order-traversal-Java-solution-for-share
+
+也可以用iterative的形式来做，也就是[这里](https://leetcode.wang/leetcode-114-Flatten-Binary-Tree-to-Linked-List.html#%E8%A7%A3%E6%B3%95%E4%B8%89)的解法三
+
+```java
+private TreeNode prev = null;
+
+public void flatten(TreeNode root) {
+    if (root == null)
+        return;
+    flatten(root.right);
+    flatten(root.left);
+    root.right = prev;
+    root.left = null;
+    prev = root;
+}
+```
+
+
+
+did by myself@21.6.8
+
+其实看看我自己的code其实是可以想到怎么把他改装成上面那样的, 反正面对tree，先可以有一些比较straightforward递归的形式，然后可以把它改装成普通的traversal, like 106,109, here
+
+@21.8.15 想想有啥只需要返回head的方法
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        self.dfs(root)
+        
+    def dfs(self, node):
+        if not node:
+            return None, None
+        
+        left_head, left_tail = self.dfs(node.left)
+        right_head, right_tail = self.dfs(node.right)
+        node.left = None
+             
+        if left_head and right_head:
+            node.right = left_head
+            left_tail.right = right_head
+            return node, right_tail
+        elif right_head:
+            node.right = right_head
+            return node, right_tail
+        elif left_head:
+            node.right = left_head
+            return node, left_tail
+        else:
+            return node, node
+```
+
+
+
+
+
 ### 104. Maximum Depth of Binary Tree，easy
 
 https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
@@ -1020,7 +1092,7 @@ class Solution:
 
 https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
 
->  My understanding is that a valid path is a "straight line" that connects all the nodes, in other words, it can't "fork".
+>  My understanding is that a valid path is a "straight line" that connects all the nodes, in other words, **it can't "fork".**
 >
 > Ref: https://leetcode.com/problems/binary-tree-maximum-path-sum/discuss/39811/What-is-the-meaning-of-path-in-this-problem
 
@@ -1407,6 +1479,20 @@ https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/des
 > 3. Both left and right subtrees are also BSTs.
 
 Ref: https://leetcode.com/articles/lowest-common-ancestor-of-a-binary-search-tree/
+
+```python
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if p.val > q.val:
+            return self.lowestCommonAncestor(root, q, p)
+        
+        if root.val >= p.val and root.val <= q.val:
+            return root
+        elif q.val < root.val:
+            return self.lowestCommonAncestor(root.left, p, q)
+        else:
+            return self.lowestCommonAncestor(root.right, p, q)
+```
 
 
 
@@ -2296,7 +2382,7 @@ class Solution:
 
 
 
-#### Solution - bfs-O(1) space-$$
+#### Solution - bfs-O(1) space-$$$
 
 Ref: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/discuss/37472/A-simple-accepted-solution
 

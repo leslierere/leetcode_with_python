@@ -322,7 +322,12 @@ class Solution:
                     b = self.get_b(x1,y1,x2,y2)
                     b = str(b)
                 elif slope[0]==0 and slope[1]==0: # didn't distiguish between x=0 and y=0
-                    b = "s" # as we cannot identify the lines parallel to x and y line with the origin on them.
+                    # b = "s" # as we cannot identify the lines parallel to x and y line with the origin on them.
+                    # alternatively, we can do
+                    if y1!=0 or y2!=0:
+                        b = "#"
+                    else:
+                        b = "$"
                 elif slope[0]==0:
                     b = str(slope[1])
                 else:
@@ -347,7 +352,7 @@ class Solution:
             return (y2-y1)//divisor, (x2-x1)//divisor
             
             
-    def gcd(self, x, y):
+    def gcd(self, x, y): # easy to get this wrong
         if y==0:
             return x
         else:
@@ -446,4 +451,32 @@ public:
     }
 };
 ```
+
+
+
+### 172. Factorial Trailing Zeroes-$
+
+https://leetcode.com/problems/factorial-trailing-zeroes/
+
+Ref: https://leetcode.wang/leetcode-172-Factorial-Trailing-Zeroes.html
+
+> 综上，规律就是每隔 `5` 个数，出现一个 `5`，每隔 `25` 个数，出现 `2` 个 `5`，每隔 `125` 个数，出现 `3` 个 `5`... 以此类推。
+>
+> 最终 `5` 的个数就是 `n / 5 + n / 25 + n / 125 ...`
+>
+> 写程序的话，如果直接按照上边的式子计算，分母可能会造成溢出。所以算 `n / 25` 的时候，我们先把 `n`更新，`n = n / 5`，然后再计算 `n / 5` 即可。后边的同理。
+
+```python
+class Solution:
+    def trailingZeroes(self, n: int) -> int:
+        res = 0
+        
+        while n:
+            res+=n//5
+            n = n//5
+            
+        return res
+```
+
+
 

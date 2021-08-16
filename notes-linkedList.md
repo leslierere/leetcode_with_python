@@ -29,6 +29,21 @@ Ref: https://leetcode.wang/leetcode-206-Reverse-Linked-List.html
 
 did@20.9.16
 
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        
+        nextNode = head.next
+        newHead = self.reverseList(head.next)
+        nextNode.next = head
+        head.next = None
+        return newHead
+```
+
+
+
 
 
 ### 141. Linked List Cycle

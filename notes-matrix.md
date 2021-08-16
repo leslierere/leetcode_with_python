@@ -125,7 +125,28 @@ Ref: https://leetcode.com/problems/spiral-matrix/discuss/20571/1-liner-in-Python
 
 https://leetcode.com/problems/spiral-matrix-ii/
 
-#### Solution
+#### Solution-clean
+
+Ref: https://leetcode.com/problems/spiral-matrix-ii/discuss/22282/4-9-lines-Python-solutions
+
+```python
+def generateMatrix(self, n):
+    A = [[0] * n for _ in range(n)]
+    i, j, di, dj = 0, 0, 0, 1
+    for k in xrange(n*n):
+        A[i][j] = k + 1
+        if A[(i+di)%n][(j+dj)%n]:
+            di, dj = dj, -di
+        i += di
+        j += dj
+    return A
+```
+
+
+
+
+
+#### Solution-simulation
 
 just like 54, Solution1
 
@@ -603,22 +624,33 @@ Ref: https://leetcode.com/problems/valid-sudoku/discuss/15472/Short%2BSimple-Jav
 ```python
 class Solution:
     def isValidSudoku(self, board: List[List[str]]) -> bool:
-        exist = set()
+        rows = collections.defaultdict(set)
+        cols = collections.defaultdict(set)
+        subgrids = collections.defaultdict(set)
         
-        for i in range(0, 9):
-            for j in range(0, 9):
-                if board[i][j]!=".":
-                    rowStr = str(i)+"("+board[i][j]+")"
-                    colStr = "("+board[i][j]+")"+str(j)
-                    blockStr = str(i//3) + "("+board[i][j]+")"+str(j//3)
-                    if rowStr in exist or colStr in exist or blockStr in exist:
-                        return False
-                    exist.add(rowStr)
-                    exist.add(colStr)
-                    exist.add(blockStr)
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] == ".":
+                    continue
                     
-                    
+                char = board[i][j]
+                if char in rows[i]:
+                    return False
+                rows[i].add(char)
+                if char in cols[j]:
+                    return False
+                cols[j].add(char)
+                subgrid = self.subgrid_ord(i, j)
+                if char in subgrids[subgrid]:
+                    return False
+                subgrids[subgrid].add(char)
+                
         return True
+                
+    def subgrid_ord(self, i, j):
+        row = i//3
+        col = j//3
+        return (row, col)
 ```
 
 

@@ -33,7 +33,7 @@ class Solution:
         if not visited[vertix]: # we only need do dfs on those not visited
             
             while edges[vertix]:
-                neighbor = edges[vertix].pop()
+                neighbor = edges[vertix].pop() # pop is necessary
                 if not self.dfs(neighbor, visited, edges):
                     return False
 

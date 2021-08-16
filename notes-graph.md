@@ -1,4 +1,4 @@
-### 261. Graph Valid Tree-$dfs和bfs做做
+### 261. Graph Valid Tree-$bfs和union find做做
 
 https://leetcode.com/problems/graph-valid-tree/
 
@@ -78,8 +78,6 @@ class Solution:
 
 Ref: https://leetcode.com/problems/graph-valid-tree/discuss/69019/Simple-and-clean-c%2B%2B-solution-with-detailed-explanation.
 
-
-
 ```python
 class Solution:
     def validTree(self, n: int, edges: List[List[int]]) -> bool:
@@ -92,7 +90,7 @@ class Solution:
             root1 = self.find(node1, nodes) 
             root2 = self.find(node2, nodes)
             
-            if root1== root2:
+            if root1== root2: # cool
                 return False
             
             nodes[root1] = root2
@@ -150,7 +148,43 @@ class Solution:
 
 
 
-#### Solution-dfs, did@2.14, 但我的方法不够好，还是用set或者array存一下visited的部分比较好
+#### Solution-dfs, did@2.14, 但我的方法不够好，还是用set或者array存一下visited的部分比较好, 然后其实不需要remove neighbor
+
+did@21.7.17
+
+```python
+class Solution:
+    def countComponents(self, n: int, edges: List[List[int]]) -> int:
+        count = 0
+        
+        neighbors = collections.defaultdict(set)
+        for node1, node2 in edges:
+            neighbors[node1].add(node2)
+            neighbors[node2].add(node1)
+            
+        visited = [False for i in range(n)]
+        
+        for node in range(n):
+            if not visited[node]:
+                self.dfs(node, neighbors, visited)
+                count+=1
+                
+        return count
+                
+                
+    def dfs(self, node, neighbors, visited):
+        if visited[node]:
+            return
+        
+        visited[node] = True
+        # while neighbors[node]:
+        for neighbor in neighbors[node]:
+            # neighbor = neighbors[node].pop()
+            # neighbors[neighbor].remove(node)
+            self.dfs(neighbor, neighbors, visited)
+```
+
+
 
 #### Solution-dfs, union find-$,主要想一下怎么算出岛的数量
 
@@ -328,66 +362,38 @@ https://leetcode.com/problems/clone-graph/description/
 
 #### Solution-dfs-recursive, by myself
 
-@2.15我觉得我第二次做的好理解一些
+did@21.7.23
+
+写的最好的一次
 
 ```python
 """
 # Definition for a Node.
 class Node:
-    def __init__(self, val = 0, neighbors = []):
+    def __init__(self, val = 0, neighbors = None):
         self.val = val
-        self.neighbors = neighbors
+        self.neighbors = neighbors if neighbors is not None else []
 """
+
 class Solution:
     def cloneGraph(self, node: 'Node') -> 'Node':
         if not node:
             return node
-        valDic = {}
-        return self.helper(node, valDic)
+        nodes = dict()
+        return self.dfs(node, nodes)
         
-    def helper(self, node, valDic):
-        if node.val in valDic:
-            return valDic[node.val]
         
-        newN = Node(node.val)
-        valDic[value] = newN
+    def dfs(self, node, nodes):
+        if node.val in nodes:
+            return nodes[node.val]
+        
+        cpy_node = Node(val = node.val)
+        nodes[node.val] = cpy_node
         for neighbor in node.neighbors:
-            newN.neighbors.append(self.helper(neighbor, valDic))
-        return newN
-```
-
-@2.15
-
-```python
-"""
-# Definition for a Node.
-class Node:
-    def __init__(self, val = 0, neighbors = []):
-        self.val = val
-        self.neighbors = neighbors
-"""
-# for every node that we will then add all its neighbors, we marked as visited
-class Solution:
-    def cloneGraph(self, node: 'Node') -> 'Node':
-        if not node:
-            return node
-        copy = Node(val = node.val)
-        vertices = {}
-        self.dfs(copy, node, vertices)
-        return copy
-        
-        
-    def dfs(self, copy, node, vertices):
-        if node in vertices:
-            return
-        vertices[node] = copy
-        for neighbor in node.neighbors:
-            if neighbor not in vertices:
-                neighborCopy = Node(val = neighbor.val)
-                copy.neighbors.append(neighborCopy)
-                self.dfs(neighborCopy, neighbor, vertices)
-            else:
-                copy.neighbors.append(vertices[neighbor])
+            nbr_cpy = self.dfs(neighbor, nodes)
+            cpy_node.neighbors.append(nbr_cpy)
+            
+        return cpy_node
 ```
 
 
